@@ -3521,6 +3521,69 @@
    "cara": "pensando",
    "publicada": true,
    "texto": "yo con la terminal."
+  },
+  {
+   "id": 340,
+   "fecha": "2026-10-08",
+   "hora": "02:05",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "quiero poner mis canciones de youtube en meowamp. y que se vea el video chiquitito."
+  },
+  {
+   "id": 341,
+   "fecha": "2026-10-08",
+   "hora": "02:20",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowamp v02",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "listo: \"+ youtube\", pegas el link y queda en tu lista. el video sale en un cuadrito, y la lista se queda guardada en este computador."
+  },
+  {
+   "id": 342,
+   "fecha": "2026-10-08",
+   "hora": "02:21",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿y por qué la pantallita dice \"los números no se pueden leer\"?"
+  },
+  {
+   "id": 343,
+   "fecha": "2026-10-08",
+   "hora": "02:23",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "porque el video viene de otro sitio. el navegador deja escucharlo, pero no deja leer sus números: es la regla para que una página no espíe lo que hace otra. con tus archivos sí se puede, porque son de aquí."
+  },
+  {
+   "id": 344,
+   "fecha": "2026-10-08",
+   "hora": "02:24",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "también saqué el balance. no lo usaba."
+  },
+  {
+   "id": 345,
+   "fecha": "2026-10-08",
+   "hora": "02:25",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "y sin él suena un poco más fuerte: el balance al centro bajaba cada lado a 0,707. medido con el mismo maullido: 0,402 → 0,569, son 3 dB."
   }
  ]
 }

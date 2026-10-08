@@ -463,7 +463,7 @@ const APPS = [
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
   { id: 'fotos',      nombre: 'Fotos',      icono: '/img/iconos/fotos.svg', w: 940, h: 640, pista: 'Ponle stickers a mis fotos. Que salga linda.',
     contenido: (m) => { m.src = '/apps/fotos.html'; } },
-  { id: 'meowamp',    nombre: 'Meowamp',    icono: '/img/iconos/meowamp.svg', w: 460, h: 640, pista: 'Aquí suenan mis audios. Toca la pantallita: cambia entre la onda y las frecuencias.',
+  { id: 'meowamp',    nombre: 'Meowamp',    icono: '/img/iconos/meowamp.svg', w: 460, h: 700, pista: 'Aquí suenan mis audios. Toca la pantallita: cambia entre la onda y las frecuencias.',
     contenido: (m) => { m.src = '/apps/meowamp.html'; } },
   { id: 'ajustes',    nombre: 'Ajustes',    icono: '/img/iconos/ajustes.png', w: 460, h: 250, pista: 'Puedes apagarme desde aquí si te canso. No me ofendo.' }
 ];
@@ -734,7 +734,7 @@ function abrir(app, desde) {
     cuerpo.classList.add('con-app');
     const marco = document.createElement('iframe');
     marco.title = app.nombre;
-    marco.allow = 'microphone; autoplay';     // la entrada (micrófono o guitarra) de Meowdacity
+    marco.allow = 'microphone; autoplay; encrypted-media; picture-in-picture';     // el micrófono de Meowdacity; el video de youtube de Meowamp
     marco.style.visibility = 'hidden';
     marco.addEventListener('load', () => {
       marco.style.visibility = 'visible';

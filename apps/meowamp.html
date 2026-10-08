@@ -39,7 +39,7 @@ body[data-skin="metal"] {
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
-body { font-family: var(--fuente); font-size: 12px; color: var(--texto); background: var(--fondo); display: flex; flex-direction: column; overflow: hidden; }
+body { font-family: var(--fuente); font-size: 12px; color: var(--texto); background: var(--fondo); display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }   /* si la ventana queda muy baja, se baja con la rueda */
 body.patita, body.patita button, body.patita input { cursor: var(--patita), auto; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--lcd-alto); outline-offset: 2px; }
@@ -52,7 +52,7 @@ body[data-skin="metal"] #equipo { background: linear-gradient(180deg, #E4E7EC, #
 body[data-skin="metal"] #pantalla { box-shadow: inset 2px 2px 0 #000; }
 #lcd { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
 
-/* deslizadores: posición, volumen, balance */
+/* deslizadores: posición y volumen */
 .riel { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: transparent; margin: 0; }
 .riel::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; border: 2px solid var(--borde); background: linear-gradient(90deg, var(--lleno) var(--p, 0%), var(--riel) var(--p, 0%)); }
 .riel::-moz-range-track { height: 8px; border-radius: 99px; border: 2px solid var(--borde); background: linear-gradient(90deg, var(--lleno) var(--p, 0%), var(--riel) var(--p, 0%)); }
@@ -74,8 +74,14 @@ body[data-skin="terminal"] .b { box-shadow: none; }
 #controles .extra { margin-left: auto; display: flex; gap: 6px; }
 .b.chico { font-size: 10px; font-family: 'Silkscreen', var(--fuente); letter-spacing: .5px; padding: 0 8px; }
 
+/* el cuadrito del video (solo cuando suena un video de youtube) */
+#video { flex: none; margin: 0 10px 10px; border: 2px solid var(--borde); border-radius: var(--radio); overflow: hidden; background: #000; box-shadow: 4px 4px 0 var(--sombra); }
+#video[hidden] { display: none; }
+#video { align-self: center; width: calc(100% - 20px); max-width: 300px; }
+#video .caja { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+#video .caja > * { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 /* la lista */
-#lista { flex: 1; min-height: 0; margin: 0 10px 10px; display: flex; flex-direction: column; background: var(--lista); color: var(--lista-txt); border: 2px solid var(--borde); border-radius: var(--radio); overflow: hidden; }
+#lista { flex: 1; min-height: 170px; margin: 0 10px 10px; display: flex; flex-direction: column; background: var(--lista); color: var(--lista-txt); border: 2px solid var(--borde); border-radius: var(--radio); overflow: hidden; }
 #pistas { flex: 1; min-height: 0; overflow-y: auto; margin: 0; padding: 4px 0; list-style: none; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; }
 #pistas button { display: flex; width: 100%; gap: 8px; padding: 7px 12px; border: 0; background: none; text-align: left; color: var(--lista-txt); min-height: 34px; align-items: center; font-family: inherit; }
 #pistas button:hover { background: var(--lista-sel); }
@@ -84,12 +90,21 @@ body[data-skin="terminal"] .b { box-shadow: none; }
 #pistas button .dur { opacity: .75; }
 #pistas li.sel button { background: var(--lista-sel); }
 #pistas li.act button { color: var(--lista-act); font-weight: 600; }
+#pistas .yt { flex: none; font-family: 'Silkscreen', var(--fuente); font-size: 9px; padding: 1px 5px; border-radius: 4px; background: #FF3D57; color: #fff; letter-spacing: .5px; }
+#pistas li { display: flex; align-items: stretch; }
+#pistas li > button:first-child { flex: 1; min-width: 0; }
+#pistas .quitar { flex: none; width: 34px; min-height: 34px; border: 0; background: none; color: var(--lista-txt); opacity: .55; font-size: 15px; }
+#pistas .quitar:hover { opacity: 1; background: var(--lista-sel); }
+#agregar { flex: none; display: flex; gap: 6px; padding: 8px; border-top: 2px solid var(--lista-borde); }
+#agregar[hidden] { display: none; }
+#agregar input { flex: 1; min-width: 0; height: 32px; border: 2px solid var(--borde); border-radius: calc(var(--radio) * .6); padding: 0 9px; font: 12px 'IBM Plex Mono', ui-monospace, monospace; background: var(--lista); color: var(--lista-txt); }
+#agregar .b { height: 32px; }
 #pie { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 12px; border-top: 2px solid var(--lista-borde); font-size: 11px; }
 #pie .tot { opacity: .75; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-#pie .b { margin-left: auto; height: 30px; }
+#pie .b { height: 30px; } #pie .b:first-of-type { margin-left: auto; }
 #nota { font-size: 10.5px; color: var(--tenue); margin: -2px 2px 0; line-height: 1.4; }
 @media (max-width: 420px) { #controles .extra { margin-left: 0; } .b { min-width: 36px; padding: 0 7px; } }
-@media (max-height: 700px) and (max-width: 719px) { #nota { display: none; } }   /* en un celular chico, la lista primero */
+@media (max-height: 560px) { #nota { display: none; } }   /* en un celular chico, la lista primero */
 @media (prefers-reduced-motion: reduce) { .b:active { transform: none; } }
 </style>
 </head>
@@ -110,12 +125,13 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     </span>
   </div>
   <div class="fila"><span class="et">vol</span><input class="riel" id="vol" type="range" min="0" max="100" value="80" aria-label="Volumen"></div>
-  <div class="fila"><span class="et">bal</span><input class="riel" id="bal" type="range" min="-100" max="100" value="0" aria-label="Balance izquierda derecha"></div>
   <p id="nota">kHz son miles de números por segundo. un audio de 48 kHz son 48.000 números cada segundo.</p>
 </section>
+<section id="video" hidden aria-label="Video"><div class="caja"><div id="ytCaja"></div></div></section>
 <section id="lista" aria-label="Lista de pistas">
   <ol id="pistas"></ol>
-  <div id="pie"><span class="tot" id="tot">…</span><button class="b chico" id="bAbrir">+ archivos</button></div>
+  <form id="agregar" hidden><input id="ytLink" type="url" inputmode="url" placeholder="pega un link de youtube" aria-label="Link de YouTube"><button class="b chico" type="submit">agregar</button></form>
+  <div id="pie"><span class="tot" id="tot">…</span><button class="b chico" id="bAbrir">+ archivos</button><button class="b chico" id="bYt" aria-expanded="false" aria-controls="agregar">+ youtube</button></div>
 </section>
 <p class="sr" id="anuncio" role="status"></p>
 <script>
@@ -180,17 +196,16 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   }
 
   // ---------- el audio: una sola cadena, con rampas (ningún parámetro salta de golpe) ----------
-  let ctx = null, analiza = null, vol = null, pan = null, voz = null, fuente = null;
+  let ctx = null, analiza = null, vol = null, voz = null, fuente = null;
   const RAMPA = 0.02;   // 20 ms: un salto de volumen es un chasquido
   async function audio() {
     if (!ctx) {
       ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'playback' });
       vol = ctx.createGain(); vol.gain.value = nivel(+$('vol').value);
-      pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null; if (pan) pan.pan.value = +$('bal').value / 100;
       const lim = ctx.createDynamicsCompressor();                  // limitador: la gente prueba con audífonos
       lim.threshold.value = -3; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = .002; lim.release.value = .12;
       analiza = ctx.createAnalyser(); analiza.fftSize = 2048; analiza.smoothingTimeConstant = .72;
-      (pan ? (vol.connect(pan), pan) : vol).connect(lim); lim.connect(analiza); analiza.connect(ctx.destination);
+      vol.connect(lim); lim.connect(analiza); analiza.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') await ctx.resume();
     return ctx.state === 'running';
@@ -208,8 +223,13 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   // ---------- la lista y el estado ----------
   let pistas = [], actual = -1, estado = 'stop', inicio = 0, offset = 0, ficha = 0, mostrarResta = false, modoVisor = leer('visor', 'frec');
   let aviso = '', avisoHasta = 0, marquee = 0;
-  const dur = p => buffers[p.ruta] ? buffers[p.ruta].duration : p.dur;
-  const tiempo = () => estado === 'play' ? Math.min(dur(pistas[actual]), ctx.currentTime - inicio) : offset;
+  const esYt = p => !!(p && p.yt);
+  const dur = p => esYt(p) ? ((yt && ytId === p.yt && yt.getDuration && yt.getDuration()) || p.dur || 0) : (buffers[p.ruta] ? buffers[p.ruta].duration : p.dur);
+  const tiempo = () => {
+    const p = pistas[actual];
+    if (esYt(p)) return yt && ytId === p.yt && estado !== 'stop' && yt.getCurrentTime ? yt.getCurrentTime() || offset : offset;
+    return estado === 'play' ? Math.min(dur(p), ctx.currentTime - inicio) : offset;
+  };
   const mmss = s => { s = Math.max(0, Math.floor(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
   function decir(t, ms = 1600) { aviso = t; avisoHasta = performance.now() + ms; }
 
@@ -218,14 +238,20 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     pistas.forEach((p, k) => {
       const li = document.createElement('li'); if (k === actual) li.className = 'act sel';
       const b = document.createElement('button');
-      b.innerHTML = '<span class="n">' + (k + 1) + '.</span><span class="nom"></span><span class="dur">' + (p.dur < 10 ? p.dur.toLocaleString('es-CL', { maximumFractionDigits: 1 }) + ' s' : mmss(p.dur)) + '</span>';
+      const d = !p.dur ? 'video' : p.dur < 10 ? p.dur.toLocaleString('es-CL', { maximumFractionDigits: 1 }) + ' s' : mmss(p.dur);
+      b.innerHTML = '<span class="n">' + (k + 1) + '.</span>' + (esYt(p) ? '<span class="yt">yt</span>' : '') + '<span class="nom"></span><span class="dur">' + d + '</span>';
       b.querySelector('.nom').textContent = p.nombre;
       b.setAttribute('aria-label', p.nombre + ', ' + mmss(p.dur) + (k === actual ? ', sonando' : ''));
       b.addEventListener('dblclick', () => tocar(k, 0));
       b.addEventListener('click', e => { if (e.detail === 0 || matchMedia('(pointer: coarse)').matches) tocar(k, 0); else elegir(k); });
-      li.append(b); ol.append(li);
+      li.append(b);
+      if (esYt(p)) {   // los videos los agregaste tú: los puedes sacar. los archivos son de neli.
+        const q = document.createElement('button'); q.className = 'quitar'; q.textContent = '×'; q.setAttribute('aria-label', 'Quitar ' + p.nombre + ' de la lista');
+        q.addEventListener('click', () => quitarYt(k)); li.append(q);
+      }
+      ol.append(li);
     });
-    const total = pistas.reduce((s, p) => s + p.dur, 0);
+    const total = pistas.reduce((s, p) => s + (p.dur || 0), 0);
     $('tot').textContent = pistas.length + (pistas.length === 1 ? ' pista · ' : ' pistas · ') + mmss(total);
   }
   function elegir(k) { [...$('pistas').children].forEach((li, i) => li.classList.toggle('sel', i === k)); }
@@ -233,6 +259,8 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   async function tocar(k, desde) {
     if (!pistas.length) return;
     k = (k + pistas.length) % pistas.length;
+    if (esYt(pistas[k])) return tocarYt(k, desde);
+    callarYt();
     if (!(await audio())) { decir('TOCA PLAY'); return; }
     const p = pistas[k], mia = ++ficha;
     let buf; try { buf = await cargar(p); } catch (e) { decir('NO SE PUDO LEER'); return; }
@@ -246,7 +274,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     f.onended = () => { if (f === fuente && estado === 'play') alTerminar(); };
     fuente = f; voz = v; inicio = t - desde; offset = desde; estado = 'play';
     if (actual !== k) { actual = k; marquee = 0; pintarLista(); anunciar(); }
-    pintarBotones();
+    ponerNota(); pintarBotones();
   }
   function soltar() {   // apagar la voz que suena: rampa de 20 ms y recién ahí se detiene
     if (!fuente) return;
@@ -255,11 +283,114 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     try { f.stop(t + RAMPA + .005); } catch (e) {}
     fuente = null; voz = null;
   }
-  function pausa() { if (estado !== 'play') return; offset = tiempo(); soltar(); estado = 'pausa'; pintarBotones(); }
-  function detener() { if (estado === 'stop' && offset === 0) return; soltar(); estado = 'stop'; offset = 0; pintarBotones(); }
+  function pausa() {
+    if (estado !== 'play') return; offset = tiempo();
+    if (esYt(pistas[actual])) { if (yt && yt.pauseVideo) yt.pauseVideo(); } else soltar();
+    estado = 'pausa'; pintarBotones();
+  }
+  function detener() {
+    if (estado === 'stop' && offset === 0) return;
+    if (esYt(pistas[actual])) { if (yt && yt.stopVideo) yt.stopVideo(); } else soltar();
+    estado = 'stop'; offset = 0; pintarBotones();
+  }
+
+  // ---------- youtube: el video va en el cuadrito; el audio viene de otro sitio ----------
+  // youtube-nocookie: sin cookies hasta que se toca play. El reproductor se carga recién cuando hay un video en la lista.
+  let yt = null, ytId = null, ytListo = null;
+  function cargarApiYt() {
+    if (ytListo) return ytListo;
+    ytListo = new Promise((res, rej) => {
+      if (window.YT && window.YT.Player) return res();
+      const antes = window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady = () => { if (antes) antes(); res(); };
+      const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.onerror = () => { ytListo = null; rej(new Error('sin youtube')); };
+      document.head.append(sc); setTimeout(() => { if (!(window.YT && window.YT.Player)) { ytListo = null; rej(new Error('tiempo')); } }, 15000);
+    });
+    return ytListo;
+  }
+  function crearYt(id, desde) {
+    return new Promise(res => {
+      yt = new YT.Player('ytCaja', {
+        host: 'https://www.youtube-nocookie.com', videoId: id,
+        playerVars: { playsinline: 1, rel: 0, controls: 0, disablekb: 1, iv_load_policy: 3, start: Math.floor(desde || 0), autoplay: 1, origin: location.origin },
+        events: {
+          onReady: () => { yt.setVolume(+$('vol').value); yt.playVideo(); res(); },
+          onStateChange: e => {
+            const p = pistas[actual]; if (!esYt(p)) return;
+            if (e.data === 1) {                                     // sonando: ahora se sabe cuánto dura y cómo se llama
+              const d = yt.getDuration(), t = (yt.getVideoData && yt.getVideoData().title) || '';
+              let cambio = false;
+              if (d && Math.abs((p.dur || 0) - d) > .5) { p.dur = d; cambio = true; }
+              if (t && p.nombre !== t) { p.nombre = t; cambio = true; }
+              if (cambio) { guardarYt(); pintarLista(); anunciar(); }
+              if (estado !== 'play') { estado = 'play'; pintarBotones(); }
+            }
+            if (e.data === 0 && estado === 'play') alTerminar();
+          },
+          onError: () => { decir('ESE VIDEO NO SE PUEDE TOCAR AQUI', 3000); estado = 'stop'; pintarBotones(); }
+        }
+      });
+    });
+  }
+  async function tocarYt(k, desde) {
+    const p = pistas[k], mia = ++ficha;
+    soltar();                                              // si sonaba un archivo, se apaga con su rampa
+    if (actual !== k) { actual = k; marquee = 0; pintarLista(); anunciar(); }
+    $('video').hidden = false; ponerNota();
+    estado = 'play'; offset = desde || 0; pintarBotones();
+    try { await cargarApiYt(); } catch (e) { $('video').hidden = true; estado = 'stop'; pintarBotones(); decir('NO SE PUDO CARGAR YOUTUBE', 3000); return; }
+    if (mia !== ficha) return;
+    if (!yt) { ytId = p.yt; await crearYt(p.yt, desde); return; }
+    if (ytId !== p.yt) { ytId = p.yt; yt.loadVideoById({ videoId: p.yt, startSeconds: desde || 0 }); }
+    else { yt.seekTo(desde || 0, true); yt.playVideo(); }
+    yt.setVolume(+$('vol').value);
+  }
+  function callarYt() { if (yt && yt.stopVideo) try { yt.stopVideo(); } catch (e) {} $('video').hidden = true; ponerNota(); }
+  function ponerNota() {
+    $('nota').textContent = esYt(pistas[actual])
+      ? 'un video de youtube viene de otro sitio: el navegador no deja leer sus números. por eso la pantallita no muestra la onda.'
+      : 'kHz son miles de números por segundo. un audio de 48 kHz son 48.000 números cada segundo.';
+  }
+
+  // tu lista de videos: se guarda en este navegador
+  function idDeYoutube(t) {
+    t = String(t).trim();
+    const m = t.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})/);
+    return m ? m[1] : (/^[\w-]{11}$/.test(t) ? t : null);
+  }
+  const misVideos = () => pistas.filter(esYt).map(p => ({ yt: p.yt, nombre: p.nombre, dur: p.dur || 0 }));
+  function guardarYt() { guardar('videos', JSON.stringify(misVideos())); }
+  async function agregarYt(link) {
+    const id = idDeYoutube(link);
+    if (!id) { decir('ESE LINK NO ES DE YOUTUBE', 2500); return false; }
+    if (pistas.some(p => p.yt === id)) { decir('YA ESTA EN LA LISTA', 2000); return false; }
+    const p = { yt: id, nombre: 'video de youtube', dur: 0 };
+    pistas.push(p); guardarYt(); pintarLista(); decir('AGREGADO');
+    try {   // el nombre, si youtube lo cuenta; si no, aparece cuando suena
+      const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+      if (r.ok) { const j = await r.json(); if (j.title) { p.nombre = j.title; guardarYt(); pintarLista(); } }
+    } catch (e) {}
+    return true;
+  }
+  function quitarYt(k) {
+    const p = pistas[k]; if (!esYt(p)) return;
+    if (k === actual) { detener(); callarYt(); }
+    pistas.splice(k, 1);
+    if (actual > k) actual--; else if (actual === k) actual = Math.min(k, pistas.length - 1);
+    guardarYt(); pintarLista(); anunciar(); ponerNota();
+  }
+  $('bYt').addEventListener('click', () => {
+    const f = $('agregar'), ver = f.hidden; f.hidden = !ver; $('bYt').setAttribute('aria-expanded', String(ver));
+    if (ver) $('ytLink').focus();
+  });
+  $('agregar').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (await agregarYt($('ytLink').value)) { $('ytLink').value = ''; $('agregar').hidden = true; $('bYt').setAttribute('aria-expanded', 'false'); }
+  });
+  $('ytLink').addEventListener('keydown', e => e.stopPropagation());   // escribir el link no toca z x c v b
   function play() {
     if (estado === 'play') { tocar(actual, 0); return; }     // como en los de antes: play de nuevo vuelve al principio
     if (actual < 0) actual = 0;
+    if (estado === 'pausa' && esYt(pistas[actual]) && yt && ytId === pistas[actual].yt) { yt.playVideo(); estado = 'play'; pintarBotones(); return; }
     tocar(actual, estado === 'pausa' ? offset : 0);
   }
   function siguiente(dir) {
@@ -281,18 +412,13 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   }
   function anunciar() { const p = pistas[actual]; if (p) $('anuncio').textContent = (actual + 1) + '. ' + p.nombre + ', ' + mmss(p.dur); }
 
-  // ---------- volumen y balance: con rampa, y con su número ----------
+  // ---------- el volumen: con rampa, y con su número ----------
   function pintarRiel(el) { const a = +el.min, b = +el.max; el.style.setProperty('--p', ((+el.value - a) / (b - a) * 100) + '%'); }
   $('vol').addEventListener('input', e => {
     const v = +e.target.value; pintarRiel(e.target); guardar('vol', v);
     if (vol) { const t = ctx.currentTime; vol.gain.cancelScheduledValues(t); vol.gain.setValueAtTime(vol.gain.value, t); vol.gain.linearRampToValueAtTime(nivel(v), t + RAMPA); }
+    if (yt && yt.setVolume) yt.setVolume(v);
     decir(v === 0 ? 'VOL 0% SILENCIO' : 'VOL ' + v + '% ' + (20 * Math.log10(nivel(v))).toFixed(1).replace('.', ',') + 'DB');
-  });
-  $('bal').addEventListener('input', e => {
-    let v = +e.target.value; if (Math.abs(v) < 6) { v = 0; e.target.value = 0; }   // el centro "engancha"
-    pintarRiel(e.target);
-    if (pan) { const t = ctx.currentTime; pan.pan.cancelScheduledValues(t); pan.pan.setValueAtTime(pan.pan.value, t); pan.pan.linearRampToValueAtTime(v / 100, t + RAMPA); }
-    decir(v === 0 ? 'BAL CENTRO' : 'BAL ' + Math.abs(v) + '% ' + (v < 0 ? 'IZQ' : 'DER'));
   });
   // la posición: arrastrar muestra adónde vas; soltar salta, con cruce corto
   let arrastrando = false;
@@ -349,7 +475,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     else { g.fillStyle = ac; g.fillRect(3, 4, 5, 5); }
     // el tiempo, grande
     const p = pistas[actual];
-    if (p && ctx) { const t = estado === 'stop' ? 0 : tiempo(); const s = mostrarResta ? dur(p) - t : t; texto((mostrarResta ? '-' : '') + mmss(s), mostrarResta ? 6 : 12, 2, on, 2); }
+    if (p && (ctx || esYt(p))) { const t = estado === 'stop' ? 0 : tiempo(); const s = mostrarResta ? dur(p) - t : t; texto((mostrarResta ? '-' : '') + mmss(s), mostrarResta ? 6 : 12, 2, on, 2); }
     else texto('--:--', 12, 2, on, 2);
     // a la derecha: el nombre corriendo, y los números del archivo
     const X = L.X, ANCHO = L.ancho;
@@ -360,6 +486,10 @@ body[data-skin="terminal"] .b { box-shadow: none; }
       for (let r = 0; r < 2; r++) texto(n, L.tit[0] - corre + r * px, L.tit[1], on);
       g.restore();
       if (estado === 'play') marquee += .5;
+      if (esYt(p)) {
+        texto('YOUTUBE', L.l2[0], L.l2[1], ac); texto('VIDEO', L.l3[0], L.l3[1], on);
+        texto('LOS NUMEROS', L.l4[0], L.l4[1], ac); texto('NO SE PUEDEN LEER', L.l5[0], L.l5[1], on);
+      } else {
       const khz = Math.round(p.tasa / 1000), kbps = Math.round(p.bytes * 8 / p.dur / 1000);
       texto(p.formato === 'mp3' ? kbps + 'KBPS' : 'WAV', L.l2[0], L.l2[1], ac);
       texto(khz + 'KHZ', L.l2[0] + L.khz, L.l2[1], ac);
@@ -368,10 +498,11 @@ body[data-skin="terminal"] .b { box-shadow: none; }
       texto(nn, L.l4[0], L.l4[1], ac, 1, ANCHO);
       texto('NUMEROS', L.l4[0] + (nn.length + 1) * CH, L.l4[1], on);
       texto('EN TOTAL', L.l5[0], L.l5[1], on);
+      }
     } else texto('SIN PISTAS', L.tit[0], L.tit[1], on);
     // el visor: las frecuencias o la onda de verdad, de lo que está saliendo
     const [vx, vy, vw, vh] = L.vis;
-    if (analiza && estado === 'play') {
+    if (analiza && estado === 'play' && !esYt(p)) {
       if (modoVisor === 'frec') {
         analiza.getByteFrequencyData(frec);
         const nb = 22, sr = ctx.sampleRate;
@@ -404,7 +535,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     // un aviso pasa por encima un rato (volumen, skin, etc.)
     if (aviso && ahora < avisoHasta) { g.fillStyle = colores.lcd; const [ax, ay, aw, ah] = L.aviso; g.fillRect(ax, ay, aw, ah); texto(aviso, ax + 2, ay + 2, on, 1, ANCHO); if (norm(aviso).length > ANCHO) texto(norm(aviso).slice(ANCHO), ax + 2, ay + 11, on, 1, ANCHO); }
     // la barra de posición sigue a la música (si nadie la está arrastrando)
-    if (!arrastrando) { const r = $('pos'); const v = p && ctx && estado !== 'stop' ? Math.round(tiempo() / dur(p) * 1000) : 0; if (+r.value !== v) { r.value = v; pintarRiel(r); } }
+    if (!arrastrando) { const r = $('pos'); const dd = p ? dur(p) : 0, v = p && dd && (ctx || esYt(p)) && estado !== 'stop' ? Math.round(tiempo() / dd * 1000) : 0; if (+r.value !== v) { r.value = v; pintarRiel(r); } }
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else if (!raf) raf = requestAnimationFrame(cuadro); });
 
@@ -422,7 +553,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   // ---------- arrancar ----------
   ponerSkin(leer('skin', 'neli'), false);
   $('vol').value = leer('vol', 80); $('bAzar').setAttribute('aria-pressed', String(leer('bAzar', '0') === '1')); $('bRep').setAttribute('aria-pressed', String(leer('bRep', '0') === '1'));
-  for (const id of ['pos', 'vol', 'bal']) pintarRiel($(id));
+  for (const id of ['pos', 'vol']) pintarRiel($(id));
   escala(); if (window.ResizeObserver) new ResizeObserver(escala).observe($('pantalla')); else addEventListener('resize', escala);
   raf = requestAnimationFrame(cuadro);
   (async () => {
@@ -430,6 +561,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
     try { indice = EMB ? EMB.indice : await (await fetch(BASE + 'indice.json', { cache: 'no-cache' })).json(); }
     catch (e) { decir('NO SE PUDO LEER LA CARPETA', 99999); return; }
     pistas = indice.archivos.filter(a => a.tipo === 'audio');
+    try { for (const v of JSON.parse(leer('videos', '[]'))) if (v && v.yt && idDeYoutube(v.yt) === v.yt) pistas.push({ yt: v.yt, nombre: String(v.nombre || 'video de youtube'), dur: +v.dur || 0 }); } catch (e) {}
     actual = pistas.length ? 0 : -1;
     pintarLista(); anunciar();
     if (pendiente) { const k = pistas.findIndex(p => p.ruta === pendiente); if (k >= 0) { actual = k; pintarLista(); tocar(k, 0); } }
