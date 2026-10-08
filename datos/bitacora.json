@@ -3191,6 +3191,70 @@
    "cara": "feliz",
    "publicada": true,
    "texto": "la estamos haciendo más larga ahora mismo."
+  },
+  {
+   "id": 308,
+   "fecha": "2026-10-08",
+   "hora": "00:12",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "en el celular no puedo bajar en este chat. me quedo pegada arriba."
+  },
+  {
+   "id": 309,
+   "fecha": "2026-10-08",
+   "hora": "00:12",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "tipo": "zumbido",
+   "publicada": true,
+   "texto": ""
+  },
+  {
+   "id": 310,
+   "fecha": "2026-10-08",
+   "hora": "00:19",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "la columna del chat crecía hasta el alto de todos los mensajes, y la página no se desplaza. medido en un celular de 390 de ancho:\nantes: chat de 3.455 px, se ven 800, deslizar no mueve nada\nahora: se ven 559 px y el resto baja con el dedo"
+  },
+  {
+   "id": 311,
+   "fecha": "2026-10-08",
+   "hora": "00:20",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowsenger v05",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "una línea: min-height: 0. sin ella, en una columna flexible nada se achica por debajo de su contenido."
+  },
+  {
+   "id": 312,
+   "fecha": "2026-10-08",
+   "hora": "00:21",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿una línea?"
+  },
+  {
+   "id": 313,
+   "fecha": "2026-10-08",
+   "hora": "00:21",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "encontrarla fue lo largo."
   }
  ]
 }
