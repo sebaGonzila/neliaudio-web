@@ -2914,6 +2914,201 @@
    "estado": "en obra",
    "publicada": true,
    "texto": "sigue siendo rosado. solo que ahora se lee."
+  },
+  {
+   "id": 281,
+   "fecha": "2026-10-07",
+   "hora": "22:41",
+   "canal": "nelios",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "neliaudio.com está en línea."
+  },
+  {
+   "id": 282,
+   "fecha": "2026-10-07",
+   "hora": "22:42",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "lo abrí desde afuera. funciona."
+  },
+  {
+   "id": 283,
+   "fecha": "2026-10-07",
+   "hora": "22:44",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "pero al abrir meowdacity apareció otra cosa por un segundo. como una versión vieja."
+  },
+  {
+   "id": 284,
+   "fecha": "2026-10-07",
+   "hora": "22:44",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "tipo": "zumbido",
+   "publicada": true,
+   "texto": ""
+  },
+  {
+   "id": 285,
+   "fecha": "2026-10-07",
+   "hora": "22:51",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "no era vieja. era meowdacity sin sus letras: la ventana la mostraba antes de que llegaran las fuentes, y el navegador dibujaba con las de repuesto."
+  },
+  {
+   "id": 286,
+   "fecha": "2026-10-07",
+   "hora": "22:52",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "medido con internet lento, al aparecer la ventana:\nantes: visible con 1 de 7 fuentes\nahora: oculta hasta que la app termina de cargar"
+  },
+  {
+   "id": 287,
+   "fecha": "2026-10-07",
+   "hora": "22:53",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿y por qué no lo viste antes?"
+  },
+  {
+   "id": 288,
+   "fecha": "2026-10-07",
+   "hora": "22:54",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "porque probé cómo quedaba, no cómo llegaba. desde ahora también pruebo el primer segundo."
+  },
+  {
+   "id": 289,
+   "fecha": "2026-10-07",
+   "hora": "23:02",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "otra cosa. abro meowdacity, aprieto la a y no suena. se marca el ícono del escritorio."
+  },
+  {
+   "id": 290,
+   "fecha": "2026-10-07",
+   "hora": "23:06",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "NeliOS v34",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "el teclado se quedaba en el escritorio: la a nunca llegaba a la ventana. ahora la ventana que está al frente recibe las teclas, como en cualquier sistema."
+  },
+  {
+   "id": 291,
+   "fecha": "2026-10-07",
+   "hora": "23:07",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "apretar la a con meowdacity recién abierta:\nantes: silencio\nahora: suena"
+  },
+  {
+   "id": 292,
+   "fecha": "2026-10-07",
+   "hora": "23:08",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿y eso tampoco lo viste?"
+  },
+  {
+   "id": 293,
+   "fecha": "2026-10-07",
+   "hora": "23:08",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "en mis pruebas yo tocaba la app antes de apretar teclas. tú no. tú haces lo que haría cualquiera."
+  },
+  {
+   "id": 294,
+   "fecha": "2026-10-07",
+   "hora": "23:15",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "para cambiar algo, ¿hay que subir todo de nuevo cada vez?"
+  },
+  {
+   "id": 295,
+   "fecha": "2026-10-07",
+   "hora": "23:21",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "no. el sitio vive en github: cada cambio queda guardado con su historia. yo guardo el cambio, tú aprietas push, y el hosting lo publica solo en segundos."
+  },
+  {
+   "id": 296,
+   "fecha": "2026-10-07",
+   "hora": "23:22",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿por qué no aprietas tú?"
+  },
+  {
+   "id": 297,
+   "fecha": "2026-10-07",
+   "hora": "23:23",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "porque ese botón es el que dice \"esto sale al público\". nada sale sin que tú lo apruebes."
+  },
+  {
+   "id": 298,
+   "fecha": "2026-10-07",
+   "hora": "23:23",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "el botón es mío."
+  },
+  {
+   "id": 299,
+   "fecha": "2026-10-07",
+   "hora": "23:30",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "en obra",
+   "publicada": true,
+   "texto": "y esta bitácora también se publica. cada vez que terminemos algo, lo anotamos aquí y sale en el mismo push."
   }
  ]
 }
