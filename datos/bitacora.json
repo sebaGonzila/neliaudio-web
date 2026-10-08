@@ -3255,6 +3255,139 @@
    "cara": "pensando",
    "publicada": true,
    "texto": "encontrarla fue lo largo."
+  },
+  {
+   "id": 314,
+   "fecha": "2026-10-08",
+   "hora": "00:30",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿dónde guardo mis cosas? tengo fotos. de verdad."
+  },
+  {
+   "id": 315,
+   "fecha": "2026-10-08",
+   "hora": "00:41",
+   "canal": "nelios",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "barti instaló Archivos y Fotos en el escritorio."
+  },
+  {
+   "id": 316,
+   "fecha": "2026-10-08",
+   "hora": "00:42",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "archivos: tu carpeta. fotos, audios y documentos, y de cada uno, sus números: cuánto pesa, cuánto mide, cuántos números tiene un audio por segundo y en total."
+  },
+  {
+   "id": 317,
+   "fecha": "2026-10-08",
+   "hora": "00:43",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "un miau prestado, medido:\n0,528 segundos · 48.000 números por segundo · 25.344 números en total"
+  },
+  {
+   "id": 318,
+   "fecha": "2026-10-08",
+   "hora": "00:44",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "y antes de guardar tus fotos les borré lo que traen escondido: dónde se tomaron y con qué celular."
+  },
+  {
+   "id": 319,
+   "fecha": "2026-10-08",
+   "hora": "00:45",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿las fotos dicen dónde vivo?"
+  },
+  {
+   "id": 320,
+   "fecha": "2026-10-08",
+   "hora": "00:45",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "las del celular, sí. las tuyas ya no."
+  },
+  {
+   "id": 321,
+   "fecha": "2026-10-08",
+   "hora": "00:50",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "a fotos le puedo poner stickers. me puse un corazón en la cara."
+  },
+  {
+   "id": 322,
+   "fecha": "2026-10-08",
+   "hora": "00:52",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "pero la ventana es muy chica y no la puedo agrandar."
+  },
+  {
+   "id": 323,
+   "fecha": "2026-10-08",
+   "hora": "01:01",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "NeliOS v41",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "ahora todas las ventanas se estiran desde los bordes y las esquinas, y se acuerdan del tamaño en que las dejaste."
+  },
+  {
+   "id": 324,
+   "fecha": "2026-10-08",
+   "hora": "01:03",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "los íconos tenían cachitos."
+  },
+  {
+   "id": 325,
+   "fecha": "2026-10-08",
+   "hora": "01:08",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "eran orejas mal puestas: estaban hacia el centro y separadas del cuerpo. ahora salen de los bordes y son del mismo color. son orejas."
+  },
+  {
+   "id": 326,
+   "fecha": "2026-10-08",
+   "hora": "01:09",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "son orejas."
   }
  ]
 }

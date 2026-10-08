@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<title>Fotos</title>
+<style>@font-face { font-family: 'Silkscreen'; src: url(/fuentes/silkscreen-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+</style>
+<style>
+:root { --crema: #FAF4E9; --azul: #A8B8E4; --navy: #3B3F77; --tinta: #2A2D52; --coral: #F17D9E; --lavanda: #DCCEF8; --tenue: #6A6E9C; --linea: #D9DEF3; --sel: #E7E0FB; --ui: "MS Sans Serif", "Microsoft Sans Serif", Verdana, sans-serif; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--ui); font-size: 13px; color: var(--tinta); background: var(--crema); display: flex; flex-direction: column; overflow: hidden; }
+body.patita, body.patita button { cursor: var(--patita), auto; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 40px; min-width: 40px; padding: 0 14px; border: 2px solid var(--tinta); border-radius: 12px; background: #fff; color: var(--tinta); font-weight: 700; font-size: 13px; box-shadow: 0 3px 0 var(--tinta); white-space: nowrap; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:hover { background: #F6F3FF; }
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--tinta); }
+.btn.cuadro { padding: 0; width: 40px; font-size: 18px; }
+.btn.prin { background: var(--coral); color: #fff; }
+.btn.prin:hover { background: #E96A8E; }
+.btn[aria-pressed="true"] { background: var(--lavanda); }
+.btn:disabled { opacity: .45; pointer-events: none; }
+
+
+#centro { flex: 1; min-height: 0; display: flex; }
+#escena { flex: 1; min-width: 0; position: relative; display: grid; place-items: center; padding: 14px; background:
+  repeating-conic-gradient(#F3EEE3 0 25%, #FAF4E9 0 50%) 0 0 / 22px 22px; }
+#escena { overflow: hidden; }
+#marco { position: relative; background: #fff center / cover no-repeat; touch-action: none; user-select: none; -webkit-user-select: none; }
+/* lo que queda fuera del marco se ve desteñido (no sale en la imagen guardada); el sticker elegido se ve entero para poder tomar sus tiradores */
+#marco::after { content: ''; position: absolute; inset: -3px; border: 3px solid var(--tinta); box-shadow: 5px 5px 0 var(--azul), 0 0 0 9999px rgba(250, 244, 233, .86); pointer-events: none; z-index: 2; }
+#marco.sin { display: grid; place-items: center; color: var(--tenue); }
+
+/* un sticker: se arrastra; seleccionado, tiene un tirador para agrandar y girar */
+.st { position: absolute; transform-origin: 50% 50%; touch-action: none; cursor: grab; z-index: 1; }
+.st.sel { z-index: 3; }
+.st img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; }
+.st.sel { outline: 2px dashed var(--navy); outline-offset: 4px; }
+.st .tir, .st .bor { display: none; position: absolute; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--tinta); place-items: center; font-weight: 700; padding: 0; line-height: 1; }
+.st.sel .tir, .st.sel .bor { display: grid; }
+.st .tir { right: -20px; bottom: -20px; background: var(--lavanda); cursor: nwse-resize; touch-action: none; }
+.st .bor { right: -20px; top: -20px; background: var(--coral); color: #fff; }
+
+/* la bandeja de stickers */
+#bandeja[hidden] { display: none; }
+#bandeja { width: 230px; flex: none; border-left: 2px solid var(--azul); background: #fff; overflow-y: auto; padding: 10px; }
+#bandeja h2 { font-family: 'Silkscreen', var(--ui); font-weight: 400; font-size: 10px; letter-spacing: 1px; color: var(--tenue); margin: 4px 2px 8px; text-transform: uppercase; }
+#stickers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+#stickers button { min-width: 0; overflow: hidden; background: var(--crema); border: 2px solid var(--linea); border-radius: 10px; padding: 6px; aspect-ratio: 1; display: grid; place-items: center; }
+#stickers button:hover { border-color: var(--azul); background: #fff; }
+#stickers img { width: 100%; height: 100%; max-width: 100%; object-fit: contain; pointer-events: none; }
+#bandeja .nota { color: var(--tenue); font-size: 11px; line-height: 1.45; margin: 10px 2px 0; }
+
+/* abajo, todo junto: anterior, las fotos, siguiente, cuál es y guardar */
+#abajo { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #EFEAF9; border-top: 2px solid var(--azul); }
+#tira { flex: 0 1 auto; min-width: 0; display: flex; gap: 8px; padding: 2px; overflow-x: auto; scrollbar-width: thin; }
+#info { flex: none; margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 0; max-width: 160px; }
+#nombre { font-weight: 700; color: var(--navy); font-size: 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#cuenta { color: var(--tenue); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; }
+#tira button { flex: none; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; background: #fff center / cover no-repeat; }
+#tira button[aria-current="true"] { border-color: var(--navy); box-shadow: 2px 2px 0 var(--navy); }
+#aviso { z-index: 5; position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); background: var(--navy); color: #fff; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
+#aviso.ve { opacity: 1; }
+
+@media (max-width: 639px) {
+  #centro { flex-direction: column; }
+  #bandeja { width: auto; border-left: 0; border-top: 2px solid var(--azul); max-height: 34%; padding: 8px; }
+  #bandeja h2, #bandeja .nota { display: none; }
+  #stickers { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+  #escena { padding: 10px; }
+  #abajo { flex-wrap: wrap; gap: 8px; }
+  #tira { flex: 1 1 100%; order: -1; }
+  #info { flex: 1; align-items: center; max-width: none; }
+  #stBtn { padding: 0 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .btn:active { transform: none; } #aviso { transition: none; } }
+</style>
+</head>
+<body><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
+<div id="centro">
+  <div id="escena"><div id="marco" role="img" aria-label="La foto"></div><div id="aviso" role="status"></div></div>
+  <aside id="bandeja" aria-label="Stickers">
+    <h2>stickers</h2>
+    <div id="stickers"></div>
+    <p class="nota">toca uno para ponerlo. arrástralo para moverlo; el círculo lila lo agranda y lo gira. también: flechas, + y −, y suprimir.</p>
+  </aside>
+</div>
+<footer id="abajo">
+  <button class="btn cuadro" id="ant" aria-label="Foto anterior">‹</button>
+  <nav id="tira" aria-label="Todas las fotos"></nav>
+  <button class="btn cuadro" id="sig" aria-label="Foto siguiente">›</button>
+  <span id="info"><span id="nombre"></span><span id="cuenta">0 / 0</span></span>
+  <button class="btn" id="stBtn" aria-pressed="true" aria-controls="bandeja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 C6 16 3 13 3 9.2 C3 6.6 5 4.6 7.5 4.6 C9.4 4.6 11 5.7 12 7.3 C13 5.7 14.6 4.6 16.5 4.6 C19 4.6 21 6.6 21 9.2 C21 13 18 16 12 20.5 Z" fill="#F17D9E" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>stickers</button>
+  <button class="btn prin" id="guardar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 V14.5 M7 10 L12 15 L17 10 M4.5 19.5 H19.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>guardar</button>
+</footer>
+<script>
+const STICKERS = [{"nombre": "neli feliz", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <ellipse cx=\"56\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><ellipse cx=\"144\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><ellipse cx=\"72\" cy=\"112\" rx=\"8.5\" ry=\"11\" fill=\"#1F2233\"/><circle cx=\"69.45\" cy=\"108.15\" r=\"2.72\" fill=\"#fff\"/><ellipse cx=\"128\" cy=\"112\" rx=\"8.5\" ry=\"11\" fill=\"#1F2233\"/><circle cx=\"125.45\" cy=\"108.15\" r=\"2.72\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M86 141 Q93 150 100 141 Q107 150 114 141\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "neli contenta", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <ellipse cx=\"56\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><ellipse cx=\"144\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><path d=\"M61 115 Q72 101 83 115 M117 115 Q128 101 139 115\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M86 141 Q93 150 100 141 Q107 150 114 141\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "neli sorprendida", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M60 88 Q72 80 84 87 M116 87 Q128 80 140 88\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><ellipse cx=\"72\" cy=\"112\" rx=\"11\" ry=\"13\" fill=\"#1F2233\"/><circle cx=\"68.7\" cy=\"107.45\" r=\"3.52\" fill=\"#fff\"/><ellipse cx=\"128\" cy=\"112\" rx=\"11\" ry=\"13\" fill=\"#1F2233\"/><circle cx=\"124.7\" cy=\"107.45\" r=\"3.52\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <ellipse cx=\"100\" cy=\"148\" rx=\"6\" ry=\"7\" fill=\"#1F2233\"/>\n</svg>"}, {"nombre": "neli pensando", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M117 90 Q129 84 141 90\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M61 94 H84\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><ellipse cx=\"74\" cy=\"110\" rx=\"8.5\" ry=\"10.5\" fill=\"#1F2233\"/><circle cx=\"73.45\" cy=\"104.325\" r=\"2.72\" fill=\"#fff\"/><ellipse cx=\"130\" cy=\"110\" rx=\"8.5\" ry=\"10.5\" fill=\"#1F2233\"/><circle cx=\"129.45\" cy=\"104.325\" r=\"2.72\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M92 146 Q100 150 108 144\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "neli enojada", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M58 92 L86 101 M142 92 L114 101\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linecap=\"round\"/><ellipse cx=\"72\" cy=\"114\" rx=\"8\" ry=\"9\" fill=\"#1F2233\"/><circle cx=\"69.6\" cy=\"110.85\" r=\"2.56\" fill=\"#fff\"/><ellipse cx=\"128\" cy=\"114\" rx=\"8\" ry=\"9\" fill=\"#1F2233\"/><circle cx=\"125.6\" cy=\"110.85\" r=\"2.56\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M89 150 Q100 140 111 150\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "neli seria", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"neliCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#neliCabeza)\"><path d=\"M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z\" fill=\"#8E8377\"/><path d=\"M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <clipPath id=\"neliLid\"><rect x=\"0\" y=\"110\" width=\"200\" height=\"40\"/></clipPath><g clip-path=\"url(#neliLid)\"><ellipse cx=\"72\" cy=\"112\" rx=\"11\" ry=\"10\" fill=\"#C9CC72\" stroke=\"#1F2233\" stroke-width=\"4\"/><circle cx=\"74\" cy=\"115\" r=\"4.5\" fill=\"#1F2233\"/><ellipse cx=\"128\" cy=\"112\" rx=\"11\" ry=\"10\" fill=\"#C9CC72\" stroke=\"#1F2233\" stroke-width=\"4\"/><circle cx=\"130\" cy=\"115\" r=\"4.5\" fill=\"#1F2233\"/></g><path d=\"M59 110 H85 M115 110 H141\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M91 146 H109\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "barti feliz", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"bartiCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#bartiCabeza)\"><path d=\"M46 50 L58 46 L48 82 Z\" fill=\"#F3A3A8\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/><path d=\"M78 40 H122 L138 62 C130 74 114 81 97 81 C83 81 72 76 64 66 Z\" fill=\"#23242B\"/><path d=\"M101 83 Q104 76 106 69 Q108 76 112 82 Z\" fill=\"#FBF7F1\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <ellipse cx=\"56\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><ellipse cx=\"144\" cy=\"134\" rx=\"10\" ry=\"6\" fill=\"#F3A3A8\" opacity=\".9\"/><ellipse cx=\"72\" cy=\"112\" rx=\"8.5\" ry=\"11\" fill=\"#1F2233\"/><circle cx=\"69.45\" cy=\"108.15\" r=\"2.72\" fill=\"#fff\"/><ellipse cx=\"128\" cy=\"112\" rx=\"8.5\" ry=\"11\" fill=\"#1F2233\"/><circle cx=\"125.45\" cy=\"108.15\" r=\"2.72\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M86 141 Q93 150 100 141 Q107 150 114 141\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "barti sorprendida", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"bartiCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#bartiCabeza)\"><path d=\"M46 50 L58 46 L48 82 Z\" fill=\"#F3A3A8\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/><path d=\"M78 40 H122 L138 62 C130 74 114 81 97 81 C83 81 72 76 64 66 Z\" fill=\"#23242B\"/><path d=\"M101 83 Q104 76 106 69 Q108 76 112 82 Z\" fill=\"#FBF7F1\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M60 88 Q72 80 84 87 M116 87 Q128 80 140 88\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><ellipse cx=\"72\" cy=\"112\" rx=\"11\" ry=\"13\" fill=\"#1F2233\"/><circle cx=\"68.7\" cy=\"107.45\" r=\"3.52\" fill=\"#fff\"/><ellipse cx=\"128\" cy=\"112\" rx=\"11\" ry=\"13\" fill=\"#1F2233\"/><circle cx=\"124.7\" cy=\"107.45\" r=\"3.52\" fill=\"#fff\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <ellipse cx=\"100\" cy=\"148\" rx=\"6\" ry=\"7\" fill=\"#1F2233\"/>\n</svg>"}, {"nombre": "barti seria", "svg": "<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n  <clipPath id=\"bartiCabeza\"><path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\"/></clipPath>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"#FBF7F1\"/>\n  <g clip-path=\"url(#bartiCabeza)\"><path d=\"M46 50 L58 46 L48 82 Z\" fill=\"#F3A3A8\"/><path d=\"M154 50 L142 46 L152 82 Z\" fill=\"#F3A3A8\"/><path d=\"M78 40 H122 L138 62 C130 74 114 81 97 81 C83 81 72 76 64 66 Z\" fill=\"#23242B\"/><path d=\"M101 83 Q104 76 106 69 Q108 76 112 82 Z\" fill=\"#FBF7F1\"/></g>\n  <path d=\"M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n  <path d=\"M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <clipPath id=\"bartiLid\"><rect x=\"0\" y=\"110\" width=\"200\" height=\"40\"/></clipPath><g clip-path=\"url(#bartiLid)\"><ellipse cx=\"72\" cy=\"112\" rx=\"11\" ry=\"10\" fill=\"#C9CC72\" stroke=\"#1F2233\" stroke-width=\"4\"/><circle cx=\"74\" cy=\"115\" r=\"4.5\" fill=\"#1F2233\"/><ellipse cx=\"128\" cy=\"112\" rx=\"11\" ry=\"10\" fill=\"#C9CC72\" stroke=\"#1F2233\" stroke-width=\"4\"/><circle cx=\"130\" cy=\"115\" r=\"4.5\" fill=\"#1F2233\"/></g><path d=\"M59 110 H85 M115 110 H141\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M94 128 H106 L100 135 Z\" fill=\"#E9868F\" stroke=\"#1F2233\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  <path d=\"M91 146 H109\" stroke=\"#1F2233\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n</svg>"}, {"nombre": "corazón", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"190\" viewBox=\"0 0 200 190\"><path d=\"M100 172 C40 128 12 96 12 60 C12 32 34 12 60 12 C78 12 92 22 100 38 C108 22 122 12 140 12 C166 12 188 32 188 60 C188 96 160 128 100 172 Z\" fill=\"#F17D9E\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M48 46 Q56 34 70 34\" fill=\"none\" stroke=\"#fff\" stroke-width=\"9\" stroke-linecap=\"round\"/></svg>"}, {"nombre": "patita", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" viewBox=\"0 0 200 200\"><g fill=\"#FBF7F1\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M100 96 C132 96 160 122 158 148 C156 170 136 178 118 172 C110 169 106 166 100 166 C94 166 90 169 82 172 C64 178 44 170 42 148 C40 122 68 96 100 96 Z\"/><ellipse cx=\"44\" cy=\"86\" rx=\"20\" ry=\"26\" transform=\"rotate(-18 44 86)\"/><ellipse cx=\"80\" cy=\"48\" rx=\"20\" ry=\"27\" transform=\"rotate(-6 80 48)\"/><ellipse cx=\"120\" cy=\"48\" rx=\"20\" ry=\"27\" transform=\"rotate(6 120 48)\"/><ellipse cx=\"156\" cy=\"86\" rx=\"20\" ry=\"26\" transform=\"rotate(18 156 86)\"/></g><g fill=\"#F3A3A8\"><ellipse cx=\"100\" cy=\"140\" rx=\"24\" ry=\"16\"/></g></svg>"}, {"nombre": "pescado", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"220\" height=\"140\" viewBox=\"0 0 220 140\"><path d=\"M20 70 C50 18 130 10 170 70 C130 130 50 122 20 70 Z\" fill=\"#6CCFF6\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M168 70 L208 36 L204 104 Z\" fill=\"#6CCFF6\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"58\" cy=\"62\" r=\"9\" fill=\"#1F2233\"/><path d=\"M96 44 Q112 70 96 96\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>"}, {"nombre": "estrella", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" viewBox=\"0 0 200 200\"><path d=\"M100 14 L124 72 L186 76 L138 116 L154 178 L100 144 L46 178 L62 116 L14 76 L76 72 Z\" fill=\"#FFD37D\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>"}, {"nombre": "nota musical", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"180\" height=\"200\" viewBox=\"0 0 180 200\"><path d=\"M70 150 V30 L156 14 V126\" fill=\"none\" stroke=\"#1F2233\" stroke-width=\"10\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M70 30 L156 14 V44 L70 60 Z\" fill=\"#1F2233\"/><ellipse cx=\"46\" cy=\"154\" rx=\"30\" ry=\"22\" transform=\"rotate(-18 46 154)\" fill=\"#B79CF0\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"132\" cy=\"130\" rx=\"30\" ry=\"22\" transform=\"rotate(-18 132 130)\" fill=\"#B79CF0\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>"}, {"nombre": "onda", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"120\" viewBox=\"0 0 240 120\"><rect x=\"6\" y=\"6\" width=\"228\" height=\"108\" rx=\"20\" fill=\"#1A1C2E\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M24 60 Q44 14 64 60 T104 60 T144 60 T184 60 T216 60\" fill=\"none\" stroke=\"#6CFFA8\" stroke-width=\"8\" stroke-linecap=\"round\"/></svg>"}, {"nombre": "miau!", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"170\" viewBox=\"0 0 240 170\"><path d=\"M30 14 H210 Q228 14 228 32 V104 Q228 122 210 122 H96 L54 158 L62 122 H30 Q12 122 12 104 V32 Q12 14 30 14 Z\" fill=\"#fff\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"120\" y=\"88\" text-anchor=\"middle\" font-family=\"Verdana,sans-serif\" font-weight=\"700\" font-size=\"54\" fill=\"#D85C82\">miau!</text></svg>"}, {"nombre": "¿?", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"190\" height=\"170\" viewBox=\"0 0 190 170\"><path d=\"M28 14 H162 Q178 14 178 30 V100 Q178 116 162 116 H120 L136 156 L88 116 H28 Q12 116 12 100 V30 Q12 14 28 14 Z\" fill=\"#DCCEF8\" stroke=\"#1F2233\" stroke-width=\"7\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"95\" y=\"88\" text-anchor=\"middle\" font-family=\"Verdana,sans-serif\" font-weight=\"700\" font-size=\"64\" fill=\"#3B3F77\">¿?</text></svg>"}];
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const BASE = window.ARCHIVOS_BASE || '../archivos/';
+  const EMB = window.ARCHIVOS_EMBEBIDOS || (() => { try { return window.parent.ARCHIVOS_EMBEBIDOS || null; } catch (e) { return null; } })();   // en el artefacto, los archivos vienen en el escritorio
+  const urlDe = r => EMB ? EMB.datos[r] : BASE + r;
+  let fotos = [], i = 0, elegido = -1, pendiente = null;
+  const pegados = {};   // ruta de la foto → sus stickers: { s: índice del sticker, x, y (0–1 del marco), t: ancho (0–1 del marco), r: giro en radianes }
+  const imgs = STICKERS.map(s => { const im = new Image(); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s.svg); return im; });
+
+  function avisar(t) { const a = $('aviso'); a.textContent = t; a.classList.add('ve'); clearTimeout(avisar.t); avisar.t = setTimeout(() => a.classList.remove('ve'), 2600); }
+  const foto = () => fotos[i];
+  const lista = () => (pegados[foto().ruta] ||= []);
+  const aspecto = () => foto().ancho / foto().alto;
+
+  // ---- el marco: la foto entera, lo más grande que quepa ----
+  function medir() {
+    const m = $('marco'), e = $('escena');
+    if (!fotos.length) return;
+    const W = e.clientWidth - 28, H = e.clientHeight - 28, a = aspecto();
+    let w = W, h = W / a; if (h > H) { h = H; w = H * a; }
+    m.style.width = Math.max(40, Math.floor(w)) + 'px'; m.style.height = Math.max(40, Math.floor(h)) + 'px';
+    pintarStickers();
+  }
+  function mostrar(n) {
+    if (!fotos.length) return;
+    i = (n + fotos.length) % fotos.length; elegido = -1;
+    const f = foto();
+    $('marco').style.backgroundImage = 'url("' + urlDe(f.ruta) + '")';
+    $('marco').setAttribute('aria-label', (f.desc || f.nombre) + ', ' + f.ancho + ' por ' + f.alto + ' puntos');
+    $('nombre').textContent = f.nombre;
+    $('cuenta').textContent = (i + 1) + ' / ' + fotos.length;
+    for (const [k, b] of [...$('tira').children].entries()) b.setAttribute('aria-current', String(k === i));
+    $('tira').children[i]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    medir();
+  }
+
+  // ---- los stickers pegados ----
+  function pintarStickers() {
+    const m = $('marco'); m.querySelectorAll('.st').forEach(n => n.remove());
+    if (!fotos.length) return;
+    const W = m.clientWidth, H = m.clientHeight;
+    lista().forEach((p, k) => {
+      const d = document.createElement('div'); d.className = 'st' + (k === elegido ? ' sel' : '');
+      const w = p.t * W;
+      d.style.width = w + 'px'; d.style.left = (p.x * W - w / 2) + 'px';
+      const im = imgs[p.s], h = w * (im.naturalHeight / im.naturalWidth || 1);
+      d.style.top = (p.y * H - h / 2) + 'px'; d.style.transform = 'rotate(' + p.r + 'rad)';
+      d.innerHTML = '<img alt="">' + '<button class="tir" aria-label="Agrandar o girar">↻</button><button class="bor" aria-label="Quitar sticker">×</button>';
+      d.firstChild.src = im.src; d.firstChild.alt = STICKERS[p.s].nombre;
+      d.addEventListener('pointerdown', ev => agarrar(ev, k, 'mover'));
+      d.querySelector('.tir').addEventListener('pointerdown', ev => { ev.stopPropagation(); agarrar(ev, k, 'girar'); });
+      d.querySelector('.bor').addEventListener('pointerdown', ev => ev.stopPropagation());
+      d.querySelector('.bor').addEventListener('click', () => quitar(k));
+      m.append(d);
+    });
+  }
+  function pegar(s) {
+    lista().push({ s, x: .5 + (Math.random() - .5) * .2, y: .5 + (Math.random() - .5) * .2, t: .28, r: (Math.random() - .5) * .3 });
+    elegido = lista().length - 1; pintarStickers();
+  }
+  function quitar(k) { lista().splice(k, 1); elegido = -1; pintarStickers(); }
+
+  // arrastrar (mover) o tirar del círculo (agrandar y girar a la vez, como en las redes)
+  function agarrar(ev, k, modo) {
+    ev.preventDefault();
+    elegido = k; const m = $('marco'), r = m.getBoundingClientRect(), p = lista()[k];
+    const cx = r.left + p.x * r.width, cy = r.top + p.y * r.height;
+    const d0 = Math.hypot(ev.clientX - cx, ev.clientY - cy) || 1, a0 = Math.atan2(ev.clientY - cy, ev.clientX - cx);
+    const ox = ev.clientX - cx, oy = ev.clientY - cy, t0 = p.t, r0 = p.r;
+    marcarSel();     // sin rehacer los elementos: si el que se tocó desaparece, el dedo pierde el sticker
+    const mover = e => {
+      if (modo === 'mover') { p.x = Math.min(1.1, Math.max(-.1, (e.clientX - ox - r.left) / r.width)); p.y = Math.min(1.1, Math.max(-.1, (e.clientY - oy - r.top) / r.height)); }
+      else { const d = Math.hypot(e.clientX - cx, e.clientY - cy); p.t = Math.min(1.6, Math.max(.06, t0 * d / d0)); p.r = r0 + Math.atan2(e.clientY - cy, e.clientX - cx) - a0; }
+      ubicar(k);
+    };
+    const soltar = () => { removeEventListener('pointermove', mover); removeEventListener('pointerup', soltar); removeEventListener('pointercancel', soltar); };
+    addEventListener('pointermove', mover); addEventListener('pointerup', soltar); addEventListener('pointercancel', soltar);
+  }
+  function marcarSel() { $('marco').querySelectorAll('.st').forEach((d, k) => d.classList.toggle('sel', k === elegido)); }
+  function ubicar(k) {   // mover sin rehacer todo: el sticker sigue al dedo sin saltos
+    const m = $('marco'), d = m.querySelectorAll('.st')[k], p = lista()[k]; if (!d) return;
+    const W = m.clientWidth, H = m.clientHeight, w = p.t * W, im = imgs[p.s], h = w * (im.naturalHeight / im.naturalWidth || 1);
+    d.style.width = w + 'px'; d.style.left = (p.x * W - w / 2) + 'px'; d.style.top = (p.y * H - h / 2) + 'px'; d.style.transform = 'rotate(' + p.r + 'rad)';
+  }
+  $('escena').addEventListener('pointerdown', e => { if ((e.target === $('marco') || e.target === $('escena')) && elegido >= 0) { elegido = -1; pintarStickers(); } });
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (elegido < 0) { if (e.key === 'ArrowLeft') mostrar(i - 1); if (e.key === 'ArrowRight') mostrar(i + 1); return; }
+    const p = lista()[elegido]; if (!p) return;
+    const k = e.key; let hecho = true;
+    if (k === 'Delete' || k === 'Backspace') quitar(elegido);
+    else if (k === 'Escape') { elegido = -1; pintarStickers(); }
+    else if (k === 'ArrowLeft') p.x -= .01; else if (k === 'ArrowRight') p.x += .01;
+    else if (k === 'ArrowUp') p.y -= .01; else if (k === 'ArrowDown') p.y += .01;
+    else if (k === '+' || k === '=') p.t = Math.min(1.6, p.t * 1.08); else if (k === '-') p.t = Math.max(.06, p.t / 1.08);
+    else if (k === '[') p.r -= .08; else if (k === ']') p.r += .08;
+    else hecho = false;
+    if (hecho) { e.preventDefault(); if (elegido >= 0) ubicar(elegido); }
+  });
+
+  // ---- guardar: se dibuja todo de nuevo en un lienzo, al tamaño de la foto ----
+  async function guardar() {
+    const f = foto(), a = aspecto();
+    const W = f.ancho, H = Math.round(W / a);
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+    const im = new Image(); im.src = urlDe(f.ruta); await im.decode();
+    const s = Math.max(W / im.naturalWidth, H / im.naturalHeight), sw = W / s, sh = H / s;   // recorte centrado, como se ve
+    g.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, W, H);
+    for (const p of lista()) {
+      const st = imgs[p.s]; await st.decode().catch(() => {});
+      const w = p.t * W, h = w * (st.naturalHeight / st.naturalWidth || 1);
+      g.save(); g.translate(p.x * W, p.y * H); g.rotate(p.r); g.drawImage(st, -w / 2, -h / 2, w, h); g.restore();
+    }
+    cv.toBlob(b => {
+      if (!b) { avisar('no se pudo guardar.'); return; }
+      const u = URL.createObjectURL(b), l = document.createElement('a');
+      l.href = u; l.download = f.nombre.replace(/\.[^.]+$/, '') + '-stickers.jpg';
+      document.body.append(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+      avisar('guardada: ' + W + ' × ' + H + ' px');
+    }, 'image/jpeg', .92);
+  }
+
+  // ---- armar la interfaz ----
+  STICKERS.forEach((s, k) => {
+    const b = document.createElement('button'); b.setAttribute('aria-label', 'Poner ' + s.nombre); b.title = s.nombre;
+    const im = document.createElement('img'); im.src = imgs[k].src; im.alt = ''; b.append(im);
+    b.addEventListener('click', () => pegar(k)); $('stickers').append(b);
+  });
+  // la bandeja de stickers se puede esconder; la decisión se recuerda
+  function bandeja(ver) {
+    $('bandeja').hidden = !ver; $('stBtn').setAttribute('aria-pressed', String(ver));
+    if (!ver && elegido >= 0) { elegido = -1; pintarStickers(); }
+    try { localStorage.setItem('nelios.fotos.stickers', ver ? '1' : '0'); } catch (e) {}
+    requestAnimationFrame(medir);
+  }
+  $('stBtn').addEventListener('click', () => bandeja($('bandeja').hidden));
+  try { if (localStorage.getItem('nelios.fotos.stickers') === '0') bandeja(false); } catch (e) {}
+  $('ant').addEventListener('click', () => mostrar(i - 1));
+  $('sig').addEventListener('click', () => mostrar(i + 1));
+  $('guardar').addEventListener('click', () => guardar().catch(() => avisar('no se pudo guardar.')));
+  // deslizar con el dedo para cambiar de foto (cuando no se está moviendo un sticker)
+  let x0 = null;
+  $('escena').addEventListener('pointerdown', e => { if (e.pointerType === 'touch' && !e.target.closest('.st')) x0 = e.clientX; });
+  $('escena').addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 60) mostrar(i + (dx < 0 ? 1 : -1)); });
+  if (window.ResizeObserver) new ResizeObserver(medir).observe($('escena')); else addEventListener('resize', medir);
+
+  window.addEventListener('message', e => {
+    const d = e.data; if (e.source !== window.parent || !d) return;
+    if (d.nelios === 'archivo') { if (!fotos.length) { pendiente = d.ruta; return; } const k = fotos.findIndex(f => f.ruta === d.ruta); if (k >= 0) mostrar(k); }   // si llega antes de leer la carpeta, espera
+    if (d.nelios === 'cursor') {
+      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+      else document.body.classList.remove('patita');
+    }
+  });
+
+  (async () => {
+    let indice;
+    try { indice = EMB ? EMB.indice : await (await fetch(BASE + 'indice.json', { cache: 'no-cache' })).json(); }
+    catch (e) { $('marco').classList.add('sin'); $('marco').textContent = 'no se pudo leer la carpeta.'; return; }
+    fotos = indice.archivos.filter(a => a.tipo === 'imagen');
+    if (!fotos.length) { $('marco').classList.add('sin'); $('marco').textContent = 'no hay fotos todavía.'; return; }
+    fotos.forEach((f, k) => {
+      const b = document.createElement('button'); b.style.backgroundImage = 'url("' + urlDe(f.mini) + '")'; b.setAttribute('aria-label', f.nombre);
+      b.addEventListener('click', () => mostrar(k)); $('tira').append(b);
+    });
+    await Promise.all(imgs.map(im => im.decode().catch(() => {})));
+    mostrar(Math.max(0, fotos.findIndex(f => f.ruta === pendiente)));
+  })();
+})();
+</script>
+</body>
+</html>

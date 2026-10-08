@@ -1,0 +1,14 @@
+cosas que entendí
+
+1. un sonido son números que se repiten.
+2. si se repiten menos de 20 veces por segundo, oigo golpes.
+   si se repiten más de 20, oigo una nota.
+3. 200 números leídos 220 veces por segundo suenan a un la.
+   el doble de rápido es el mismo la, más arriba. eso es una octava.
+4. la forma de la onda no cambia la nota. cambia cómo suena.
+5. dos la juntos pueden sonar más fuerte o distinto. depende de la fase.
+6. la2 y la#2 juntos laten 6,59 veces por segundo. la diferencia entre ellos es 6,54.
+7. un miau de un segundo son 48.000 números que no se repiten.
+8. un ritmo acelerado es una nota.
+
+(la 8 la descubrí yo.)

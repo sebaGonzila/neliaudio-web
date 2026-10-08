@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<title>Archivos</title>
+<style>@font-face { font-family: 'Silkscreen'; src: url(/fuentes/silkscreen-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+</style>
+<style>
+:root { --crema: #FAF4E9; --azul: #A8B8E4; --navy: #3B3F77; --tinta: #2A2D52; --coral: #F17D9E; --lavanda: #DCCEF8; --amarillo: #FFD37D; --tenue: #6A6E9C; --linea: #D9DEF3; --sel: #E7E0FB; --ui: "MS Sans Serif", "Microsoft Sans Serif", Verdana, sans-serif; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--ui); font-size: 13px; color: var(--tinta); background: var(--crema); display: flex; flex-direction: column; overflow: hidden; }
+body.patita, body.patita button { cursor: var(--patita), auto; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+/* barra de arriba: dónde estoy */
+#ruta { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #fff; border-bottom: 2px solid var(--azul); min-height: 44px; flex: none; }
+#ruta button { background: none; border: 0; padding: 4px 6px; border-radius: 6px; font-weight: 700; color: var(--navy); }
+#ruta button:hover { background: var(--sel); }
+#ruta .sep { color: var(--tenue); }
+
+#cuerpo { flex: 1; min-height: 0; display: flex; }
+/* carpetas */
+#lado { width: 180px; flex: none; background: #EFEAF9; border-right: 2px solid var(--azul); padding: 10px 8px; overflow-y: auto; }
+#lado h2 { font-family: 'Silkscreen', var(--ui); font-size: 10px; letter-spacing: 1px; color: var(--tenue); font-weight: 400; margin: 4px 6px 8px; text-transform: uppercase; }
+.car { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; border: 2px solid transparent; border-radius: 9px; background: none; text-align: left; min-height: 40px; }
+.car svg { width: 24px; height: 24px; flex: none; }
+.car .n { margin-left: auto; color: var(--tenue); font-size: 11px; }
+.car:hover { background: #fff8; }
+.car[aria-current="true"] { background: #fff; border-color: var(--azul); font-weight: 700; }
+
+/* los archivos */
+#lista { flex: 1; min-width: 0; overflow-y: auto; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; align-content: start; }
+.it { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 6px 8px; border: 2px solid transparent; border-radius: 12px; background: none; min-width: 0; }
+.it:hover { background: #fff; }
+.it[aria-selected="true"] { background: var(--sel); border-color: var(--azul); }
+.it .mini { width: 84px; height: 84px; display: grid; place-items: center; }
+.it .mini img { max-width: 84px; max-height: 84px; border-radius: 6px; border: 2px solid var(--tinta); box-shadow: 3px 3px 0 var(--azul); background: #fff; }
+.it .mini svg { width: 64px; height: 64px; }
+.it .nom { font-size: 12px; text-align: center; overflow-wrap: anywhere; line-height: 1.3; max-width: 100%; }
+.vacio { grid-column: 1 / -1; color: var(--tenue); text-align: center; padding: 40px 10px; }
+
+/* el detalle: los números del archivo */
+#det { width: 270px; flex: none; border-left: 2px solid var(--azul); background: #fff; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+#det[hidden] { display: none; }
+#det > * { flex: none; }
+#det .ver { display: grid; place-items: center; min-height: 120px; background: var(--crema); border: 2px solid var(--linea); border-radius: 10px; padding: 8px; }
+#det .ver img { max-width: 100%; max-height: 220px; border-radius: 6px; }
+#det .ver canvas { width: 100%; height: 90px; display: block; }
+#det .ver pre { margin: 0; white-space: pre-wrap; font: 12px/1.5 'IBM Plex Mono', ui-monospace, monospace; color: var(--tinta); max-height: 260px; overflow: auto; width: 100%; }
+#det h3 { margin: 0; font-size: 14px; color: var(--navy); overflow-wrap: anywhere; }
+#det dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px; }
+#det dt { color: var(--tenue); }
+#det dd { margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; overflow-wrap: anywhere; }
+#det .nota { font-size: 12px; color: var(--tenue); line-height: 1.45; margin: 0; }
+.btn { background: #F8ECD1; border: 2px solid #DBC38B; box-shadow: 2px 2px 0 #BFA76F; border-radius: 9px; padding: 8px 12px; font-weight: 700; color: var(--navy); min-height: 40px; }
+.btn:hover { box-shadow: 1px 1px 0 #BFA76F; transform: translate(1px, 1px); }
+.btn:active { box-shadow: none; transform: translate(2px, 2px); }
+#cerrarDet { display: none; }
+
+#pie { flex: none; display: flex; gap: 12px; padding: 6px 12px; border-top: 2px solid var(--azul); background: #EFEAF9; color: var(--tenue); font-size: 11px; min-height: 28px; align-items: center; }
+#aviso { margin-left: auto; color: var(--navy); font-weight: 700; }
+
+@media (max-width: 639px) {
+  #cuerpo { flex-direction: column; }
+  #lado { width: auto; border-right: 0; border-bottom: 2px solid var(--azul); display: flex; gap: 4px; overflow-x: auto; overflow-y: hidden; padding: 6px; flex: none; }
+  #lado h2 { display: none; }
+  #carpetas { display: flex; gap: 4px; }
+  .car { width: auto; flex: none; white-space: nowrap; }
+  .car .n { display: none; }
+  #lista { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); padding: 10px; }
+  .it .mini { width: 72px; height: 72px; } .it .mini img { max-width: 72px; max-height: 72px; } .it .mini svg { width: 56px; height: 56px; }
+  #det { position: fixed; left: 0; right: 0; bottom: 0; width: auto; max-height: 72%; border-left: 0; border-top: 3px solid var(--azul); border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px #3B3F7733; z-index: 5; }
+  #cerrarDet { display: block; align-self: flex-end; }
+  #det.nada { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .btn:hover, .btn:active { transform: none; } }
+</style>
+</head>
+<body><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
+<nav id="ruta" aria-label="Ubicación"></nav>
+<div id="cuerpo">
+  <aside id="lado"><h2>la carpeta de neli</h2><div id="carpetas"></div></aside>
+  <main id="lista" role="listbox" aria-label="Archivos"></main>
+  <section id="det" hidden aria-label="Detalle del archivo"></section>
+</div>
+<footer id="pie"><span id="cuenta">cargando…</span><span id="aviso" role="status"></span></footer>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  // Los archivos viven en /archivos/ con un índice. En el artefacto vienen incrustados.
+  const BASE = window.ARCHIVOS_BASE || '../archivos/';
+  const EMB = window.ARCHIVOS_EMBEBIDOS || (() => { try { return window.parent.ARCHIVOS_EMBEBIDOS || null; } catch (e) { return null; } })();   // en el artefacto, los archivos vienen en el escritorio
+  const urlDe = r => EMB ? EMB.datos[r] : BASE + r;
+  // qué app abre cada tipo. Si no está instalada, el escritorio avisa.
+  const ABRE = { imagen: { id: 'fotos', nombre: 'Fotos' }, audio: { id: 'meowamp', nombre: 'Meowamp' }, texto: { id: 'notas', nombre: 'Notas' } };
+  const TIPO = { imagen: 'imagen', audio: 'audio', texto: 'texto' };
+
+  const ICO = {
+    carpeta: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 51 V35 L9 8 L22 21 H42 L55 8 L59 35 V51 Q59 58 52 58 H12 Q5 58 5 51 Z" fill="#FFD37D" stroke="#2A2D52" stroke-width="3.5" stroke-linejoin="round"/><path d="M9 31 H55" stroke="#D9A441" stroke-width="2.2" stroke-linecap="round"/><g fill="#2A2D52"><ellipse cx="32" cy="47" rx="6" ry="5"/><circle cx="24" cy="40" r="2.6"/><circle cx="29" cy="36" r="2.6"/><circle cx="35" cy="36" r="2.6"/><circle cx="40" cy="40" r="2.6"/></g></svg>',
+    audio: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="10" fill="#1A1C2E" stroke="#2A2D52" stroke-width="4"/><polyline points="13,32 18,32 21,20 25,44 29,14 33,50 37,24 41,38 45,28 48,32 51,32" fill="none" stroke="#6CFFA8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+    texto: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 6 H40 L52 18 V58 H14 Z" fill="#fff" stroke="#2A2D52" stroke-width="4" stroke-linejoin="round"/><path d="M40 6 V18 H52" fill="#DCCEF8" stroke="#2A2D52" stroke-width="3" stroke-linejoin="round"/><g stroke="#A8B8E4" stroke-width="3.5" stroke-linecap="round"><path d="M21 28 H45"/><path d="M21 36 H45"/><path d="M21 44 H37"/></g></svg>',
+    imagen: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="11" width="50" height="42" rx="6" fill="#DCCEF8" stroke="#2A2D52" stroke-width="4"/><circle cx="22" cy="25" r="5" fill="#FFD37D" stroke="#2A2D52" stroke-width="3"/><path d="M11 49 L27 33 L37 43 L44 36 L53 45" fill="none" stroke="#2A2D52" stroke-width="3.5" stroke-linejoin="round"/></svg>'
+  };
+
+  let indice = null, carpeta = null, sel = null, todo = [];
+  const kb = b => b < 1024 ? b + ' bytes' : (b / 1024).toLocaleString('es-CL', { maximumFractionDigits: 1 }) + ' KB';
+  const num = n => n.toLocaleString('es-CL');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function avisar(t) { $('aviso').textContent = t; clearTimeout(avisar.t); avisar.t = setTimeout(() => { $('aviso').textContent = ''; }, 5000); }
+
+  function pintarRuta() {
+    const r = $('ruta'); r.innerHTML = '';
+    const raiz = document.createElement('button'); raiz.textContent = 'neli'; raiz.addEventListener('click', () => irA(null)); r.append(raiz);
+    if (carpeta) {
+      const s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; r.append(s);
+      const c = document.createElement('button'); c.textContent = indice.carpetas.find(x => x.id === carpeta).nombre.toLowerCase(); r.append(c);
+    }
+  }
+  function pintarCarpetas() {
+    const c = $('carpetas'); c.innerHTML = '';
+    for (const k of [{ id: null, nombre: 'neli' }, ...indice.carpetas]) {
+      const b = document.createElement('button'); b.className = 'car';
+      b.setAttribute('aria-current', String(k.id === carpeta));
+      const n = k.id ? todo.filter(a => a.carpeta === k.id).length : todo.length;
+      b.innerHTML = ICO.carpeta + '<span>' + esc(k.nombre) + '</span><span class="n">' + n + '</span>';
+      b.addEventListener('click', () => irA(k.id));
+      c.append(b);
+    }
+  }
+  function irA(id) { carpeta = id; sel = null; pintarCarpetas(); pintarRuta(); pintarLista(); mostrarDetalle(null); }
+
+  function pintarLista() {
+    const l = $('lista'); l.innerHTML = '';
+    const items = carpeta ? todo.filter(a => a.carpeta === carpeta) : indice.carpetas;
+    if (!items.length) { l.innerHTML = '<p class="vacio">esta carpeta está vacía.</p>'; }
+    for (const a of items) {
+      const b = document.createElement('button'); b.className = 'it'; b.setAttribute('role', 'option'); b.setAttribute('aria-selected', 'false');
+      if (!carpeta) {   // en la raíz: las carpetas
+        b.innerHTML = '<span class="mini">' + ICO.carpeta + '</span><span class="nom">' + esc(a.nombre.toLowerCase()) + '</span>';
+        b.addEventListener('click', () => irA(a.id));
+      } else {
+        const mini = a.tipo === 'imagen' ? '<img src="' + esc(urlDe(a.mini)) + '" alt="" loading="lazy">' : ICO[a.tipo];
+        b.innerHTML = '<span class="mini">' + mini + '</span><span class="nom">' + esc(a.nombre) + '</span>';
+        b.addEventListener('click', () => elegir(a, b));
+        b.addEventListener('dblclick', () => abrirArchivo(a));
+        b.addEventListener('keydown', e => { if (e.key === 'Enter' && sel === a) { e.preventDefault(); abrirArchivo(a); } });
+      }
+      l.append(b);
+    }
+    const n = items.length, peso = carpeta ? items.reduce((s, a) => s + a.bytes, 0) : todo.reduce((s, a) => s + a.bytes, 0);
+    $('cuenta').textContent = n + (n === 1 ? ' elemento' : ' elementos') + ' · ' + kb(peso);
+  }
+  function elegir(a, b) {
+    sel = a;
+    for (const x of document.querySelectorAll('.it')) x.setAttribute('aria-selected', String(x === b));
+    mostrarDetalle(a);
+  }
+
+  // ---- el detalle: lo que hay adentro del archivo, con los números ----
+  async function mostrarDetalle(a) {
+    const d = $('det');
+    // el panel siempre ocupa su lugar: si apareciera recién al primer clic, la lista se correría y el doble clic caería en otro archivo
+    if (!a) { d.hidden = false; d.classList.add('nada'); d.innerHTML = '<p class="nota">elige un archivo para ver qué tiene adentro: su tamaño, sus medidas y sus números.</p>'; return; }
+    d.hidden = false; d.classList.remove('nada');
+    const filas = [['tipo', TIPO[a.tipo]], ['tamaño', num(a.bytes) + ' bytes']];
+    if (a.fecha) filas.push(['fecha', a.fecha]);
+    if (a.tipo === 'imagen') filas.push(['medidas', num(a.ancho) + ' × ' + num(a.alto) + ' px'], ['puntos', num(a.ancho * a.alto)]);
+    if (a.tipo === 'audio') filas.push(['duración', a.dur.toLocaleString('es-CL') + ' s'], ['por segundo', num(a.tasa) + ' números'], ['canales', a.canales === 1 ? '1 (mono)' : a.canales + ' (estéreo)'], ['en total', num(a.numeros) + ' números'], ['formato', a.formato === 'mp3' ? 'mp3 (comprimido)' : 'wav (los números tal cual)']);
+    if (a.tipo === 'texto') filas.push(['líneas', num(a.lineas)]);
+    if (a.autor) filas.push(['lo escribió', a.autor]);
+    if (a.credito) filas.push(['crédito', a.credito]);
+    const app = ABRE[a.tipo];
+    d.innerHTML = '<button class="btn" id="cerrarDet">cerrar</button><div class="ver" id="ver"></div><h3>' + esc(a.nombre) + '</h3>' +
+      (a.desc ? '<p class="nota">' + esc(a.desc) + '</p>' : '') +
+      '<dl>' + filas.map(([k, v]) => '<dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd>').join('') + '</dl>' +
+      '<button class="btn" id="abrirBtn">abrir con ' + app.nombre + '</button>';
+    $('cerrarDet').addEventListener('click', () => mostrarDetalle(null));
+    $('abrirBtn').addEventListener('click', () => abrirArchivo(a));
+    const v = $('ver');
+    if (a.tipo === 'imagen') v.innerHTML = '<img src="' + esc(urlDe(a.mini)) + '" alt="' + esc(a.desc || a.nombre) + '">';
+    if (a.tipo === 'texto') { v.innerHTML = '<pre>…</pre>'; try { const t = await (await fetch(urlDe(a.ruta))).text(); if (sel === a) v.firstChild.textContent = t; } catch (e) { v.firstChild.textContent = 'no se pudo leer.'; } }
+    if (a.tipo === 'audio') { v.innerHTML = '<canvas aria-label="La forma de onda completa de ' + esc(a.nombre) + '"></canvas>'; dibujarOnda(a, v.firstChild); }
+  }
+  // la onda entera, sin sonar: se decodifica en un contexto que no tiene salida
+  const ondas = {};
+  async function dibujarOnda(a, cv) {
+    try {
+      if (!ondas[a.ruta]) {
+        const buf = await (await fetch(urlDe(a.ruta))).arrayBuffer();
+        const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        const ab = await new Off(1, 1, a.tasa).decodeAudioData(buf);
+        ondas[a.ruta] = ab.getChannelData(0);
+      }
+      if (sel !== a) return;
+      const x = ondas[a.ruta], r = Math.max(1, devicePixelRatio || 1), W = cv.clientWidth * r, H = cv.clientHeight * r;
+      cv.width = W; cv.height = H; const g = cv.getContext('2d');
+      g.fillStyle = '#1A1C2E'; g.fillRect(0, 0, W, H);
+      g.fillStyle = '#6CFFA8';
+      const paso = x.length / W;
+      for (let i = 0; i < W; i++) {
+        let lo = 1, hi = -1; const a0 = Math.floor(i * paso), a1 = Math.max(a0 + 1, Math.floor((i + 1) * paso));
+        for (let j = a0; j < a1; j++) { const s = x[j]; if (s < lo) lo = s; if (s > hi) hi = s; }
+        const y0 = (1 - hi) / 2 * H, y1 = (1 - lo) / 2 * H; g.fillRect(i, y0, 1, Math.max(r, y1 - y0));
+      }
+    } catch (e) { cv.replaceWith(Object.assign(document.createElement('p'), { className: 'nota', textContent: 'no se pudo leer la onda.' })); }
+  }
+
+  // ---- abrir: el escritorio lo pasa a la app que corresponde ----
+  function abrirArchivo(a) {
+    const app = ABRE[a.tipo];
+    if (window.parent === window) { avisar('abre el escritorio de NeliOS para usar ' + app.nombre + '.'); return; }
+    try { window.parent.postMessage({ nelios: 'abrir', id: app.id, archivo: a.ruta }, '*'); } catch (e) {}
+  }
+  window.addEventListener('message', e => {
+    const d = e.data; if (e.source !== window.parent || !d) return;
+    if (d.nelios === 'noInstalada') { const app = Object.values(ABRE).find(x => x.id === d.id); avisar((app ? app.nombre : 'esa app') + ' todavía no está en el escritorio. barti está en eso.'); }
+    if (d.nelios === 'cursor') {    // la patita de NeliOS, también aquí adentro
+      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+      else document.body.classList.remove('patita');
+    }
+  });
+
+  (async () => {
+    try { indice = EMB ? EMB.indice : await (await fetch(BASE + 'indice.json', { cache: 'no-cache' })).json(); }
+    catch (e) { $('cuenta').textContent = 'no se pudo leer la carpeta.'; return; }
+    todo = indice.archivos;
+    irA(null);
+  })();
+})();
+</script>
+</body>
+</html>

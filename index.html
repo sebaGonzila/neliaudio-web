@@ -382,7 +382,8 @@ body.patita .ventana.agrandada .titulo { cursor: var(--patita), auto; }
               linear-gradient(90deg, rgba(255, 0, 0, .03), rgba(0, 255, 0, .02), rgba(0, 0, 255, .03)) 0 0 / 3px 100%; }
 
 /* Neli, la asistente */
-#neli { position: fixed; right: 14px; bottom: 62px; z-index: 8000; display: flex; align-items: flex-end; gap: 8px; }
+#neli { position: fixed; right: 14px; bottom: 62px; z-index: 8000; display: flex; align-items: flex-end; gap: 8px; pointer-events: none; }   /* el hueco entre el globo y Neli no tapa las ventanas */
+#neli > * { pointer-events: auto; }
 #globo {
   max-width: 260px; padding: 10px 12px; font-size: 12px; line-height: 1.5; color: #2B2F66;
   background: rgba(255, 255, 255, .94); border: 1.5px solid #9DAEE6; border-radius: 14px 14px 4px 14px;
@@ -405,6 +406,26 @@ body.patita .ventana.agrandada .titulo { cursor: var(--patita), auto; }
 .ajustes-os .fila { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
 .ajustes-os p { margin: 0; font-size: 12px; line-height: 1.5; color: #6B70A6; }
 @media (max-width: 719px) { #neli { bottom: 66px; right: 10px; } #neli img { width: 64px; } #globo { max-width: 190px; } }
+
+/* los bordes para cambiar el tamaño: invisibles, solo cambian el cursor */
+.borde { position: absolute; z-index: 5; touch-action: none; }
+.borde-n, .borde-s { left: 12px; right: 12px; height: 7px; cursor: ns-resize; }
+.borde-n { top: 0; } .borde-s { bottom: 0; }
+.borde-e, .borde-w { top: 12px; bottom: 12px; width: 7px; cursor: ew-resize; }
+.borde-e { right: 0; } .borde-w { left: 0; }
+.borde-ne, .borde-nw, .borde-se, .borde-sw { width: 16px; height: 16px; }
+.borde-ne { top: 0; right: 0; cursor: nesw-resize; } .borde-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.borde-nw { top: 0; left: 0; cursor: nwse-resize; } .borde-se { bottom: 0; right: 0; cursor: nwse-resize; }
+body.patita .borde-n, body.patita .borde-s { cursor: ns-resize; }
+body.patita .borde-e, body.patita .borde-w { cursor: ew-resize; }
+body.patita .borde-ne, body.patita .borde-sw { cursor: nesw-resize; }
+body.patita .borde-nw, body.patita .borde-se { cursor: nwse-resize; }
+body[data-borde="n"], body[data-borde="s"] { cursor: ns-resize !important; }
+body[data-borde="e"], body[data-borde="w"] { cursor: ew-resize !important; }
+body[data-borde="ne"], body[data-borde="sw"] { cursor: nesw-resize !important; }
+body[data-borde="nw"], body[data-borde="se"] { cursor: nwse-resize !important; }
+.ventana.agrandada .borde { display: none; }
+@media (max-width: 719px) { .borde { display: none; } }
 </style>
 </head>
 <body>
@@ -438,6 +459,10 @@ const APPS = [
     contenido: (m) => { m.src = '/apps/meowsenger.html'; } },
   { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.',
     contenido: (m) => { m.src = '/apps/meowdacity.html?ventana'; } },
+  { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
+    contenido: (m) => { m.src = '/apps/archivos.html'; } },
+  { id: 'fotos',      nombre: 'Fotos',      icono: '/img/iconos/fotos.svg', w: 940, h: 640, pista: 'Ponle stickers a mis fotos. Que salga linda.',
+    contenido: (m) => { m.src = '/apps/fotos.html'; } },
   { id: 'ajustes',    nombre: 'Ajustes',    icono: '/img/iconos/ajustes.png', w: 460, h: 250, pista: 'Puedes apagarme desde aquí si te canso. No me ofendo.' }
 ];
 </script>
@@ -528,9 +553,9 @@ function leerPosiciones() {
   }
 }
 
-function guardarPosicion(id, x, y) {
+function guardarPosicion(id, x, y, w, h) {
   const posiciones = leerPosiciones();
-  posiciones[id] = { x: x, y: y };
+  posiciones[id] = Object.assign(posiciones[id] || {}, { x: x, y: y }, w ? { w: w, h: h } : {});   // el tamaño se guarda solo si se cambió
   try {
     localStorage.setItem(MEMORIA, JSON.stringify(posiciones));
   } catch (e) {
@@ -622,6 +647,42 @@ function agrandar(ventana) {
   ventana.classList.toggle('agrandada');
 }
 
+// Cambiar el tamaño de una ventana tirando de sus bordes o esquinas, como en cualquier sistema.
+// n, s, e, w son los bordes (norte, sur, este, oeste); ne, nw, se, sw las esquinas.
+const MIN_W = 320, MIN_H = 220;
+function hacerAjustable(ventana, id) {
+  for (const dir of ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw']) {
+    const tirador = document.createElement('div');
+    tirador.className = 'borde borde-' + dir;
+    tirador.addEventListener('pointerdown', (e) => {
+      if (ventana.classList.contains('agrandada') || innerWidth < 720) return;
+      e.preventDefault(); e.stopPropagation();
+      alFrente(ventana);
+      document.body.classList.add('arrastrando');          // los iframes no se quedan con el puntero
+      document.body.dataset.borde = dir;                   // el cursor de cambiar tamaño, aunque el puntero salga del borde
+      const x0 = e.clientX, y0 = e.clientY;
+      const l0 = ventana.offsetLeft, t0 = ventana.offsetTop, w0 = ventana.offsetWidth, h0 = ventana.offsetHeight;
+      const mover = (ev) => {
+        const dx = ev.clientX - x0, dy = ev.clientY - y0;
+        let l = l0, t = t0, w = w0, h = h0;
+        if (dir.includes('e')) w = Math.min(escritorio.clientWidth - l0, Math.max(MIN_W, w0 + dx));
+        if (dir.includes('s')) h = Math.min(escritorio.clientHeight - t0, Math.max(MIN_H, h0 + dy));
+        if (dir.includes('w')) { w = Math.max(MIN_W, Math.min(w0 + l0, w0 - dx)); l = l0 + w0 - w; }
+        if (dir.includes('n')) { h = Math.max(MIN_H, Math.min(h0 + t0, h0 - dy)); t = t0 + h0 - h; }
+        ventana.style.left = l + 'px'; ventana.style.top = t + 'px';
+        ventana.style.width = w + 'px'; ventana.style.height = h + 'px';
+      };
+      const soltar = () => {
+        removeEventListener('pointermove', mover); removeEventListener('pointerup', soltar); removeEventListener('pointercancel', soltar);
+        document.body.classList.remove('arrastrando'); delete document.body.dataset.borde;
+        guardarPosicion(id, ventana.offsetLeft, ventana.offsetTop, ventana.offsetWidth, ventana.offsetHeight);
+      };
+      addEventListener('pointermove', mover); addEventListener('pointerup', soltar); addEventListener('pointercancel', soltar);
+    });
+    ventana.append(tirador);
+  }
+}
+
 // Un botón redondo de la barra de título.
 function botonVentana(clase, simbolo, etiqueta, accion) {
   const boton = document.createElement('button');
@@ -677,6 +738,7 @@ function abrir(app, desde) {
       marco.style.visibility = 'visible';
       try { marco.contentDocument.body.classList.add('en-ventana'); } catch (e) {}
       avisarCursor(marco);                     // la patita también adentro de la app
+      marco.dataset.lista = '1'; entregar(app.id);   // si alguien le mandó un archivo antes de que cargara
       if (activa === ventana) enfocarApp(ventana);   // recién abierta: las teclas ya son de la app
     });
     app.contenido(marco);
@@ -696,8 +758,12 @@ function abrir(app, desde) {
   }
   escritorio.append(ventana);
 
-  // donde la dejaron la última vez, o un lugar libre si es la primera
+  // donde la dejaron la última vez (y del tamaño que la dejaron), o un lugar libre si es la primera
   const guardada = leerPosiciones()[app.id];
+  if (guardada && guardada.w) {
+    ventana.style.width  = Math.min(guardada.w, escritorio.clientWidth - 24) + 'px';
+    ventana.style.height = Math.min(guardada.h, escritorio.clientHeight - 24) + 'px';
+  }
   const pos = guardada || (app.w ? centrada(ventana) : posicionLibre());
   ubicar(ventana, pos.x, pos.y);
 
@@ -714,6 +780,7 @@ function abrir(app, desde) {
   abiertas[app.id] = ventana;
 
   hacerArrastrable(ventana, titulo, app.id);
+  hacerAjustable(ventana, app.id);
 
   // tocar cualquier parte de la ventana la trae al frente
   ventana.addEventListener('pointerdown', () => alFrente(ventana));
@@ -781,10 +848,22 @@ function abrirDesdeHash() {
   if (app) abrir(app);
 }
 window.addEventListener('hashchange', abrirDesdeHash);
-// una app le puede pedir al escritorio que abra otra (Meowsenger abre Meowdacity)
+// una app le puede pedir al escritorio que abra otra (Meowsenger abre Meowdacity),
+// y pasarle un archivo (PurrDrive abre una foto en Pawtos). Si esa app no está instalada, se lo dice.
+const pendientes = {};                           // id de app → ruta del archivo que espera
+function entregar(id) {
+  const v = abiertas[id], f = v && v.querySelector('iframe');
+  if (!f || !f.dataset.lista || !pendientes[id]) return;
+  try { f.contentWindow.postMessage({ nelios: 'archivo', ruta: pendientes[id] }, '*'); } catch (e) {}
+  delete pendientes[id];
+}
 window.addEventListener('message', (e) => {
   const d = e.data; if (!d || d.nelios !== 'abrir') return;
-  const app = APPS.find((a) => a.id === d.id); if (app) abrir(app);
+  const app = APPS.find((a) => a.id === d.id);
+  if (!app) { try { e.source.postMessage({ nelios: 'noInstalada', id: d.id }, '*'); } catch (er) {} return; }
+  if (typeof d.archivo === 'string') pendientes[app.id] = d.archivo;
+  abrir(app);
+  entregar(app.id);
 });
 
 actualizarReloj();
