@@ -430,6 +430,96 @@ body[data-borde="ne"], body[data-borde="sw"] { cursor: nesw-resize !important; }
 body[data-borde="nw"], body[data-borde="se"] { cursor: nwse-resize !important; }
 .ventana.agrandada .borde { display: none; }
 @media (max-width: 719px) { .borde { display: none; } }
+
+/* ================= v06: el menú Inicio, el arranque y la pantalla de carga ================= */
+/* el botón Inicio: la marca de la barra, ahora con algo adentro */
+button.marca {
+  height: 32px; padding: 0 11px 0 7px; border: 1.5px solid #B7C1EC; border-radius: 10px; cursor: pointer;
+  background: linear-gradient(180deg, #fff, #F1EEFE); box-shadow: 0 1px 2px rgba(72, 76, 150, .14), 0 1px 0 #fff inset;
+  font-family: 'Silkscreen', 'MS Sans Serif', monospace; font-size: 12px; letter-spacing: .05em; color: #2B2F66;
+}
+button.marca:hover { border-color: #575C93; }
+button.marca:active { transform: translateY(1px); }
+button.marca[aria-expanded="true"] { background: #FFE6EE; border-color: #E8668F; box-shadow: 0 1px 3px rgba(232, 102, 143, .35) inset; }
+button.marca:focus-visible, .mi:focus-visible { outline: 2px solid #3B3F77; outline-offset: 2px; }
+body.patita button.marca { cursor: var(--patita), pointer; }
+
+#menuInicio {
+  position: fixed; left: 8px; bottom: 54px; z-index: 8500; display: flex; width: 264px; max-height: calc(100vh - 70px);
+  background: rgba(252, 251, 255, .96); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1.5px solid #B7C1EC; border-radius: 16px 16px 16px 6px; overflow: hidden;
+  box-shadow: 0 22px 48px rgba(62, 60, 140, .28), 0 4px 0 rgba(59, 63, 119, .10);
+  transform-origin: 0 100%; animation: menu-sube .17s cubic-bezier(.2, .9, .3, 1.15);
+}
+@keyframes menu-sube { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+#menuInicio .banda {
+  flex: 0 0 36px; display: flex; align-items: flex-end; justify-content: center; padding: 12px 0;
+  background: linear-gradient(0deg, #F27FA3 0%, #C58FE8 48%, #8FA4F0 100%);
+  box-shadow: -1px 0 0 rgba(255, 255, 255, .5) inset;
+}
+#menuInicio .banda span {
+  writing-mode: vertical-rl; transform: rotate(180deg); font-family: 'Silkscreen', monospace; font-size: 19px;
+  letter-spacing: .08em; color: #fff; text-shadow: 2px 0 0 rgba(59, 63, 119, .35);
+}
+#menuInicio .banda b { font-weight: 400; color: #FFF3C9; }
+#menuInicio .lista { flex: 1; min-width: 0; padding: 6px; display: flex; flex-direction: column; gap: 1px; overflow-y: auto; }
+.mi-titulo { padding: 6px 10px 3px; font-family: 'Silkscreen', monospace; font-size: 9px; letter-spacing: .14em; color: #8C90C0; }
+.mi {
+  display: flex; align-items: center; gap: 10px; padding: 6px 10px; min-height: 40px;
+  border: 1.5px solid transparent; border-radius: 10px; background: none; cursor: pointer;
+  font: inherit; font-size: 13px; font-weight: 700; color: #2B2F66; text-align: left; text-decoration: none;
+}
+.mi img, .mi svg { width: 26px; height: 26px; flex: none; filter: drop-shadow(1.5px 1.5px 0 rgba(59, 63, 119, .18)); }
+.mi span { flex: 1; }
+.mi small { font-size: 10px; font-weight: 600; color: #8C90C0; white-space: nowrap; }
+.mi:hover, .mi:focus-visible { background: #FFE6EE; border-color: #E8668F; }
+.mi:hover small, .mi:focus-visible small { color: #C2557B; }
+.mi:active { transform: translateY(1px); }
+body.patita .mi { cursor: var(--patita), pointer; }
+#menuInicio .sep { height: 1.5px; margin: 5px 8px; background: repeating-linear-gradient(90deg, #D4DAF4 0 6px, transparent 6px 10px); }
+@media (max-width: 719px) {
+  #menuInicio { left: 6px; right: 6px; width: auto; bottom: 52px; border-radius: 16px; }
+  .mi { min-height: 46px; font-size: 15px; }
+}
+
+/* el arranque: negro, un tubo que se prende, un lienzo con píxeles grandes */
+#arranque { position: fixed; inset: 0; z-index: 10000; background: #000; overflow: hidden; cursor: none; }
+#arranque .tubo { position: absolute; inset: 0; clip-path: inset(50% 0 50% 0); }
+#arranque canvas, #apagado canvas, .carga-app canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+#arranque canvas { filter: drop-shadow(0 0 5px rgba(255, 255, 255, .28)); }
+#arranque .tubo.carga canvas { filter: drop-shadow(0 0 10px rgba(220, 206, 248, .35)); }
+#arranque .linea { position: absolute; left: 50%; top: 50%; width: 0; height: 3px; transform: translate(-50%, -50%);
+  background: #fff; box-shadow: 0 0 22px 8px rgba(220, 230, 255, .85); opacity: 0; }
+#arranque .rayas, #apagado::after { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, .28) 50%) 0 0 / 100% 4px; }
+#apagado { position: fixed; inset: 0; z-index: 10000; background: #000; outline: none; cursor: pointer; }
+#apagado canvas { filter: drop-shadow(0 0 6px rgba(255, 154, 60, .45)); }
+.sr { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* apagar: la pantalla se aplasta en una línea y después en un punto, como un tubo */
+body.apagando { background: #000 !important; }
+body.apagando #neli, body.apagando #crt, body.apagando #menuInicio { display: none !important; }
+body.apagando #escritorio, body.apagando #barra { animation: tubo-off .6s cubic-bezier(.6, 0, .9, .4) forwards; }
+body.apagando #escritorio { transform-origin: 50vw 50vh; }
+body.apagando #barra { transform-origin: 50vw calc(46px - 50vh); }
+@keyframes tubo-off {
+  0%   { transform: scale(1, 1); filter: brightness(1); }
+  45%  { transform: scale(1, .006); filter: brightness(4); }
+  80%  { transform: scale(.002, .006); filter: brightness(6); opacity: 1; }
+  100% { transform: scale(0, 0); filter: brightness(8); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.apagando #escritorio, body.apagando #barra { animation: none; opacity: 0; transition: opacity .2s; }
+  #menuInicio { animation: none; }
+}
+
+/* el escritorio recién prendido: los íconos aparecen de a uno */
+body.nace .icono { animation: icono-nace .42s cubic-bezier(.3, 1.6, .5, 1) both; animation-delay: calc(var(--i, 0) * 70ms); }
+@keyframes icono-nace { from { opacity: 0; transform: scale(.4) translateY(8px); } }
+
+/* la pantalla de carga de una app: encima del iframe, negra como la app por dentro */
+.carga-app { position: absolute; inset: 0; z-index: 3; background: transparent; overflow: hidden; pointer-events: none; }
+.cuerpo.con-app { position: relative; }
 </style>
 </head>
 <body>
@@ -465,6 +555,7 @@ const APPS = [
   { id: 'meowsenger', nombre: 'Meowsenger', icono: '/img/iconos/meowsenger.png', w: 900, h: 640, pista: 'Aquí está todo lo que Barti y yo hemos hablado. Empieza por el principio.',
     contenido: (m) => { m.src = '/apps/meowsenger.html'; } },
   { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.',
+    carga: { version: '0.37', autor: 'POR BARTI, PARA NELI', lineas: ['MOTOR DE AUDIO', '200 NUMEROS EN LOOP', 'CINCO FORMAS DE ONDA', 'LOS MIAUS'] },
     contenido: (m) => { m.src = '/apps/meowdacity.html?ventana'; } },
   { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
@@ -756,6 +847,7 @@ function abrir(app, desde) {
     });
     app.contenido(marco);
     cuerpo.append(marco);
+    if (app.carga) pantallaCarga(app, cuerpo, marco);   // la pantalla de carga de los 90, mientras la app llega
   } else if (app.html) {
     cuerpo.innerHTML = app.html();             // apps chicas del propio escritorio (Ajustes)
     if (app.montar) app.montar(cuerpo);
@@ -870,6 +962,7 @@ for (const tipo of ['keydown', 'keyup']) {
 
 // la dirección: entrar con #meowdacity la abre
 function abrirDesdeHash() {
+  if (arrancando) return;                 // mientras arranca, la app espera: se abre cuando termina
   const id = location.hash.slice(1);
   const app = APPS.find((a) => a.id === id);
   if (app) abrir(app);
@@ -1009,7 +1102,417 @@ const appAjustes = APPS.find((a) => a.id === 'ajustes');
 if (appAjustes) { appAjustes.html = htmlAjustes; appAjustes.montar = montarAjustes; }
 
 aplicarAjustes();
-abrirDesdeHash();          // al final: entrar con #id abre la app cuando todo ya está listo
+// (el final está en arranque.js: la primera vez arranca y después abre #id)
+
+// =====================================================================
+// El arranque, el menú Inicio y la pantalla de carga de las apps.
+// - La primera vez que alguien entra, NeliOS arranca como un PC de los 90: tubo, BIOS, carga.
+//   No se salta: es parte de entrar. Después no vuelve a salir, salvo con Reiniciar.
+// - Todo se dibuja en un lienzo chico con escala entera y la fuente 5×7 de Meowamp.
+// - Reiniciar y Apagar suenan (el navegador solo deja sonar después de un clic); la primera vez es muda.
+// =====================================================================
+const GLIFO = {
+    '0':'.###.#...##..###.#.###..##...#.###.', '1':'..#...##....#....#....#....#...###.', '2':'.###.#...#....#...#...#...#...#####',
+    '3':'#####...#...#.....#.....##...#.###.', '4':'...#...##..#.#.#..#.#####...#....#.', '5':'######....####.....#....##...#.###.',
+    '6':'..##..#...#....####.#...##...#.###.', '7':'#####....#...#...#...#....#....#...', '8':'.###.#...##...#.###.#...##...#.###.',
+    '9':'.###.#...##...#.####....#...#..##..', 'A':'.###.#...##...#######...##...##...#', 'B':'####.#...##...#####.#...##...#####.',
+    'C':'.###.#...##....#....#....#...#.###.', 'D':'###..#..#.#...##...##...##..#.###..', 'E':'######....#....####.#....#....#####',
+    'F':'######....#....####.#....#....#....', 'G':'.###.#...##....#.####...##...#.####', 'H':'#...##...##...#######...##...##...#',
+    'I':'.###...#....#....#....#....#...###.', 'J':'..###...#....#....#....##..#..##...', 'K':'#...##..#.#.#..##...#.#..#..#.#...#',
+    'L':'#....#....#....#....#....#....#####', 'M':'#...###.###.#.##.#.##...##...##...#', 'N':'#...##...###..##.#.##..###...##...#',
+    'O':'.###.#...##...##...##...##...#.###.', 'P':'####.#...##...#####.#....#....#....', 'Q':'.###.#...##...##...##.#.##..#..##.#',
+    'R':'####.#...##...#####.#.#..#..#.#...#', 'S':'.#####....#.....###.....#....#####.', 'T':'#####..#....#....#....#....#....#..',
+    'U':'#...##...##...##...##...##...#.###.', 'V':'#...##...##...##...##...#.#.#...#..', 'W':'#...##...##...##.#.##.#.##.#.#.#.#.',
+    'X':'#...##...#.#.#...#...#.#.#...##...#', 'Y':'#...##...#.#.#...#....#....#....#..', 'Z':'#####....#...#...#...#...#....#####',
+    'Ñ':'.##.##.##.#...###..##.#.##..###...#', ' ':'...................................', ':':'.......#....#.........#....#.......',
+    '.':'.........................##...##...', '-':'...............###.................', '/':'....#....#...#...#...#...#....#....',
+    '(':'...#...#...#....#....#.....#.....#.', ')':'.#.....#.....#....#....#...#...#...', '!':'..#....#....#....#....#.........#..',
+    '?':'.###.#...#....#...#...#.........#..', '+':'.......#....#..#####..#....#.......', ',':'....................##....#...#....',
+    '%':'##...##..#...#...#...#...#..##...##', '#':'.#.#..#.#.#####.#.#.#####.#.#..#.#.', '·':'.................#.................',
+    '¿':'..#.........#...#...#....#...#.###.', '¡':'..#.........#....#....#....#....#..', "'":'..#....#...#.......................',
+    '>':'#.....#.....#.....#...#...#...#....', '<':'....#...#...#...#.....#.....#.....#', '_':'..............................#####'
+  };
+const CARAS = {"gN": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABeUlEQVR4AazSO07DUBCFYeOOCko6esQCYCP0NCyKhp6NwAIQPR0lVJSg74q5Gk9uEHES6de8z7Ejz1P5HV+dfe9DkZu6QYjGwsntxbSGqtMMNAlnQfUaQiM0mwEhA/HQzJyq+OfD64T/mtlF3qdJu79BHsotOIJ6hBnOn25G49bbauCQiS25mNEzD3F5nke+YeDQ0EHkanmgJnx6dyntmPfiN9kw0K/ieiCKKmw26ukPDQwOxVYDb1FZY7owGP2Hu4h6oLq/MKhDNVPIMx/3L9Pb9WNuDfOFQX2CkXBVYVR7uW4GhAJDuVgN9Sr563GXsdsMCEEDNY9P09PCDmF9OfTjToR+M5BwFgMCgR6BqOV6ldCIaN4NOAYGFeKEIa9zddyLanQDReAJCEUdkTCijmjXTdQ5Dg3iCXyGjvNBzs3sEI+bPJfPX8/vRxYUFUdmREaY2UG9NaM9fIO87Pgv8u4obwacOGK0tEuPBmi6awYSDRjuAw3QxA8AAAD//3+5Pw8AAAAGSURBVAMAKs4rwA/IoKcAAAAASUVORK5CYII=", "gB": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABgklEQVR4AbTSO07DYBAEYJOOCko6esQBoOUQ9DRwJmjoOQQtHADR06WEihL0/WKijWM7FoFIo33NzqxjL7reb//s6GsX9OS6lUFED65Oul1wdHvRDoxRMyAe0Qx2ibRo0mgGkv/CghPHavBx/9pB7U3luFA5NGmPPsHx02Uz6S9WETPArf2aDxpwR8oiEXVFeuFkp3LkGwZZNKzQr8js/e4laXviVfGTbBjoH16fClvh6nAT+0uDBpXkLyCUXmpxTDRccasBEiGCkFqcg1kGc4Rw6pOqYc3AS9T8S6wZuABi8Hb+0AX1a5GnL4Y/FJuByytCZBZ4D+nL0xfTrxpy/WaAFGi6UCQUqPVBnr6o1qchF0HeDCQcQT4GYjA2z34i3sqAY2DQhwsr+nN19kU1rAwUFcRq7fKKOsOtV9fZqAGSL8SyfAhmOGb1anWw+Hxe7o25Z4nIEIiEI6+gSXvyCbJAZAiZT8VmwInjFHHujA7QtNMMJBrLm8f2dyH8FnSAJnwDAAD//yIi0wgAAAAGSURBVAMAlhYlwEV1GIMAAAAASUVORK5CYII=", "pN": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADBklEQVR4AbSXC3bqMAxExdujWSRZJG/u2AqKcegpJ20jS9ZvxkpI6b/4+NOeEVfIOchEoIO11p7Io0VcIfRC+mGOZAoBgSpWAVtTyQVSe6rjmKrAdA0CA/yhsADl/5OLAz3BcHemHTEI/C2w8coCkdyaAA4knehti7jdI9Dx5Q+1qx5gIbQVgT4KNrOQJB5x10KzOX62J9c1SqCH1MnVniKg8S/CwrS3eQ2ToOnYnipyED31+gS14Dd71aLsawI1MNsUcwqE2Gqk+PPU2E89aRDAFgOrs+WUAA1rUTKGCKQ4ZRV8gD4eesxrITZB9ELWBEYBYABDZrgOLQBMARh7SvAAXOvlEPVmSYBcwJ0BAxuvBZdFC6DIKzpZzomg5xTxdknAkbFw+mHuimbI+vHd04bRhl6rJYHevBdQzjRW0jN+XplQ7VkrlgRqgm/iwZEbqKX9vV4SYOzXtO/EPIGTEbwRANxlEwP8KY4vlk0J9/tdr+81msJvVW8EyOB+o38rEKAmNXbKWc8lgSya9eoE3+TUGhNgYPlWwyYBMKR+gOsppjtESXCvyUHboYVpIDLdasYxAZr5W4uysAGmCX9I1NVe79W9a71uZW/cb4kSfBE7vBFp5EjouehvDVXqj1S3CZkABpKnb9qYtQxd/iQKT1xECUNxX9iIN3VRpwP4ptoeV6QbY90JMJo9COpIsDLIywk5xDEt2IjMcSnXNWNbFBhgpWsn4Fsw6rAzYae+OzS+RXPGX1K6mXlCpSdbNNITynfCdKQWF30J2XTvVJ3OogGsUkK7yVTuuhUA787J8ARWEBTxwLiJHjT0VHu6JTdfSPSg15ycmCKw3eZg7ilkXEwjm2Zj9pmHjRBDsKlxLUYmvuntJgKhMXd5iw9HJYILAOSm72cINkKsafkJWHfFmEp9/V+AE8cnSSIAIE/NF8FOIedTD2IVyxOI2G7cEz4eNUjylUJvPU4BFpj0HgQwRUIRSKRQcIVkP7QgBPZ67goB+YMARJDX/wIUfivU9UP03nly0JD/AAAA//+SNJuvAAAABklEQVQDAMGjneDHSBcbAAAAAElFTkSuQmCC", "pB": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADLUlEQVR4AbSXC5qkIAyE03tHPKQc0v2rAi0ozj6mZz4DIY9KEdR2fsWXf+WI+IQ8F7kQaMVKOUpKMH9CDkDaZmYyAwGKF/a7F2J3KYgMn5DdmAVsQCcijUArXigWkpnl51ZsTiRcgpoANwLw+vHiVPMFCdfyIkwg16aVVo816rZF1OrVfw3kGiOuGIUdJyIEshW5nMckRnKFyA1kjp1XZ05izF6toMBUDggwr84d9noCdhA01+0EVcZaMkaxynGusMG6xyeFRuDuHi0COw6eDIwCj2U3dGQIMTs3mnJQ3622vhgeCbCXKbyyCy7bTELHMoht8pKoWKldMHX1Nj8QIIWrKJwj0HQVkRnl6veaXGOAFcuuRT4FDr4M5E7tU0ttW8SNdrV/3/O4HFqAQawvhnUHzFjRc6aAVUAFJY5AETnZj2N+xuWnfE5vzFz2cU2Adgm0B42z7ElkD92YWnd5FxsT0OUPMFFv1wOBW9yPGZYEdHMl68/UFZYwV2gLAg+Htcr+Z9sde0GAkywz8sZvwlXmiIirX+sxhnt1XL71JYG3tylqYVM9Xdcy2jYQ91qOP0gjQGvebzV0kvQ2k6DyMXE+XgKWyD6KbETZZL1tWRgSO3Qj9DrtqWgEoF54eSgJUZwTGHqyQPX4acbsSz+1Ei8Y5Btjei6u/FUHm91wxtTSjxSORgBtvOAzJo+uSe+Ak/G+MBaYd8/4KnZraD/XGKtdrRJlk08ifSWjz5hguxWq1RLODvgIaE3blWJbzHLa+D7QnZ7ydbS9DTd6nYZ6EmiGnLidSomNm8HtS+M06t2v807x/ia/FsoVRnZiHdMImKNyBkkSBuE9oHlwfqkqVp3R/Fw8a0Kgvp7RYK2WccdqJwKVCFjS86RL5LPQOW51Lo6U3B53n+sLAuH7gvHu7xaOo4gIs0wqJnm9tpBIl8inx2yMte028OmWDTg/SBKgWW8J3VByVybDfzt8eBQk2tpzENPDl7OKn3XcgQiOAdvfkVii/qWxFaeWa5LVCKB1EjxeVc+phUid57dl45gRsAPIXlxVBwJa0olAan1VAtWR70rmg13BFbaFdbt+AwAA//8ot3+TAAAABklEQVQDABUtzuAUQwHIAAAAAElFTkSuQmCC"};
+let arrancando = false;
+const quieto = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TILDES = new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g');   // escrito así para que sobreviva a cualquier codificación
+const sinTilde = (t) => String(t).toUpperCase().replace(/Ñ/g, '#N#').normalize('NFD').replace(TILDES, '').replace(/#N#/g, 'Ñ');
+function letra(c, ch, x, y, col, s) {
+  const m = GLIFO[ch] || GLIFO['?']; c.fillStyle = col;
+  for (let i = 0; i < 35; i++) if (m[i] === '#') c.fillRect(x + (i % 5) * s, y + Math.floor(i / 5) * s, s, s);
+}
+// cada texto se dibuja una sola vez en un lienzo aparte y después se copia: así un cuadro cuesta poco aunque el teléfono sea lento
+const yaEscritos = new Map();
+function escribir(c, t, x, y, col, s = 1) {
+  const k = t + '|' + col + '|' + s; let cv = yaEscritos.get(k);
+  if (!cv) {
+    const n = sinTilde(t); cv = document.createElement('canvas'); cv.width = Math.max(1, n.length * 6 * s); cv.height = 7 * s;
+    const g = cv.getContext('2d'); for (let i = 0; i < n.length; i++) letra(g, n[i], i * 6 * s, 0, col, s);
+    if (yaEscritos.size > 300) yaEscritos.clear(); yaEscritos.set(k, cv);
+  }
+  c.drawImage(cv, x, y);
+}
+const anchoTexto = (t, s = 1) => sinTilde(t).length * 6 * s - s;
+const entre = (t, a, b) => Math.max(0, Math.min(1, (t - a) / (b - a)));
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const umbral = (x, y) => (BAYER[(y % 4) * 4 + (x % 4)] + .5) / 16;
+// un lienzo que llena su caja con píxeles grandes: la escala es entera, nunca un píxel a medias
+function lienzoPixel(caja, minAncho, minAlto, piso) {
+  const cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+  const medir = () => {
+    const w = caja.clientWidth || innerWidth, h = caja.clientHeight || innerHeight;
+    const s = Math.max(w >= piso ? 2 : 1, Math.floor(Math.min(w / minAncho, h / minAlto)));
+    cv.width = Math.ceil(w / s); cv.height = Math.ceil(h / s);
+    cv.style.width = cv.width * s + 'px'; cv.style.height = cv.height * s + 'px';
+    cv.escala = s;
+  };
+  return { cv, medir };
+}
+// texto con relleno de puntos hasta una columna, como en las BIOS: "Patita USB ...... OK"
+const puntos = (a, b, cols) => a + ' ' + '.'.repeat(Math.max(2, cols - a.length - b.length - 2)) + ' ' + b;
+function partir(t, cols) {           // corta en palabras para pantallas angostas
+  const out = []; let l = '';
+  for (const p of t.split(' ')) { if ((l + ' ' + p).trim().length > cols) { out.push(l.trim()); l = p; } else l += ' ' + p; }
+  if (l.trim()) out.push(l.trim()); return out;
+}
+
+// ---------- el sonido del arranque (WebAudio). Todo entra y sale con rampa: nada salta de golpe ----------
+let ac = null;
+function sonido() {
+  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; }
+}
+function tono(a, f, t0, dur, tipo, vol) {
+  const o = a.createOscillator(), g = a.createGain(); o.type = tipo; o.frequency.value = f;
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .012);
+  g.gain.setValueAtTime(vol, t0 + Math.max(.013, dur - .02)); g.gain.linearRampToValueAtTime(0, t0 + dur);
+  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0 + dur + .05);
+}
+function campana(a, f, t0, vol) {      // una nota que se apaga sola (la "campanita" del final)
+  const o = a.createOscillator(), g = a.createGain(); o.type = 'triangle'; o.frequency.value = f;
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .015); g.gain.setTargetAtTime(0, t0 + .03, .35);
+  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0 + 2.2);
+}
+function ruido(a, t0, dur, vol, frec) {  // el disco duro buscando: un soplido corto y filtrado
+  const n = Math.ceil(a.sampleRate * dur), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  const src = a.createBufferSource(), fil = a.createBiquadFilter(), g = a.createGain();
+  src.buffer = b; fil.type = 'bandpass'; fil.frequency.value = frec; fil.Q.value = 1.4;
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .006); g.gain.linearRampToValueAtTime(0, t0 + dur);
+  src.connect(fil).connect(g).connect(a.destination); src.start(t0);
+}
+
+// ---------- la línea de tiempo del arranque (segundos) ----------
+const BIOS = [
+  [0.45, 'NELIBIOS V1.0', '(C) 2026 BARTI SYSTEMS'],
+  [0.62, 'CPU : RONRONEO 486 A 33 MHZ'],
+  [0.74, 'MEM'],
+  [1.55, 'DETECTANDO DISPOSITIVOS...'],
+  [1.78, ['PATITA USB', 'OK']],
+  [1.98, ['CAJA DE ARENA', 'OK']],
+  [2.18, ['PLATO DE COMIDA', 'VACIO']],
+  [2.40, ['CARGANDO BARTI.SYS', 'OK']],
+];
+const FIN = 5.3;
+const TRAMOS = [[3.62, 2], [3.80, 4], [4.08, 8], [4.28, 10], [4.62, 14]];
+
+function prepararCaras() {
+  return Promise.all(Object.entries(CARAS).map(([k, src]) => new Promise((ok) => {
+    const im = new Image();
+    im.onload = () => {
+      const c = document.createElement('canvas'); c.width = im.width; c.height = im.height;
+      const g = c.getContext('2d'); g.drawImage(im, 0, 0); ok([k, g.getImageData(0, 0, im.width, im.height)]);
+    };
+    im.onerror = () => ok([k, null]); im.src = src;
+  }))).then((l) => Object.fromEntries(l));
+}
+let carasListas = null;
+// dibuja una cara con disolución por trama: con x = 0 no se ve, con x = 1 entera
+// la trama tiene 16 niveles: cada nivel de cada cara se arma una vez y se guarda
+const nivelesCara = new Map();
+function cara(c, d, x0, y0, k, x) {
+  if (!d) return; const q = Math.min(16, Math.floor(x * 16 + 1e-6)); if (!q) return;
+  let cv = nivelesCara.get(d) && nivelesCara.get(d)[q];
+  if (!cv) {
+    const W = d.width, im = new ImageData(W, W);
+    for (let y = 0; y < W; y++) for (let xx = 0; xx < W; xx++) {
+      const i = (y * W + xx) * 4; if (d.data[i + 3] < 128 || umbral(xx, y) >= q / 16) continue;
+      for (let j = 0; j < 4; j++) im.data[i + j] = d.data[i + j];
+    }
+    cv = document.createElement('canvas'); cv.width = cv.height = W; cv.getContext('2d').putImageData(im, 0, 0);
+    if (!nivelesCara.has(d)) nivelesCara.set(d, []); nivelesCara.get(d)[q] = cv;
+  }
+  c.imageSmoothingEnabled = false; c.drawImage(cv, x0, y0, d.width * k, d.width * k);
+}
+
+function pintarArranque(c, W, H, t) {
+  c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+  const m = W >= 300 ? 10 : 6, cols = Math.floor((W - 2 * m) / 6), C = carasListas || {};
+  if (t < 2.9) {                                    // la BIOS
+    const gris = '#C8C8C8', blanco = '#FFFFFF';
+    if (t > .3) { cara(c, C.gN, m, m, 1, 1); cara(c, C.gB, m + 28, m, 1, 1); }
+    let y = m + 34, ultimo = 0;
+    const linea = (txt, col) => { for (const l of partir(txt, cols)) { escribir(c, l, m, y, col); ultimo = m + anchoTexto(l) + 3; y += 10; } };
+    for (const b of BIOS) {
+      if (t < b[0]) break;
+      if (b[1] === 'NELIBIOS V1.0') {
+        if (cols >= 37) { escribir(c, b[1], m, y, blanco); escribir(c, b[2], m + 15 * 6, y, gris); ultimo = m + 37 * 6; y += 10; }
+        else { linea(b[1], blanco); linea(b[2], gris); }
+        y += 10; continue;
+      }
+      if (b[1] === 'MEM') {
+        const kb = Math.min(640, Math.floor(entre(t, .74, 1.38) * 640 / 16) * 16);
+        linea('MEMORIA : ' + String(kb).padStart(3, ' ') + 'K' + (kb >= 640 ? ' OK' : ''), gris); y += 10; continue;
+      }
+      if (Array.isArray(b[1])) {
+        const ancho = Math.min(cols - 2, 28), [a, r] = b[1];
+        const listo = t >= b[0] + .14, txt = puntos(a, listo ? r : '', ancho).replace(/ +$/, '');
+        escribir(c, txt, m + 12, y, r === 'VACIO' && listo ? '#FFD23F' : gris); ultimo = m + 12 + anchoTexto(txt) + 3; y += 10; continue;
+      }
+      linea(b[1], gris);
+    }
+    if (Math.floor(t * 4) % 2 === 0 && t > .45) { c.fillStyle = gris; c.fillRect(ultimo, y - 10, 5, 7); }   // el cursor que parpadea
+    if (t > 2.5) for (const [i, l] of partir('PRESIONE SUPR PARA ENTRAR A LA CONFIGURACION', cols).reverse().entries()) escribir(c, l, m, H - m - 7 - i * 10, gris);
+    return;
+  }
+  // la carga: las caras, el nombre y la barra
+  const k = Math.max(1, Math.min(4, Math.floor(Math.min(W / 150, H / 120))));
+  const ca = 32 * k, gap = 6 * k, sN = Math.max(2, k + 1), alto = ca + 10 * k + 7 * sN + 10 * k + 9;
+  let y = Math.round((H - alto) / 2);
+  const x0 = Math.round((W - (2 * ca + gap)) / 2);
+  cara(c, C.pN, x0, y, k, entre(t, 3.0, 3.42)); cara(c, C.pB, x0 + ca + gap, y, k, entre(t, 3.08, 3.5));
+  y += ca + 10 * k;
+  const nv = entre(t, 3.42, 3.66);                  // el nombre aparece en tres pasos, como un monitor que calienta
+  if (nv > .33) escribir(c, 'NELIOS', Math.round((W - anchoTexto('NELIOS', sN)) / 2), y, nv < .66 ? '#5E5578' : nv < 1 ? '#A99BD0' : '#DCCEF8', sN);
+  y += 7 * sN + 10 * k;
+  if (t > 3.55) {
+    const bw = 14 * 6 + 13 + 4, bx = Math.round((W - bw) / 2);
+    c.fillStyle = '#8E8E8E'; c.fillRect(bx, y, bw, 9); c.fillStyle = '#000'; c.fillRect(bx + 1, y + 1, bw - 2, 7);
+    let n = 0; for (const [s, q] of TRAMOS) if (t >= s) n = q;
+    for (let i = 0; i < n; i++) { c.fillStyle = i === n - 1 && Math.floor(t * 12) % 2 ? '#F4EEFF' : '#DCCEF8'; c.fillRect(bx + 2 + i * 7, y + 2, 6, 5); }
+  }
+}
+
+// los ruidos de un PC que prende: el tubo, el pitido de la BIOS, el disco y la campanita
+function sonarArranque() {
+  const a = sonido(); if (!a) return; const t = a.currentTime + .05;
+  ruido(a, t, .09, .05, 180);                                   // el tubo
+  tono(a, 1000, t + .45, .14, 'square', .035);                  // el pitido de la BIOS: todo bien
+  for (const s of [1.6, 1.78, 1.86, 1.98, 2.18, 2.27, 2.40, 2.5]) ruido(a, t + s, .03, .05, 2600 + Math.random() * 1200);
+  [659.3, 830.6, 987.8, 1318.5].forEach((f, i) => campana(a, f, t + 3.45 + i * .11, .05));   // Mi mayor, subiendo
+}
+
+// ---------- arrancar: tapa todo, cuenta su historia y destapa el escritorio ----------
+function arrancar(conSonido, listo) {
+  if (arrancando) return; arrancando = true; cerrarMenu();
+  const capa = document.createElement('div'); capa.id = 'arranque';
+  capa.innerHTML = '<div class="tubo"></div><div class="linea"></div><div class="rayas"></div><p class="sr" role="status">Iniciando NeliOS…</p>';
+  const tubo = capa.querySelector('.tubo'), { cv, medir } = lienzoPixel(capa, 320, 190, 340);
+  tubo.append(cv); document.body.append(capa);
+  for (const id of ['escritorio', 'barra', 'neli']) { const el = document.getElementById(id); if (el) el.inert = true; }
+  const c = cv.getContext('2d'), suave = quieto();
+  const rayas = () => { capa.querySelector('.rayas').style.backgroundSize = '100% ' + cv.escala * 2 + 'px'; };
+  medir(); rayas(); addEventListener('resize', medir); addEventListener('resize', rayas);
+  (carasListas ? Promise.resolve(carasListas) : prepararCaras().then((x) => (carasListas = x))).then(() => {
+    if (conSonido) sonarArranque();
+    const t0 = performance.now();
+    const cuadro = () => {
+      const t = (performance.now() - t0) / 1000;
+      if (suave) {                                     // sin movimiento: aparece y desaparece con fundidos
+        tubo.style.clipPath = 'none'; tubo.style.opacity = t < 2.9 ? entre(t, 0, .4) : entre(t, 2.9, 3.2);
+      } else {
+        const a1 = entre(t, .05, .2), a2 = entre(t, .16, .4), e = (x) => 1 - Math.pow(1 - x, 3);
+        capa.querySelector('.linea').style.width = 100 * e(a1) + '%';
+        capa.querySelector('.linea').style.opacity = t < .38 ? 1 : 0;
+        const alto = 50 * e(a2); tubo.style.clipPath = 'inset(' + (50 - alto) + '% 0 ' + (50 - alto) + '% 0)';
+        tubo.style.filter = 'brightness(' + (1 + Math.sin(t * 57) * .02 + Math.sin(t * 131) * .012 + (t < .9 ? .5 * (1 - entre(t, .2, .9)) : 0)) + ')';
+        tubo.style.transform = t >= 2.82 && t < 3.02 ? 'translateY(' + Math.round(Math.sin((t - 2.82) * 60) * 10) + 'px)' : 'none';
+      }
+      tubo.classList.toggle('carga', t >= 2.9);
+      pintarArranque(c, cv.width, cv.height, t);
+      // el final: la carga se apaga en pasos y se destapa el escritorio
+      if (t > 4.95) { const f = entre(t, 4.95, FIN); capa.style.opacity = f < .34 ? 1 : f < .67 ? .66 : f < 1 ? .33 : 0; }
+      if (t < FIN) { requestAnimationFrame(cuadro); return; }
+      removeEventListener('resize', medir); removeEventListener('resize', rayas);
+      capa.remove(); arrancando = false; mem.guardar('arrancado', true);
+      for (const id of ['escritorio', 'barra', 'neli']) { const el = document.getElementById(id); if (el) el.inert = false; }
+      if (!suave) {
+        document.querySelectorAll('#iconos .icono').forEach((b, i) => b.style.setProperty('--i', i));
+        document.body.classList.add('nace'); setTimeout(() => document.body.classList.remove('nace'), 1200);
+      }
+      if (listo) listo();
+    };
+    requestAnimationFrame(cuadro);
+  });
+}
+
+function cerrarTodas() { for (const id of Object.keys(abiertas)) if (abiertas[id]) cerrar(id); }
+function reiniciar() {
+  cerrarMenu(); cerrarTodas();
+  history.replaceState(null, '', location.pathname + location.search);
+  sonido();                                         // el clic de Reiniciar es el permiso para sonar
+  arrancar(true);
+}
+function apagar() {
+  cerrarMenu(); cerrarTodas();
+  history.replaceState(null, '', location.pathname + location.search);
+  const negro = document.createElement('div'); negro.id = 'apagado'; negro.tabIndex = -1;
+  negro.innerHTML = '<p class="sr" role="status">NeliOS está apagado. Toca la pantalla o aprieta una tecla para encenderlo.</p>';
+  const { cv, medir } = lienzoPixel(negro, 300, 170, 340); negro.append(cv);
+  for (const id of ['escritorio', 'barra', 'neli']) { const el = document.getElementById(id); if (el) el.inert = true; }
+  const a = sonido(); if (a) { const t = a.currentTime + .02; tono(a, 520, t, .09, 'square', .03); tono(a, 260, t + .1, .16, 'square', .03); }
+  document.body.classList.add('apagando');
+  setTimeout(() => {
+    document.body.append(negro); document.body.classList.remove('apagando'); medir();
+    const c = cv.getContext('2d'), t0 = performance.now();
+    const pintar = () => {
+      if (!negro.isConnected) return;
+      const W = cv.width, H = cv.height, t = (performance.now() - t0) / 1000, s = W >= 260 ? 2 : 1;
+      c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+      const ls = W >= 260 ? ['YA PUEDE APAGAR', 'SU EQUIPO.'] : ['YA PUEDE', 'APAGAR SU', 'EQUIPO.'];
+      const y0 = Math.round(H / 2 - ls.length * 10 * s / 2);
+      ls.forEach((l, i) => escribir(c, l, Math.round((W - anchoTexto(l, s)) / 2), y0 + i * 10 * s, '#FF9A3C', s));
+      if (t > 1.6 && Math.floor(t * 1.5) % 2 === 0) { const l = 'TOCA PARA ENCENDER'; escribir(c, l, Math.round((W - anchoTexto(l)) / 2), H - 18, '#6B4A2A'); }
+      requestAnimationFrame(pintar);
+    };
+    pintar(); negro.focus();
+    const encender = (e) => {
+      if (e.type === 'keydown' && ['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) return;
+      e.preventDefault(); negro.remove(); arrancar(true);
+    };
+    negro.addEventListener('pointerdown', encender, { once: true });
+    negro.addEventListener('keydown', encender, { once: true });
+  }, quieto() ? 200 : 620);
+}
+
+// ---------- el menú Inicio ----------
+const ICONOS_MENU = {
+  bitacora: '<svg viewBox="0 0 26 26" aria-hidden="true"><rect x="5" y="3" width="16" height="20" rx="3" fill="#FFF3C9" stroke="#3B3F77" stroke-width="2"/><path d="M9 3v20" stroke="#3B3F77" stroke-width="2"/><path d="M12 9h6M12 13h6M12 17h4" stroke="#F27FA3" stroke-width="2" stroke-linecap="round"/></svg>',
+  reiniciar: '<svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="10" fill="#D3ECE0" stroke="#3B3F77" stroke-width="2"/><path d="M17.6 9.4A6 6 0 1 0 19 13" fill="none" stroke="#3B3F77" stroke-width="2.2" stroke-linecap="round"/><path d="M15.4 6.6l3.3 2.6-3.5 2.2z" fill="#3B3F77" stroke="#3B3F77" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+  apagar: '<svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="10" fill="#FFD9E4" stroke="#3B3F77" stroke-width="2"/><path d="M9.4 9.2a5.6 5.6 0 1 0 7.2 0" fill="none" stroke="#3B3F77" stroke-width="2.2" stroke-linecap="round"/><path d="M13 6.4v6" stroke="#3B3F77" stroke-width="2.2" stroke-linecap="round"/></svg>'
+};
+const menu = document.createElement('div');
+menu.id = 'menuInicio'; menu.hidden = true; menu.setAttribute('role', 'menu'); menu.setAttribute('aria-label', 'Inicio');
+function itemMenu(html, accion, href) {
+  const b = document.createElement(href ? 'a' : 'button'); b.className = 'mi'; b.setAttribute('role', 'menuitem'); b.tabIndex = -1;
+  if (href) b.href = href; else b.type = 'button';
+  b.innerHTML = html; b.addEventListener('click', (e) => { if (!href) { e.preventDefault(); accion(); } else cerrarMenu(); });
+  return b;
+}
+function armarMenu() {
+  const lista = document.createElement('div'); lista.className = 'lista';
+  const titulo = (t) => { const h = document.createElement('div'); h.className = 'mi-titulo'; h.textContent = t; h.setAttribute('aria-hidden', 'true'); return h; };
+  const sep = () => { const s = document.createElement('div'); s.className = 'sep'; s.setAttribute('role', 'separator'); return s; };
+  const fila = (app) => itemMenu('<img src="' + app.icono + '" alt=""><span>' + app.nombre + '</span>' + (abiertas[app.id] ? '<small>abierta</small>' : ''), () => { cerrarMenu(); abrir(app); });
+  lista.append(titulo('Apps'));
+  for (const app of APPS) if (app.id !== 'ajustes') lista.append(fila(app));
+  lista.append(sep());
+  const aj = APPS.find((a) => a.id === 'ajustes'); if (aj) lista.append(fila(aj));
+  if (typeof MEOWDACITY === 'undefined') lista.append(itemMenu(ICONOS_MENU.bitacora + '<span>Bitácora</span><small>página ↗</small>', null, '/bitacora/'));
+  lista.append(sep(),
+    itemMenu(ICONOS_MENU.reiniciar + '<span>Reiniciar</span>', reiniciar),
+    itemMenu(ICONOS_MENU.apagar + '<span>Apagar</span>', apagar));
+  menu.innerHTML = '<div class="banda" aria-hidden="true"><span>Neli<b>OS</b></span></div>';
+  menu.append(lista);
+}
+const marca = document.querySelector('#barra .marca');
+const botonInicio = document.createElement('button');
+botonInicio.type = 'button'; botonInicio.className = 'marca'; botonInicio.id = 'inicio';
+botonInicio.setAttribute('aria-haspopup', 'menu'); botonInicio.setAttribute('aria-expanded', 'false'); botonInicio.setAttribute('aria-controls', 'menuInicio');
+botonInicio.setAttribute('aria-label', 'Inicio: apps, reiniciar y apagar');
+if (marca) { botonInicio.append(...marca.childNodes); marca.replaceWith(botonInicio); }
+document.body.append(menu);
+const itemsMenu = () => [...menu.querySelectorAll('.mi')];
+function abrirMenu(enfocar) {
+  armarMenu(); menu.hidden = false; botonInicio.setAttribute('aria-expanded', 'true');
+  if (enfocar !== false) itemsMenu()[0].focus();
+}
+function cerrarMenu(devolver) {
+  if (menu.hidden) return; menu.hidden = true; botonInicio.setAttribute('aria-expanded', 'false');
+  if (devolver) botonInicio.focus();
+}
+botonInicio.addEventListener('click', (e) => { if (menu.hidden) abrirMenu(e.detail === 0); else cerrarMenu(); });
+menu.addEventListener('keydown', (e) => {
+  const l = itemsMenu(), i = l.indexOf(document.activeElement);
+  if (e.key === 'Escape') { e.preventDefault(); cerrarMenu(true); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); l[(i + 1) % l.length].focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); l[(i - 1 + l.length) % l.length].focus(); }
+  else if (e.key === 'Home') { e.preventDefault(); l[0].focus(); }
+  else if (e.key === 'End') { e.preventDefault(); l[l.length - 1].focus(); }
+  else if (e.key === 'Tab') cerrarMenu();
+});
+botonInicio.addEventListener('keydown', (e) => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); abrirMenu(); } });
+document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !botonInicio.contains(e.target)) cerrarMenu(); }, true);
+addEventListener('blur', () => cerrarMenu());     // un clic adentro de una app (otro documento) también lo cierra
+
+// ---------- la pantalla de carga de una app, como las de los 90 ----------
+// Se dibuja encima del iframe mientras la app carga de verdad. Dura lo que tarde la app, y nunca menos de 1,5 s.
+function pantallaCarga(app, cuerpo, marco) {
+  const capa = document.createElement('div'); capa.className = 'carga-app'; capa.setAttribute('aria-hidden', 'true');
+  const { cv, medir } = lienzoPixel(capa, 250, 150, 300); capa.append(cv); cuerpo.append(capa);
+  const c = cv.getContext('2d'), ico = new Image(); ico.src = app.icono;
+  const t0 = performance.now(), MIN = quieto() ? .6 : 1.5, info = app.carga;
+  let cargo = 0, pFin = 0, tFin = 0, w0 = 0, h0 = 0;
+  marco.addEventListener('load', () => { cargo = performance.now(); }, { once: true });
+  const NEON = '#6CFFA8', TEXTO = '#A8F0C8', TENUE = '#2F9E63', LINEA = '#0E3A24', ONDA = '#B794FF';
+  const cuadro = () => {
+    if (!capa.isConnected) return;
+    if (cuerpo.clientWidth !== w0 || cuerpo.clientHeight !== h0) { w0 = cuerpo.clientWidth; h0 = cuerpo.clientHeight; medir(); }
+    const W = cv.width, H = cv.height, t = (performance.now() - t0) / 1000;
+    // cuánto va: mientras la app no llega, se acerca al 85 % sin tocarlo; cuando llega, corre al 100
+    let p = .85 * (1 - Math.exp(-t / .7));
+    if (cargo) { if (!pFin) { pFin = p; tFin = t; } p = pFin + (1 - pFin) * entre(t, tFin, tFin + .3); }
+    c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+    const ancha = W >= 230, cw = Math.min(ancha ? 230 : 180, W - 12), x = Math.round((W - cw) / 2);
+    const ti = 2, ic = ancha ? 36 : 28, altoBloque = ancha ? 128 : 160;
+    let y = Math.max(6, Math.round((H - altoBloque) / 2));
+    // el ícono (chico y agrandado a píxeles), el nombre y la versión
+    c.imageSmoothingEnabled = true;
+    if (ico.complete && ico.naturalWidth) c.drawImage(ico, x, y, ic, ic);
+    const tx = ancha ? x + ic + 8 : x, ty = ancha ? y + 2 : y + ic + 6;
+    escribir(c, app.nombre, tx, ty, NEON, ti);
+    escribir(c, 'VERSION ' + info.version, tx, ty + 7 * ti + 4, TEXTO);
+    escribir(c, info.autor, tx, ty + 7 * ti + 14, TENUE);
+    y = (ancha ? y + ic : ty + 7 * ti + 14 + 7) + 8;
+    // una onda de 200 números que corre: lo que hay adentro
+    c.fillStyle = LINEA; c.fillRect(x, y + 8, cw, 1);
+    c.fillStyle = ONDA;
+    for (let i = 0; i < cw; i++) {
+      const f = i / cw * Math.PI * 4 + t * 5, v = Math.sin(f) * .7 + Math.sin(f * 3) * .2 + Math.sin(f * 5) * .1;
+      c.fillRect(x + i, y + 8 - Math.round(v * 7), 1, 1);
+    }
+    y += 22;
+    // lo que va cargando, de verdad en ese orden
+    const n = info.lineas.length;
+    info.lineas.forEach((l, i) => {
+      const umbralL = (i + 1) / (n + 1); if (p < umbralL - .25) return;
+      const listo = p >= umbralL, col = Math.floor(cw / 6);
+      escribir(c, puntos(l, listo ? 'OK' : '', col).replace(/ +$/, ''), x, y, listo ? TEXTO : TENUE); y += 10;
+    });
+    // la barra: 20 bloques
+    const by = y + 4;
+    c.fillStyle = TENUE; c.fillRect(x, by, cw, 9); c.fillStyle = '#000'; c.fillRect(x + 1, by + 1, cw - 2, 7);
+    const B = 20, bw = (cw - 4 - (B - 1)) / B, llenos = Math.floor(p * B + .0001);
+    for (let i = 0; i < llenos; i++) { c.fillStyle = i === llenos - 1 && p < 1 && Math.floor(t * 10) % 2 ? '#F2FFF7' : NEON; c.fillRect(Math.round(x + 2 + i * (bw + 1)), by + 2, Math.round(bw), 5); }
+    const pct = Math.round(p * 100) + '%'; escribir(c, pct, x + cw - anchoTexto(pct), by + 13, TENUE);
+    escribir(c, p >= 1 ? 'LISTO' : 'CARGANDO...', x, by + 13, p >= 1 ? NEON : TENUE);
+    // al final se deshace por trama (Bayer) y deja ver la app
+    if (p >= 1 && t >= MIN) {
+      const d = entre(t, Math.max(MIN, tFin + .3), Math.max(MIN, tFin + .3) + .35);
+      if (d > 0) {
+        const im = c.getImageData(0, 0, W, H), q = im.data;
+        for (let yy = 0; yy < H; yy++) for (let xx = 0; xx < W; xx++) if (umbral(xx, yy) < d) q[(yy * W + xx) * 4 + 3] = 0;
+        c.putImageData(im, 0, 0);
+      }
+      if (d >= 1) { capa.remove(); return; }
+    }
+    requestAnimationFrame(cuadro);
+  };
+  requestAnimationFrame(cuadro);
+}
+
+// ---------- al final: la primera vez arranca; después, directo al escritorio ----------
+if (!mem.leer('arrancado', false)) arrancar(false, abrirDesdeHash);
+else abrirDesdeHash();          // entrar con #id abre la app cuando todo ya está listo
 
 </script>
 </body>

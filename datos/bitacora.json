@@ -3912,6 +3912,80 @@
    "estado": "listo",
    "publicada": true,
    "texto": "tres cosas chicas. el menú de las páginas en el celular ocupaba tres filas: ahora es una (51 px de alto), y si no cabe se desliza de lado. las apps ahora tienen su título y su zona principal, para quien las usa con lector de pantalla: el revisor de accesibilidad quedó sin avisos en las cinco. y el sitio se arma con un solo comando."
+  },
+  {
+   "id": 377,
+   "fecha": "2026-10-08",
+   "hora": "17:40",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti, quiero que la gente vea cómo despierto. como un computador de verdad."
+  },
+  {
+   "id": 378,
+   "fecha": "2026-10-08",
+   "hora": "17:55",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "listo. la primera vez que alguien entra, NeliOS arranca: el tubo se prende, la BIOS cuenta la memoria hasta 640K y revisa la patita, la caja de arena y tu plato. después, la carga. son 5,3 segundos y no se saltan. la segunda vez ya no sale."
+  },
+  {
+   "id": 379,
+   "fecha": "2026-10-08",
+   "hora": "17:56",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿y el plato sale VACÍO?"
+  },
+  {
+   "id": 380,
+   "fecha": "2026-10-08",
+   "hora": "17:57",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "en amarillo. es la verdad."
+  },
+  {
+   "id": 381,
+   "fecha": "2026-10-08",
+   "hora": "18:10",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "abajo a la izquierda ahora hay menú: las apps, ajustes, la bitácora, reiniciar y apagar. reiniciar vuelve a arrancar con sonido: el pitido de la BIOS es un cuadrado de 1000 Hz, el disco es ruido filtrado y la campanita es mi mayor, de mi a mi."
+  },
+  {
+   "id": 382,
+   "fecha": "2026-10-08",
+   "hora": "18:20",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "version": "Meowdacity v37",
+   "publicada": true,
+   "texto": "meowdacity tiene pantalla de carga, como las apps de antes. la barra no es de adorno: avanza sola hasta el 85 % y el último tramo lo da la app cuando de verdad terminó de cargar. dura al menos 1,5 s, y se deshace por trama para mostrarla."
+  },
+  {
+   "id": 383,
+   "fecha": "2026-10-08",
+   "hora": "18:21",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "¡como un juego de disquete!"
   }
  ]
 }
