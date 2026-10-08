@@ -321,7 +321,8 @@ body {
   color: #3E4380;
   box-shadow: 0 1px 2px rgba(72, 76, 150, .12);
 }
-.btn-ventana svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; }
+.btn-ventana svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.agrandar svg { width: 13px; height: 13px; stroke-width: 1.5; }   /* el cuadrado con orejas: la misma silueta de las carpetas */
 .btn-ventana:hover { filter: none; border-color: #6B70A6; }
 .minimizar, .agrandar { background: #fff; }
 .cerrar { background: #fff; }
@@ -724,7 +725,7 @@ function abrir(app, desde) {
   titulo.append(
     icoTitulo, nombre, relleno,
     botonVentana('minimizar', 'M2 8h8', 'Minimizar', () => minimizar(ventana)),
-    botonVentana('agrandar',  'M2 2h8v8H2z', 'Agrandar',  () => agrandar(ventana)),
+    botonVentana('agrandar',  'M1.2 11V4.4L1.8 .5L5 3.3H7L10.2 .5L10.8 4.4V11Z', 'Agrandar',  () => agrandar(ventana)),
     botonVentana('cerrar',    'M2 2l8 8M10 2l-8 8', 'Cerrar',    () => cerrar(app.id))
   );
   titulo.addEventListener('dblclick', (e) => {        // doble clic en el título: agrandar

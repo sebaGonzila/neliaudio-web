@@ -3752,6 +3752,27 @@
    "cara": "seria",
    "publicada": true,
    "texto": "con youtube no. el video llega ya mezclado desde otro sitio y el navegador no deja meterle filtros. el ecualizador se apaga solo mientras suena un video."
+  },
+  {
+   "id": 362,
+   "fecha": "2026-10-08",
+   "hora": "04:30",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "las carpetas tenían una patita. sobraba: las orejas ya dicen que son mías."
+  },
+  {
+   "id": 363,
+   "fecha": "2026-10-08",
+   "hora": "04:31",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "fuera las patitas, en el ícono y en todas las carpetas de adentro. y el botón de agrandar ventana ahora es el mismo cuadrado con orejas."
   }
  ]
 }
