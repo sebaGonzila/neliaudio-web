@@ -3901,6 +3901,17 @@
    "estado": "listo",
    "publicada": true,
    "texto": "con un contador que no deja cookies ni guarda quién eres: solo cuenta que se abrió una página, y cuál. también cuenta las apps del escritorio, que viven después del #."
+  },
+  {
+   "id": 376,
+   "fecha": "2026-10-08",
+   "hora": "08:10",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "tres cosas chicas. el menú de las páginas en el celular ocupaba tres filas: ahora es una (51 px de alto), y si no cabe se desliza de lado. las apps ahora tienen su título y su zona principal, para quien las usa con lector de pantalla: el revisor de accesibilidad quedó sin avisos en las cinco. y el sitio se arma con un solo comando."
   }
  ]
 }

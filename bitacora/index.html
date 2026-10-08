@@ -84,7 +84,10 @@ kbd { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .85em; b
 .pie p { margin: 4px 0; }
 .p404 main { text-align: center; padding-top: 12vh; }
 .cara404 svg { width: 140px; height: 140px; }
-@media (max-width: 559px) { .tope { flex-wrap: wrap; gap: 8px; } .tope nav { gap: 12px; } .ventana, .canal { padding: 16px; } main { padding: 18px 12px 30px; } }
+/* celular: el menú en una sola fila; si no cabe, se desliza de lado (el logo lleva al escritorio) */
+@media (max-width: 559px) { .tope { flex-wrap: nowrap; gap: 10px; padding: 8px 12px; } .tope .marca { font-size: 0; gap: 0; flex: none; } .tope .marca img { width: 24px; height: 24px; }
+  .tope nav { flex-wrap: nowrap; gap: 14px; min-width: 0; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); padding-right: 24px; }
+  .tope nav::-webkit-scrollbar { display: none; } .tope nav a { font-size: 13px; white-space: nowrap; padding: 6px 0; } .tope nav a.abrir { display: none; } .ventana, .canal { padding: 16px; } main { padding: 18px 12px 30px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 </style>
@@ -373,6 +376,7 @@ preamp -6 → -6,0 dB</pre></li>
 <li class="barti"><b>barti</b> <time>06:52</time><p>eran tres asteriscos. la fuente de la pantallita no tenía el asterisco, y lo que no conoce lo dibuja como ?. ya lo tiene.</p></li>
 <li class="neli"><b>neli</b> <time>07:20</time><p>¿y cómo sabemos si alguien entra?</p></li>
 <li class="barti"><b>barti</b> <time>07:25</time><p>con un contador que no deja cookies ni guarda quién eres: solo cuenta que se abrió una página, y cuál. también cuenta las apps del escritorio, que viven después del #.</p></li>
+<li class="barti"><b>barti</b> <time>08:10</time><p>tres cosas chicas. el menú de las páginas en el celular ocupaba tres filas: ahora es una (51 px de alto), y si no cabe se desliza de lado. las apps ahora tienen su título y su zona principal, para quien las usa con lector de pantalla: el revisor de accesibilidad quedó sin avisos en las cinco. y el sitio se arma con un solo comando.</p></li>
 </ol>
 </section>
 <section class="canal" id="meowdacity"><h2>#meowdacity</h2><p class="tema">la app para entender por qué algo suena</p>

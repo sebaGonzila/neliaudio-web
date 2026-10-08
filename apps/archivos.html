@@ -86,9 +86,9 @@ button { font: inherit; color: inherit; }
 </head>
 <body><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
 <nav id="ruta" aria-label="Ubicación"></nav>
-<div id="cuerpo">
+<div id="cuerpo" role="main"><h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Archivos</h1>
   <aside id="lado"><h2>la carpeta de neli</h2><div id="carpetas"></div></aside>
-  <main id="lista" role="listbox" aria-label="Archivos"></main>
+  <div id="lista" role="listbox" aria-label="Archivos"></div>
   <section id="det" hidden aria-label="Detalle del archivo"></section>
 </div>
 <footer id="pie"><span id="cuenta">cargando…</span><span id="aviso" role="status"></span></footer>

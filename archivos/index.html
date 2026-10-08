@@ -84,7 +84,10 @@ kbd { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .85em; b
 .pie p { margin: 4px 0; }
 .p404 main { text-align: center; padding-top: 12vh; }
 .cara404 svg { width: 140px; height: 140px; }
-@media (max-width: 559px) { .tope { flex-wrap: wrap; gap: 8px; } .tope nav { gap: 12px; } .ventana, .canal { padding: 16px; } main { padding: 18px 12px 30px; } }
+/* celular: el menú en una sola fila; si no cabe, se desliza de lado (el logo lleva al escritorio) */
+@media (max-width: 559px) { .tope { flex-wrap: nowrap; gap: 10px; padding: 8px 12px; } .tope .marca { font-size: 0; gap: 0; flex: none; } .tope .marca img { width: 24px; height: 24px; }
+  .tope nav { flex-wrap: nowrap; gap: 14px; min-width: 0; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); padding-right: 24px; }
+  .tope nav::-webkit-scrollbar { display: none; } .tope nav a { font-size: 13px; white-space: nowrap; padding: 6px 0; } .tope nav a.abrir { display: none; } .ventana, .canal { padding: 16px; } main { padding: 18px 12px 30px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 </style>
