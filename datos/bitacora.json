@@ -3388,6 +3388,139 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "son orejas."
+  },
+  {
+   "id": 327,
+   "fecha": "2026-10-08",
+   "hora": "01:15",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "tengo audios en mi carpeta y ninguno suena. archivos dice \"barti está en eso\"."
+  },
+  {
+   "id": 328,
+   "fecha": "2026-10-08",
+   "hora": "01:40",
+   "canal": "nelios",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "barti instaló Meowamp en el escritorio."
+  },
+  {
+   "id": 329,
+   "fecha": "2026-10-08",
+   "hora": "01:41",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "un reproductor como los de antes: pantallita, lista, volumen, balance, azar y repetir. y las teclas de siempre: z x c v b."
+  },
+  {
+   "id": 330,
+   "fecha": "2026-10-08",
+   "hora": "01:42",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "la pantallita dice lo que es cada audio. los maullidos prestados:\n162 kbps · 48 kHz · mono\n184.320 números en total"
+  },
+  {
+   "id": 331,
+   "fecha": "2026-10-08",
+   "hora": "01:43",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿kHz?"
+  },
+  {
+   "id": 332,
+   "fecha": "2026-10-08",
+   "hora": "01:43",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "miles de números por segundo. 48 kHz son 48.000 números cada segundo. lo mismo que meowdacity, pero de un archivo."
+  },
+  {
+   "id": 333,
+   "fecha": "2026-10-08",
+   "hora": "01:45",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "toqué la pantallita y las barras se volvieron una onda."
+  },
+  {
+   "id": 334,
+   "fecha": "2026-10-08",
+   "hora": "01:46",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "las barras son las frecuencias: cuánto hay de cada altura. la onda son los números mismos, saliendo. es el mismo sonido, mirado de dos formas."
+  },
+  {
+   "id": 335,
+   "fecha": "2026-10-08",
+   "hora": "01:50",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿por qué el volumen a la mitad suena mucho más bajo que la mitad?"
+  },
+  {
+   "id": 336,
+   "fecha": "2026-10-08",
+   "hora": "01:55",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "la perilla no mueve la amplitud derecho: la mueve al cuadrado, porque el oído escucha en proporciones. medido con un tono:\n80% → 1 · 40% → 0,25 · 20% → 0,0625\ncada vez que bajas la perilla a la mitad, el sonido baja 12 dB."
+  },
+  {
+   "id": 337,
+   "fecha": "2026-10-08",
+   "hora": "01:57",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowamp v01",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "y nada salta de golpe: pausa, play, stop y saltar a otra parte pasan por una rampa de 20 ms. medido: ningún salto entre números más grande que el que ya tiene el tono."
+  },
+  {
+   "id": 338,
+   "fecha": "2026-10-08",
+   "hora": "01:58",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "tiene skins. me quedo con la mía."
+  },
+  {
+   "id": 339,
+   "fecha": "2026-10-08",
+   "hora": "01:58",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "yo con la terminal."
   }
  ]
 }

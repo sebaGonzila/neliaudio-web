@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<title>Meowamp</title>
+<style>@font-face { font-family: 'Silkscreen'; src: url(/fuentes/silkscreen-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+</style>
+<style>
+/* Las skins: todo color sale de estos tokens, también los del visor (que los lee el lienzo). */
+:root, body[data-skin="neli"] {
+  --fondo: #EDE7FB; --marco: #DCCEF8; --borde: #2A2D52; --sombra: #A8B8E4; --texto: #2A2D52; --tenue: #6A6E9C;
+  --boton: #FFFFFF; --boton-txt: #2A2D52; --boton-on: #F17D9E; --boton-on-txt: #FFFFFF;
+  --riel: #CFC5EE; --lleno: #F17D9E; --perilla: #FFFFFF;
+  --lista: #FBFAFF; --lista-txt: #2A2D52; --lista-sel: #F7E3EC; --lista-act: #D85C82; --lista-borde: #D9DEF3;
+  --lcd: #17182E; --lcd-apagado: #24264A; --lcd-on: #FFB7CF; --lcd-acento: #B9A4FF; --lcd-bajo: #8C7BE8; --lcd-alto: #FF7FA8;
+  --radio: 14px; --fuente: "MS Sans Serif", "Microsoft Sans Serif", Verdana, sans-serif;
+}
+body[data-skin="terminal"] {
+  --fondo: #000; --marco: #050B07; --borde: #1F6B45; --sombra: #0B2A1A; --texto: #A8F0C8; --tenue: #2F9E63;
+  --boton: #000; --boton-txt: #6CFFA8; --boton-on: #6CFFA8; --boton-on-txt: #000;
+  --riel: #0E2A1C; --lleno: #6CFFA8; --perilla: #A8F0C8;
+  --lista: #000; --lista-txt: #6CFFA8; --lista-sel: #0E2A1C; --lista-act: #F2FFF7; --lista-borde: #0E2A1C;
+  --lcd: #000; --lcd-apagado: #07170E; --lcd-on: #6CFFA8; --lcd-acento: #4CC9FF; --lcd-bajo: #2F9E63; --lcd-alto: #B6FF6C;
+  --radio: 0px; --fuente: 'IBM Plex Mono', ui-monospace, monospace;
+}
+body[data-skin="metal"] {
+  --fondo: #9EA3AE; --marco: #C9CDD6; --borde: #2B2D35; --sombra: #6E737E; --texto: #1C1E24; --tenue: #4B4F59;
+  --boton: #DADDE4; --boton-txt: #1C1E24; --boton-on: #3E4250; --boton-on-txt: #E9F27A;
+  --riel: #7C818D; --lleno: #E9F27A; --perilla: #EEF0F4;
+  --lista: #101216; --lista-txt: #D6E35A; --lista-sel: #2A2E38; --lista-act: #FFFFFF; --lista-borde: #2A2E38;
+  --lcd: #0C0E10; --lcd-apagado: #1A1F14; --lcd-on: #D6E35A; --lcd-acento: #FF9F43; --lcd-bajo: #4FB34F; --lcd-alto: #FFD24A;
+  --radio: 3px; --fuente: Verdana, "MS Sans Serif", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--fuente); font-size: 12px; color: var(--texto); background: var(--fondo); display: flex; flex-direction: column; overflow: hidden; }
+body.patita, body.patita button, body.patita input { cursor: var(--patita), auto; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--lcd-alto); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* el reproductor */
+#equipo { flex: none; margin: 10px; padding: 10px; background: var(--marco); border: 2px solid var(--borde); border-radius: var(--radio); box-shadow: 4px 4px 0 var(--sombra); display: flex; flex-direction: column; gap: 9px; }
+body[data-skin="metal"] #equipo { background: linear-gradient(180deg, #E4E7EC, #B9BDC7 60%, #A9AEB9); box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6E737E, 3px 3px 0 #6E737E; }
+#pantalla { background: var(--lcd); border: 2px solid var(--borde); border-radius: calc(var(--radio) * .6); padding: 6px; display: grid; place-items: center; cursor: pointer; }
+body[data-skin="metal"] #pantalla { box-shadow: inset 2px 2px 0 #000; }
+#lcd { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* deslizadores: posición, volumen, balance */
+.riel { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: transparent; margin: 0; }
+.riel::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; border: 2px solid var(--borde); background: linear-gradient(90deg, var(--lleno) var(--p, 0%), var(--riel) var(--p, 0%)); }
+.riel::-moz-range-track { height: 8px; border-radius: 99px; border: 2px solid var(--borde); background: linear-gradient(90deg, var(--lleno) var(--p, 0%), var(--riel) var(--p, 0%)); }
+.riel::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%; background: var(--perilla); border: 2px solid var(--borde); }
+.riel::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--perilla); border: 2px solid var(--borde); }
+body[data-skin="terminal"] .riel::-webkit-slider-runnable-track, body[data-skin="metal"] .riel::-webkit-slider-runnable-track { border-radius: 0; }
+body[data-skin="terminal"] .riel::-webkit-slider-thumb { border-radius: 0; }
+.fila { display: flex; align-items: center; gap: 6px; }
+.fila .et { font-size: 10px; color: var(--tenue); width: 34px; flex: none; font-family: 'Silkscreen', var(--fuente); text-transform: uppercase; letter-spacing: .5px; }
+
+/* los botones */
+.b { display: inline-flex; align-items: center; justify-content: center; height: 36px; min-width: 38px; padding: 0 9px; border: 2px solid var(--borde); border-radius: calc(var(--radio) * .7); background: var(--boton); color: var(--boton-txt); box-shadow: 0 3px 0 var(--borde); font-weight: 700; }
+.b svg { width: 16px; height: 16px; }
+.b:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--borde); }
+.b[aria-pressed="true"] { background: var(--boton-on); color: var(--boton-on-txt); }
+body[data-skin="metal"] .b { box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7C818D, 0 2px 0 var(--borde); }
+body[data-skin="terminal"] .b { box-shadow: none; }
+#controles { display: flex; gap: 6px; flex-wrap: wrap; }
+#controles .extra { margin-left: auto; display: flex; gap: 6px; }
+.b.chico { font-size: 10px; font-family: 'Silkscreen', var(--fuente); letter-spacing: .5px; padding: 0 8px; }
+
+/* la lista */
+#lista { flex: 1; min-height: 0; margin: 0 10px 10px; display: flex; flex-direction: column; background: var(--lista); color: var(--lista-txt); border: 2px solid var(--borde); border-radius: var(--radio); overflow: hidden; }
+#pistas { flex: 1; min-height: 0; overflow-y: auto; margin: 0; padding: 4px 0; list-style: none; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; }
+#pistas button { display: flex; width: 100%; gap: 8px; padding: 7px 12px; border: 0; background: none; text-align: left; color: var(--lista-txt); min-height: 34px; align-items: center; font-family: inherit; }
+#pistas button:hover { background: var(--lista-sel); }
+#pistas button .n { opacity: .6; width: 22px; flex: none; }
+#pistas button .nom { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#pistas button .dur { opacity: .75; }
+#pistas li.sel button { background: var(--lista-sel); }
+#pistas li.act button { color: var(--lista-act); font-weight: 600; }
+#pie { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 12px; border-top: 2px solid var(--lista-borde); font-size: 11px; }
+#pie .tot { opacity: .75; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+#pie .b { margin-left: auto; height: 30px; }
+#nota { font-size: 10.5px; color: var(--tenue); margin: -2px 2px 0; line-height: 1.4; }
+@media (max-width: 420px) { #controles .extra { margin-left: 0; } .b { min-width: 36px; padding: 0 7px; } }
+@media (max-height: 700px) and (max-width: 719px) { #nota { display: none; } }   /* en un celular chico, la lista primero */
+@media (prefers-reduced-motion: reduce) { .b:active { transform: none; } }
+</style>
+</head>
+<body data-skin="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
+<section id="equipo" aria-label="Reproductor">
+  <div id="pantalla" title="toca la pantalla para cambiar entre la onda y las frecuencias"><canvas id="lcd" width="184" height="48" role="img" aria-label="Pantalla del reproductor"></canvas></div>
+  <input class="riel" id="pos" type="range" min="0" max="1000" value="0" aria-label="Posición en la pista">
+  <div id="controles">
+    <button class="b" id="bAnt" aria-label="Pista anterior (z)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3 V13 M13 3 L5 8 L13 13 Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+    <button class="b" id="bPlay" aria-label="Reproducir (x)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5 L13.5 8 L4 13.5 Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+    <button class="b" id="bPausa" aria-label="Pausa (c)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3 H6.5 V13 H4 Z M9.5 3 H12 V13 H9.5 Z" fill="currentColor"/></svg></button>
+    <button class="b" id="bStop" aria-label="Detener (v)"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" fill="currentColor"/></svg></button>
+    <button class="b" id="bSig" aria-label="Pista siguiente (b)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 3 V13 M3 3 L11 8 L3 13 Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+    <span class="extra">
+      <button class="b chico" id="bAzar" aria-pressed="false" aria-label="Orden al azar">azar</button>
+      <button class="b chico" id="bRep" aria-pressed="false" aria-label="Repetir la lista">rep</button>
+      <button class="b chico" id="bSkin" aria-label="Cambiar skin">skin</button>
+    </span>
+  </div>
+  <div class="fila"><span class="et">vol</span><input class="riel" id="vol" type="range" min="0" max="100" value="80" aria-label="Volumen"></div>
+  <div class="fila"><span class="et">bal</span><input class="riel" id="bal" type="range" min="-100" max="100" value="0" aria-label="Balance izquierda derecha"></div>
+  <p id="nota">kHz son miles de números por segundo. un audio de 48 kHz son 48.000 números cada segundo.</p>
+</section>
+<section id="lista" aria-label="Lista de pistas">
+  <ol id="pistas"></ol>
+  <div id="pie"><span class="tot" id="tot">…</span><button class="b chico" id="bAbrir">+ archivos</button></div>
+</section>
+<p class="sr" id="anuncio" role="status"></p>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const BASE = window.ARCHIVOS_BASE || '../archivos/';
+  const EMB = window.ARCHIVOS_EMBEBIDOS || (() => { try { return window.parent.ARCHIVOS_EMBEBIDOS || null; } catch (e) { return null; } })();
+  const urlDe = r => EMB ? EMB.datos[r] : BASE + r;
+  const leer = (k, d) => { try { const v = localStorage.getItem('nelios.meowamp.' + k); return v === null ? d : v; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem('nelios.meowamp.' + k, v); } catch (e) {} };
+
+  // ---------- la fuente de la pantalla: 5×7, hecha a mano ----------
+  const G = {
+    '0':'.###.#...##..###.#.###..##...#.###.', '1':'..#...##....#....#....#....#...###.', '2':'.###.#...#....#...#...#...#...#####',
+    '3':'#####...#...#.....#.....##...#.###.', '4':'...#...##..#.#.#..#.#####...#....#.', '5':'######....####.....#....##...#.###.',
+    '6':'..##..#...#....####.#...##...#.###.', '7':'#####....#...#...#...#....#....#...', '8':'.###.#...##...#.###.#...##...#.###.',
+    '9':'.###.#...##...#.####....#...#..##..', 'A':'.###.#...##...#######...##...##...#', 'B':'####.#...##...#####.#...##...#####.',
+    'C':'.###.#...##....#....#....#...#.###.', 'D':'###..#..#.#...##...##...##..#.###..', 'E':'######....#....####.#....#....#####',
+    'F':'######....#....####.#....#....#....', 'G':'.###.#...##....#.####...##...#.####', 'H':'#...##...##...#######...##...##...#',
+    'I':'.###...#....#....#....#....#...###.', 'J':'..###...#....#....#....##..#..##...', 'K':'#...##..#.#.#..##...#.#..#..#.#...#',
+    'L':'#....#....#....#....#....#....#####', 'M':'#...###.###.#.##.#.##...##...##...#', 'N':'#...##...###..##.#.##..###...##...#',
+    'O':'.###.#...##...##...##...##...#.###.', 'P':'####.#...##...#####.#....#....#....', 'Q':'.###.#...##...##...##.#.##..#..##.#',
+    'R':'####.#...##...#####.#.#..#..#.#...#', 'S':'.#####....#.....###.....#....#####.', 'T':'#####..#....#....#....#....#....#..',
+    'U':'#...##...##...##...##...##...#.###.', 'V':'#...##...##...##...##...#.#.#...#..', 'W':'#...##...##...##.#.##.#.##.#.#.#.#.',
+    'X':'#...##...#.#.#...#...#.#.#...##...#', 'Y':'#...##...#.#.#...#....#....#....#..', 'Z':'#####....#...#...#...#...#....#####',
+    'Ñ':'.##.##.##.#...###..##.#.##..###...#', ' ':'...................................', ':':'.......#....#.........#....#.......',
+    '.':'.........................##...##...', '-':'...............###.................', '/':'....#....#...#...#...#...#....#....',
+    '(':'...#...#...#....#....#.....#.....#.', ')':'.#.....#.....#....#....#...#...#...', '!':'..#....#....#....#....#.........#..',
+    '?':'.###.#...#....#...#...#.........#..', '+':'.......#....#..#####..#....#.......', ',':'....................##....#...#....',
+    '%':'##...##..#...#...#...#...#..##...##', '#':'.#.#..#.#.#####.#.#.#####.#.#..#.#.', '·':'.................#.................',
+    '¿':'..#.........#...#...#....#...#.###.', '¡':'..#.........#....#....#....#....#..', "'":'..#....#...#.......................',
+    '>':'#.....#.....#.....#...#...#...#....', '<':'....#...#...#...#.....#.....#.....#', '_':'..............................#####'
+  };
+  const CH = 6;                                          // 5 de letra + 1 de espacio
+  const norm = t => String(t).toUpperCase().replace(/Ñ/g, '\u0001').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\u0001/g, 'Ñ');
+
+  // ---------- la pantalla ----------
+  const cv = $('lcd'), g = cv.getContext('2d');
+  // dos acomodos de la misma pantalla: ancho (computador) y compacto (celular). Así siempre cabe con escala entera ×2 o más.
+  const ANCHA = { W: 184, H: 48, X: 76, ancho: 17, tit: [76, 3], l2: [76, 13], khz: 54, l3: [76, 22], l4: [76, 32], l5: [76, 41], vis: [3, 21, 66, 25], aviso: [74, 1, 110, 20] };
+  const COMPACTA = { W: 140, H: 56, X: 3, ancho: 22, tit: [3, 20], l2: [3, 29], khz: 54, l3: [99, 29], l4: [3, 38], l5: [3, 47], vis: [76, 2, 61, 15], aviso: [1, 18, 138, 19] };
+  let L = ANCHA, W = L.W, H = L.H;
+  let colores = {};
+  function leerColores() { const cs = getComputedStyle(document.body); for (const k of ['lcd', 'lcd-apagado', 'lcd-on', 'lcd-acento', 'lcd-bajo', 'lcd-alto']) colores[k] = cs.getPropertyValue('--' + k).trim(); }
+  function escala() {   // escalado entero: cada pixel de la pantalla es un cuadrado de k×k
+    const caja = $('pantalla'), ancho = caja.clientWidth - 16;
+    L = ancho >= ANCHA.W * 2 ? ANCHA : COMPACTA; W = L.W; H = L.H;
+    if (cv.width !== W) { cv.width = W; cv.height = H; }
+    const k = Math.max(1, Math.floor(ancho / W)); cv.style.width = (W * k) + 'px'; cv.style.height = (H * k) + 'px';
+  }
+
+  function letra(c, x, y, col, s = 1) {
+    const m = G[c] || G['?']; g.fillStyle = col;
+    for (let i = 0; i < 35; i++) if (m[i] === '#') g.fillRect(x + (i % 5) * s, y + Math.floor(i / 5) * s, s, s);
+  }
+  function texto(t, x, y, col, s = 1, max = 99) { const n = norm(t); for (let i = 0; i < n.length && i < max; i++) letra(n[i], x + i * CH * s, y, col, s); }
+  function fondoLcd() {   // el fondo y la rejilla de pixeles apagados, como una pantalla de verdad
+    g.fillStyle = colores.lcd; g.fillRect(0, 0, W, H);
+    g.fillStyle = colores['lcd-apagado'];
+    for (let y = 1; y < H; y += 2) for (let x = 1; x < W; x += 2) g.fillRect(x, y, 1, 1);
+  }
+
+  // ---------- el audio: una sola cadena, con rampas (ningún parámetro salta de golpe) ----------
+  let ctx = null, analiza = null, vol = null, pan = null, voz = null, fuente = null;
+  const RAMPA = 0.02;   // 20 ms: un salto de volumen es un chasquido
+  async function audio() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'playback' });
+      vol = ctx.createGain(); vol.gain.value = nivel(+$('vol').value);
+      pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null; if (pan) pan.pan.value = +$('bal').value / 100;
+      const lim = ctx.createDynamicsCompressor();                  // limitador: la gente prueba con audífonos
+      lim.threshold.value = -3; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = .002; lim.release.value = .12;
+      analiza = ctx.createAnalyser(); analiza.fftSize = 2048; analiza.smoothingTimeConstant = .72;
+      (pan ? (vol.connect(pan), pan) : vol).connect(lim); lim.connect(analiza); analiza.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') await ctx.resume();
+    return ctx.state === 'running';
+  }
+  const nivel = v => (v / 100) ** 2;    // el oído escucha en proporciones: el 50% de la perilla es un cuarto de la amplitud (−12 dB)
+  const buffers = {};
+  async function cargar(p) {
+    if (!buffers[p.ruta]) {
+      const ab = await (await fetch(urlDe(p.ruta))).arrayBuffer();
+      buffers[p.ruta] = await ctx.decodeAudioData(ab);
+    }
+    return buffers[p.ruta];
+  }
+
+  // ---------- la lista y el estado ----------
+  let pistas = [], actual = -1, estado = 'stop', inicio = 0, offset = 0, ficha = 0, mostrarResta = false, modoVisor = leer('visor', 'frec');
+  let aviso = '', avisoHasta = 0, marquee = 0;
+  const dur = p => buffers[p.ruta] ? buffers[p.ruta].duration : p.dur;
+  const tiempo = () => estado === 'play' ? Math.min(dur(pistas[actual]), ctx.currentTime - inicio) : offset;
+  const mmss = s => { s = Math.max(0, Math.floor(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  function decir(t, ms = 1600) { aviso = t; avisoHasta = performance.now() + ms; }
+
+  function pintarLista() {
+    const ol = $('pistas'); ol.innerHTML = '';
+    pistas.forEach((p, k) => {
+      const li = document.createElement('li'); if (k === actual) li.className = 'act sel';
+      const b = document.createElement('button');
+      b.innerHTML = '<span class="n">' + (k + 1) + '.</span><span class="nom"></span><span class="dur">' + (p.dur < 10 ? p.dur.toLocaleString('es-CL', { maximumFractionDigits: 1 }) + ' s' : mmss(p.dur)) + '</span>';
+      b.querySelector('.nom').textContent = p.nombre;
+      b.setAttribute('aria-label', p.nombre + ', ' + mmss(p.dur) + (k === actual ? ', sonando' : ''));
+      b.addEventListener('dblclick', () => tocar(k, 0));
+      b.addEventListener('click', e => { if (e.detail === 0 || matchMedia('(pointer: coarse)').matches) tocar(k, 0); else elegir(k); });
+      li.append(b); ol.append(li);
+    });
+    const total = pistas.reduce((s, p) => s + p.dur, 0);
+    $('tot').textContent = pistas.length + (pistas.length === 1 ? ' pista · ' : ' pistas · ') + mmss(total);
+  }
+  function elegir(k) { [...$('pistas').children].forEach((li, i) => li.classList.toggle('sel', i === k)); }
+
+  async function tocar(k, desde) {
+    if (!pistas.length) return;
+    k = (k + pistas.length) % pistas.length;
+    if (!(await audio())) { decir('TOCA PLAY'); return; }
+    const p = pistas[k], mia = ++ficha;
+    let buf; try { buf = await cargar(p); } catch (e) { decir('NO SE PUDO LEER'); return; }
+    if (mia !== ficha) return;                              // otra orden llegó mientras cargaba
+    soltar();                                               // la anterior se apaga con su rampa
+    const v = ctx.createGain(), f = ctx.createBufferSource(), t = ctx.currentTime;
+    f.buffer = buf; f.connect(v); v.connect(vol);
+    v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(1, t + RAMPA);
+    desde = Math.min(Math.max(0, desde), Math.max(0, buf.duration - .01));
+    f.start(t, desde);
+    f.onended = () => { if (f === fuente && estado === 'play') alTerminar(); };
+    fuente = f; voz = v; inicio = t - desde; offset = desde; estado = 'play';
+    if (actual !== k) { actual = k; marquee = 0; pintarLista(); anunciar(); }
+    pintarBotones();
+  }
+  function soltar() {   // apagar la voz que suena: rampa de 20 ms y recién ahí se detiene
+    if (!fuente) return;
+    const f = fuente, v = voz, t = ctx.currentTime;
+    v.gain.cancelScheduledValues(t); v.gain.setValueAtTime(v.gain.value, t); v.gain.linearRampToValueAtTime(0, t + RAMPA);
+    try { f.stop(t + RAMPA + .005); } catch (e) {}
+    fuente = null; voz = null;
+  }
+  function pausa() { if (estado !== 'play') return; offset = tiempo(); soltar(); estado = 'pausa'; pintarBotones(); }
+  function detener() { if (estado === 'stop' && offset === 0) return; soltar(); estado = 'stop'; offset = 0; pintarBotones(); }
+  function play() {
+    if (estado === 'play') { tocar(actual, 0); return; }     // como en los de antes: play de nuevo vuelve al principio
+    if (actual < 0) actual = 0;
+    tocar(actual, estado === 'pausa' ? offset : 0);
+  }
+  function siguiente(dir) {
+    if (!pistas.length) return;
+    const azar = $('bAzar').getAttribute('aria-pressed') === 'true' && pistas.length > 1;
+    let k = (actual + dir + pistas.length) % pistas.length;
+    if (azar) do k = Math.floor(Math.random() * pistas.length); while (k === actual);
+    if (estado === 'play') { tocar(k, 0); return; }
+    actual = k; offset = 0; if (estado === 'pausa') estado = 'stop'; marquee = 0; pintarLista(); anunciar(); pintarBotones();
+  }
+  function alTerminar() {
+    const ultima = actual === pistas.length - 1;
+    if (ultima && $('bRep').getAttribute('aria-pressed') !== 'true' && $('bAzar').getAttribute('aria-pressed') !== 'true') { fuente = null; voz = null; estado = 'stop'; offset = 0; pintarBotones(); return; }
+    siguiente(1);
+  }
+  function pintarBotones() {
+    $('bPlay').setAttribute('aria-pressed', String(estado === 'play'));
+    $('bPausa').setAttribute('aria-pressed', String(estado === 'pausa'));
+  }
+  function anunciar() { const p = pistas[actual]; if (p) $('anuncio').textContent = (actual + 1) + '. ' + p.nombre + ', ' + mmss(p.dur); }
+
+  // ---------- volumen y balance: con rampa, y con su número ----------
+  function pintarRiel(el) { const a = +el.min, b = +el.max; el.style.setProperty('--p', ((+el.value - a) / (b - a) * 100) + '%'); }
+  $('vol').addEventListener('input', e => {
+    const v = +e.target.value; pintarRiel(e.target); guardar('vol', v);
+    if (vol) { const t = ctx.currentTime; vol.gain.cancelScheduledValues(t); vol.gain.setValueAtTime(vol.gain.value, t); vol.gain.linearRampToValueAtTime(nivel(v), t + RAMPA); }
+    decir(v === 0 ? 'VOL 0% SILENCIO' : 'VOL ' + v + '% ' + (20 * Math.log10(nivel(v))).toFixed(1).replace('.', ',') + 'DB');
+  });
+  $('bal').addEventListener('input', e => {
+    let v = +e.target.value; if (Math.abs(v) < 6) { v = 0; e.target.value = 0; }   // el centro "engancha"
+    pintarRiel(e.target);
+    if (pan) { const t = ctx.currentTime; pan.pan.cancelScheduledValues(t); pan.pan.setValueAtTime(pan.pan.value, t); pan.pan.linearRampToValueAtTime(v / 100, t + RAMPA); }
+    decir(v === 0 ? 'BAL CENTRO' : 'BAL ' + Math.abs(v) + '% ' + (v < 0 ? 'IZQ' : 'DER'));
+  });
+  // la posición: arrastrar muestra adónde vas; soltar salta, con cruce corto
+  let arrastrando = false;
+  $('pos').addEventListener('input', e => {
+    arrastrando = true; pintarRiel(e.target);
+    const p = pistas[actual]; if (p) decir('IR A ' + mmss(+e.target.value / 1000 * dur(p)), 900);
+  });
+  $('pos').addEventListener('change', e => {
+    arrastrando = false; const p = pistas[actual]; if (!p) return;
+    const s = +e.target.value / 1000 * dur(p);
+    if (estado === 'play') tocar(actual, s); else { offset = s; if (estado === 'stop') estado = 'pausa'; pintarBotones(); }
+  });
+
+  // ---------- skins ----------
+  const SKINS = [{ id: 'neli', nombre: 'NELI' }, { id: 'terminal', nombre: 'TERMINAL' }, { id: 'metal', nombre: 'METAL' }];
+  function ponerSkin(id, avisar) {
+    if (!SKINS.find(s => s.id === id)) id = 'neli';
+    document.body.dataset.skin = id; guardar('skin', id); leerColores();
+    if (avisar) decir('SKIN ' + SKINS.find(s => s.id === id).nombre);
+  }
+  $('bSkin').addEventListener('click', () => { const i = SKINS.findIndex(s => s.id === document.body.dataset.skin); ponerSkin(SKINS[(i + 1) % SKINS.length].id, true); });
+
+  // ---------- botones y teclas (las de siempre: z x c v b) ----------
+  $('bPlay').addEventListener('click', play);
+  $('bPausa').addEventListener('click', () => estado === 'pausa' ? play() : pausa());
+  $('bStop').addEventListener('click', detener);
+  $('bAnt').addEventListener('click', () => siguiente(-1));
+  $('bSig').addEventListener('click', () => siguiente(1));
+  for (const id of ['bAzar', 'bRep']) $(id).addEventListener('click', e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); guardar(id, on ? '1' : '0'); decir((id === 'bAzar' ? 'AZAR ' : 'REPETIR ') + (on ? 'SI' : 'NO')); });
+  $('pantalla').addEventListener('click', e => {
+    const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
+    if (x < 70 && (e.clientY - r.top) / r.height * H < 18) { mostrarResta = !mostrarResta; decir(mostrarResta ? 'TIEMPO QUE FALTA' : 'TIEMPO QUE PASO'); }
+    else { modoVisor = modoVisor === 'frec' ? 'onda' : 'frec'; guardar('visor', modoVisor); decir(modoVisor === 'frec' ? 'FRECUENCIAS' : 'LA ONDA'); }
+  });
+  $('bAbrir').addEventListener('click', () => { if (window.parent !== window) try { window.parent.postMessage({ nelios: 'abrir', id: 'archivos' }, '*'); } catch (e) {} });
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.target.tagName === 'INPUT') return;
+    const a = { z: () => siguiente(-1), x: play, c: () => estado === 'pausa' ? play() : pausa(), v: detener, b: () => siguiente(1) }[e.key.toLowerCase()];
+    if (a) { e.preventDefault(); a(); }
+  });
+
+  // ---------- el dibujo: 30 cuadros por segundo, y nada si la ventana no se ve ----------
+  const frec = new Uint8Array(1024), onda = new Uint8Array(2048);
+  const picos = new Float32Array(22);
+  let ultimo = 0, raf = 0;
+  function cuadro(ahora) {
+    raf = requestAnimationFrame(cuadro);
+    if (ahora - ultimo < 33) return; ultimo = ahora;
+    fondoLcd();
+    const on = colores['lcd-on'], ac = colores['lcd-acento'];
+    // el estado, arriba a la izquierda
+    if (estado === 'play') { g.fillStyle = on; for (let i = 0; i < 4; i++) g.fillRect(3 + i, 3 + i, 1, 7 - 2 * i); }
+    else if (estado === 'pausa') { g.fillStyle = on; g.fillRect(3, 3, 2, 7); g.fillRect(6, 3, 2, 7); }
+    else { g.fillStyle = ac; g.fillRect(3, 4, 5, 5); }
+    // el tiempo, grande
+    const p = pistas[actual];
+    if (p && ctx) { const t = estado === 'stop' ? 0 : tiempo(); const s = mostrarResta ? dur(p) - t : t; texto((mostrarResta ? '-' : '') + mmss(s), mostrarResta ? 6 : 12, 2, on, 2); }
+    else texto('--:--', 12, 2, on, 2);
+    // a la derecha: el nombre corriendo, y los números del archivo
+    const X = L.X, ANCHO = L.ancho;
+    if (p) {
+      const nombre = (actual + 1) + '. ' + p.nombre + '  ***  ';
+      const n = norm(nombre), px = n.length * CH, corre = Math.floor(marquee) % px;
+      g.save(); g.beginPath(); g.rect(L.tit[0], L.tit[1] - 1, W - L.tit[0] - 2, 8); g.clip();
+      for (let r = 0; r < 2; r++) texto(n, L.tit[0] - corre + r * px, L.tit[1], on);
+      g.restore();
+      if (estado === 'play') marquee += .5;
+      const khz = Math.round(p.tasa / 1000), kbps = Math.round(p.bytes * 8 / p.dur / 1000);
+      texto(p.formato === 'mp3' ? kbps + 'KBPS' : 'WAV', L.l2[0], L.l2[1], ac);
+      texto(khz + 'KHZ', L.l2[0] + L.khz, L.l2[1], ac);
+      texto(p.canales === 1 ? 'MONO' : (L === COMPACTA ? 'EST' : 'ESTEREO'), L.l3[0], L.l3[1], on);
+      const nn = String(p.numeros).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      texto(nn, L.l4[0], L.l4[1], ac, 1, ANCHO);
+      texto('NUMEROS', L.l4[0] + (nn.length + 1) * CH, L.l4[1], on);
+      texto('EN TOTAL', L.l5[0], L.l5[1], on);
+    } else texto('SIN PISTAS', L.tit[0], L.tit[1], on);
+    // el visor: las frecuencias o la onda de verdad, de lo que está saliendo
+    const [vx, vy, vw, vh] = L.vis;
+    if (analiza && estado === 'play') {
+      if (modoVisor === 'frec') {
+        analiza.getByteFrequencyData(frec);
+        const nb = 22, sr = ctx.sampleRate;
+        for (let b = 0; b < nb; b++) {
+          // bandas espaciadas como el oído: de 40 Hz a 16 kHz en proporción
+          const f0 = 40 * Math.pow(400, b / nb), f1 = 40 * Math.pow(400, (b + 1) / nb);
+          const i0 = Math.floor(f0 / (sr / 2) * frec.length), i1 = Math.max(i0 + 1, Math.floor(f1 / (sr / 2) * frec.length));
+          let m = 0; for (let i = i0; i < i1 && i < frec.length; i++) m = Math.max(m, frec[i]);
+          const h = Math.round(m / 255 * vh);
+          for (let y = 0; y < h; y++) { g.fillStyle = y > vh * .66 ? colores['lcd-alto'] : y > vh * .33 ? on : colores['lcd-bajo']; g.fillRect(vx + b * 3, vy + vh - 1 - y, 2, 1); }
+          picos[b] = Math.max(picos[b] - .5, h);
+          g.fillStyle = ac; g.fillRect(vx + b * 3, vy + vh - 1 - Math.round(picos[b]), 2, 1);
+        }
+      } else {
+        analiza.getByteTimeDomainData(onda);
+        g.fillStyle = on;
+        let antes = null;
+        for (let x = 0; x < vw; x++) {
+          const v = onda[Math.floor(x / vw * 512)];
+          const y = vy + Math.round((255 - v) / 255 * (vh - 1));
+          if (antes !== null) { const a = Math.min(antes, y), b2 = Math.max(antes, y); g.fillRect(vx + x, a, 1, b2 - a + 1); } else g.fillRect(vx + x, y, 1, 1);
+          antes = y;
+        }
+      }
+    } else {
+      g.fillStyle = colores['lcd-bajo'];
+      for (let x = 0; x < vw; x += 2) g.fillRect(vx + x, vy + vh - 1, 1, 1);
+      picos.fill(0);
+    }
+    // un aviso pasa por encima un rato (volumen, skin, etc.)
+    if (aviso && ahora < avisoHasta) { g.fillStyle = colores.lcd; const [ax, ay, aw, ah] = L.aviso; g.fillRect(ax, ay, aw, ah); texto(aviso, ax + 2, ay + 2, on, 1, ANCHO); if (norm(aviso).length > ANCHO) texto(norm(aviso).slice(ANCHO), ax + 2, ay + 11, on, 1, ANCHO); }
+    // la barra de posición sigue a la música (si nadie la está arrastrando)
+    if (!arrastrando) { const r = $('pos'); const v = p && ctx && estado !== 'stop' ? Math.round(tiempo() / dur(p) * 1000) : 0; if (+r.value !== v) { r.value = v; pintarRiel(r); } }
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else if (!raf) raf = requestAnimationFrame(cuadro); });
+
+  // ---------- recibir un archivo desde Archivos, y la patita ----------
+  let pendiente = null;
+  window.addEventListener('message', e => {
+    const d = e.data; if (e.source !== window.parent || !d) return;
+    if (d.nelios === 'archivo') { if (!pistas.length) { pendiente = d.ruta; return; } const k = pistas.findIndex(p => p.ruta === d.ruta); if (k >= 0) tocar(k, 0); }
+    if (d.nelios === 'cursor') {
+      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+      else document.body.classList.remove('patita');
+    }
+  });
+
+  // ---------- arrancar ----------
+  ponerSkin(leer('skin', 'neli'), false);
+  $('vol').value = leer('vol', 80); $('bAzar').setAttribute('aria-pressed', String(leer('bAzar', '0') === '1')); $('bRep').setAttribute('aria-pressed', String(leer('bRep', '0') === '1'));
+  for (const id of ['pos', 'vol', 'bal']) pintarRiel($(id));
+  escala(); if (window.ResizeObserver) new ResizeObserver(escala).observe($('pantalla')); else addEventListener('resize', escala);
+  raf = requestAnimationFrame(cuadro);
+  (async () => {
+    let indice;
+    try { indice = EMB ? EMB.indice : await (await fetch(BASE + 'indice.json', { cache: 'no-cache' })).json(); }
+    catch (e) { decir('NO SE PUDO LEER LA CARPETA', 99999); return; }
+    pistas = indice.archivos.filter(a => a.tipo === 'audio');
+    actual = pistas.length ? 0 : -1;
+    pintarLista(); anunciar();
+    if (pendiente) { const k = pistas.findIndex(p => p.ruta === pendiente); if (k >= 0) { actual = k; pintarLista(); tocar(k, 0); } }
+  })();
+})();
+</script>
+</body>
+</html>
