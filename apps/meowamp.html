@@ -46,7 +46,7 @@ button, input, select { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 /* cada parte del reproductor es un módulo: se muestra, se esconde o se suelta como ventana propia */
-.mod { flex: none; background: var(--marco); border: 2px solid var(--borde); border-radius: var(--radio); box-shadow: 4px 4px 0 var(--sombra); display: flex; flex-direction: column; min-height: 0; }
+.mod { flex: none; overflow: hidden; background: var(--marco); border: 2px solid var(--borde); border-radius: var(--radio); box-shadow: 4px 4px 0 var(--sombra); display: flex; flex-direction: column; min-height: 0; }
 body[data-skin="metal"] .mod { background: linear-gradient(180deg, #E4E7EC, #B9BDC7 60%, #A9AEB9); box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6E737E, 3px 3px 0 #6E737E; }
 .mod > .cuerpo { padding: 10px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
 .cabeza { display: flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border-bottom: 2px solid var(--borde); min-height: 30px; }
@@ -88,18 +88,36 @@ body.suelto #mVideo .caja { aspect-ratio: auto; flex: 1; }
 body.suelto #mVideo .cuerpo { flex: 1; }
 #vacioVideo { position: absolute; inset: 0; display: grid; place-items: center; color: #8C90B8; font: 400 10px 'Silkscreen', var(--fuente); letter-spacing: 1px; text-align: center; padding: 10px; }
 
-/* el mixer */
-#mMixer .cuerpo { flex-direction: row; align-items: stretch; gap: 14px; }
-.canal { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.canal .et { font: 400 10px 'Silkscreen', var(--fuente); letter-spacing: 1px; color: var(--tenue); }
-.fader { position: relative; width: 44px; height: 150px; }
-.fader input { position: absolute; left: 50%; top: 50%; width: 150px; height: 44px; transform: translate(-50%, -50%) rotate(-90deg); }
-.medidor { width: 16px; height: 150px; border: 2px solid var(--borde); background: var(--lcd); display: flex; flex-direction: column-reverse; padding: 2px; gap: 2px; }
+/* el mixer: ecualizador de 10 bandas, preamp y volumen, como los de antes */
+#mMixer .cuerpo { gap: 8px; }
+.eq-arriba { display: flex; align-items: center; gap: 6px; }
+.eq-arriba .b { height: 28px; }
+#curva { image-rendering: pixelated; flex: 1; min-width: 0; height: 44px; background: var(--lcd); border: 2px solid var(--borde); image-rendering: pixelated; display: block; }
+.eq { display: grid; grid-template-columns: 30px 34px 10px repeat(10, minmax(0, 1fr)) 10px 34px 18px; align-items: end; gap: 0 2px; background: var(--lcd); border: 2px solid var(--borde); border-radius: calc(var(--radio) * .5); padding: 6px 6px 4px; }
+.eq .escala { height: 118px; display: flex; flex-direction: column; justify-content: space-between; font: 400 8px 'Silkscreen', var(--fuente); color: var(--lcd-bajo); text-align: right; padding: 4px 2px 18px 0; }
+.eq .sep { height: 118px; border-left: 1px dashed var(--lcd-apagado); margin-bottom: 18px; justify-self: center; }
+.banda { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.banda .et { font: 400 8px 'Silkscreen', var(--fuente); color: var(--lcd-on); letter-spacing: .3px; white-space: nowrap; height: 10px; }
+.fader { position: relative; width: 100%; height: 108px; }
+.fader::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed var(--lcd-apagado); }
+.fader input { position: absolute; left: 50%; top: 50%; width: 104px; height: 24px; transform: translate(-50%, -50%) rotate(-90deg); -webkit-appearance: none; appearance: none; background: transparent; margin: 0; }
+.fader input::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, transparent var(--a, 50%), var(--color, var(--lcd-on)) var(--a, 50%) var(--b, 50%), transparent var(--b, 50%)), var(--lcd-apagado); }
+.fader input::-moz-range-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, transparent var(--a, 50%), var(--color, var(--lcd-on)) var(--a, 50%) var(--b, 50%), transparent var(--b, 50%)), var(--lcd-apagado); }
+.fader input::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 18px; margin-top: -6px; border-radius: 3px; background: var(--lcd-on); border: 2px solid var(--borde); }
+.fader input::-moz-range-thumb { width: 10px; height: 16px; border-radius: 3px; background: var(--lcd-on); border: 2px solid var(--borde); }
+.banda.pre .fader input::-webkit-slider-thumb, .banda.vol .fader input::-webkit-slider-thumb { background: var(--lcd-acento); }
+.eq.apagado .banda:not(.vol) { opacity: .4; }
+.medidor { width: 12px; height: 108px; border: 1px solid var(--lcd-apagado); display: flex; flex-direction: column-reverse; padding: 1px; gap: 1px; margin-bottom: 14px; }
 .medidor i { flex: 1; background: var(--lcd-apagado); }
 .medidor i.on { background: var(--lcd-bajo); } .medidor i.on.medio { background: var(--lcd-on); } .medidor i.on.alto { background: var(--lcd-alto); }
-.escala { height: 150px; display: flex; flex-direction: column; justify-content: space-between; font: 10px 'IBM Plex Mono', ui-monospace, monospace; color: var(--tenue); padding: 2px 0; }
-.lectura { font: 600 13px 'IBM Plex Mono', ui-monospace, monospace; color: var(--texto); min-width: 72px; text-align: center; }
-#mMixer .lado { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 8px; flex: 1; }
+.eq-abajo { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.eq-abajo .lectura { font: 600 12px 'IBM Plex Mono', ui-monospace, monospace; color: var(--texto); margin-right: auto; }
+.eq-abajo .b { height: 28px; }
+/* en el celular no caben 13 columnas con escala: se va la escala y se aprietan las etiquetas */
+body.cel .eq { grid-template-columns: 26px 4px repeat(10, minmax(0, 1fr)) 4px 26px 12px; gap: 0; padding: 6px 4px 4px; }
+body.cel .eq .escala { display: none; }
+body.cel .banda .et { font-size: 7px; letter-spacing: 0; }
+#presets { height: 28px; border: 2px solid var(--borde); border-radius: calc(var(--radio) * .6); background: var(--boton); color: var(--boton-txt); font: 400 10px 'Silkscreen', var(--fuente); padding: 0 6px; }
 
 /* la lista */
 #mLista { flex: 1 1 auto; min-height: 220px; background: var(--lista); color: var(--lista-txt); }
@@ -163,15 +181,32 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     <button class="mini esconder" aria-label="Esconder el mixer"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6 H10" stroke="currentColor" stroke-width="2"/></svg></button>
   </div>
   <div class="cuerpo">
-    <div class="canal"><span class="et">vol</span>
-      <div style="display:flex;gap:8px;align-items:stretch">
-        <div class="escala" aria-hidden="true"><span>0</span><span>-6</span><span>-12</span><span>-24</span><span>-∞</span></div>
-        <div class="fader"><input class="riel" id="vol" type="range" min="0" max="100" value="80" aria-label="Volumen general"></div>
-        <div class="medidor" id="medidor" aria-label="Nivel de salida"></div>
-      </div>
+    <div class="eq-arriba">
+      <button class="b chico" id="bEq" aria-pressed="true">on</button>
+      <canvas id="curva" width="160" height="20" role="img" aria-label="La curva del ecualizador: cuánto sube o baja cada altura"></canvas>
+      <select id="presets" aria-label="Ajustes guardados del ecualizador"></select>
     </div>
-    <div class="lado">
+    <div class="eq" id="eq">
+      <div class="escala" aria-hidden="true"><span>+12</span><span>0</span><span>-12</span></div>
+      <div class="banda pre"><div class="fader"><input id="pre" type="range" min="-12" max="12" step="0.5" value="0" aria-label="Preamp"></div><span class="et">pre</span></div>
+      <div class="sep" aria-hidden="true"></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="0" type="range" min="-12" max="12" step="0.5" value="0" aria-label="60 hercios"></div><span class="et">60</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="1" type="range" min="-12" max="12" step="0.5" value="0" aria-label="170 hercios"></div><span class="et">170</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="2" type="range" min="-12" max="12" step="0.5" value="0" aria-label="310 hercios"></div><span class="et">310</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="3" type="range" min="-12" max="12" step="0.5" value="0" aria-label="600 hercios"></div><span class="et">600</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="4" type="range" min="-12" max="12" step="0.5" value="0" aria-label="1k hercios"></div><span class="et">1k</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="5" type="range" min="-12" max="12" step="0.5" value="0" aria-label="3k hercios"></div><span class="et">3k</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="6" type="range" min="-12" max="12" step="0.5" value="0" aria-label="6k hercios"></div><span class="et">6k</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="7" type="range" min="-12" max="12" step="0.5" value="0" aria-label="12k hercios"></div><span class="et">12k</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="8" type="range" min="-12" max="12" step="0.5" value="0" aria-label="14k hercios"></div><span class="et">14k</span></div>
+      <div class="banda"><div class="fader"><input class="banda-in" data-i="9" type="range" min="-12" max="12" step="0.5" value="0" aria-label="16k hercios"></div><span class="et">16k</span></div>
+      <div class="sep" aria-hidden="true"></div>
+      <div class="banda vol"><div class="fader"><input id="vol" type="range" min="0" max="100" value="80" aria-label="Volumen general"></div><span class="et">vol</span></div>
+      <div class="medidor" id="medidor" aria-label="Nivel de salida"></div>
+    </div>
+    <div class="eq-abajo">
       <span class="lectura" id="volTxt">80% · -3,9 dB</span>
+      <button class="b chico" id="bPlano">plano</button>
       <button class="b chico" id="bMudo" aria-pressed="false">silencio</button>
     </div>
   </div>
@@ -238,6 +273,17 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
   const durTxt = d => !d ? 'video' : d < 10 ? d.toLocaleString('es-CL', { maximumFractionDigits: 1 }) + ' s' : mmss(d);
   const nivel = v => (v / 100) ** 2;    // el oído escucha en proporciones: la perilla a la mitad es un cuarto de la amplitud (−12 dB)
   const dbTxt = v => v === 0 ? '-∞ dB' : (20 * Math.log10(nivel(v))).toFixed(1).replace('.', ',') + ' dB';
+  const FRECS = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
+  const PRESETS = {
+    'plano':       { pre: 0,  g: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+    'graves':      { pre: -3, g: [7, 6, 4, 1, 0, 0, 0, 0, 0, 0] },
+    'agudos':      { pre: -3, g: [0, 0, 0, 0, 0, 2, 4, 6, 7, 7] },
+    'voz':         { pre: -2, g: [-3, -2, 0, 2, 4, 4, 3, 1, 0, -2] },
+    'rock':        { pre: -3, g: [5, 3, -2, -4, -1, 2, 5, 6, 6, 6] },
+    'fiesta':      { pre: -3, g: [6, 5, 0, 0, 0, 0, 0, 3, 5, 5] },
+    'radio vieja': { pre: 0,  g: [-12, -9, -3, 3, 6, 4, -3, -10, -12, -12] },
+    'teléfono':    { pre: 0,  g: [-12, -12, -6, 4, 6, 4, -6, -12, -12, -12] }
+  };
   function pintarRiel(el) { const a = +el.min, b = +el.max; el.style.setProperty('--p', ((+el.value - a) / (b - a) * 100) + '%'); }
 
   // ---------- skins (las comparten todas las ventanas) ----------
@@ -250,7 +296,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
   }
 
   // ---------- los módulos: adentro, sueltos (ventana propia) o escondidos ----------
-  const MODS = { mixer: { el: 'mMixer', nombre: 'mixer', w: 330, h: 260 }, video: { el: 'mVideo', nombre: 'video', w: 520, h: 330 }, lista: { el: 'mLista', nombre: 'lista', w: 420, h: 440 } };
+  const MODS = { mixer: { el: 'mMixer', nombre: 'mixer', w: 470, h: 330 }, video: { el: 'mVideo', nombre: 'video', w: 520, h: 330 }, lista: { el: 'mLista', nombre: 'lista', w: 420, h: 440 } };
   let arreglo = { mixer: 'oculto', video: 'oculto', lista: 'adentro' };
   try { Object.assign(arreglo, JSON.parse(leer('arreglo', '{}'))); } catch (e) {}
 
@@ -343,13 +389,22 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
   let sonando = null;                                      // el item que suena (o el elegido)
   let estado = 'stop', inicio = 0, offset = 0, ficha = 0, mostrarResta = false, modoVisor = leer('visor', 'frec');
   let aviso = '', avisoHasta = 0, marquee = 0, vol = +leer('vol', 80), mudo = false;
+  let eq = { pre: 0, g: FRECS.map(() => 0) }, eqOn = leer('eqOn', '1') === '1', eqPreset = leer('eqPreset', 'plano');
+  try { const e = JSON.parse(leer('eq', 'null')); if (e && Array.isArray(e.g) && e.g.length === FRECS.length) eq = { pre: +e.pre || 0, g: e.g.map(x => Math.max(-12, Math.min(12, +x || 0))) }; } catch (e) {}
+  function aplicarEq() {   // con rampa: ningún filtro salta de golpe
+    if (!ctx) return; const t = ctx.currentTime;
+    const ir = (prm, v) => { prm.cancelScheduledValues(t); prm.setValueAtTime(prm.value, t); prm.linearRampToValueAtTime(v, t + RAMPA); };
+    ir(preNodo.gain, eqOn ? Math.pow(10, eq.pre / 20) : 1);
+    bandasNodo.forEach((b, i) => ir(b.gain, eqOn ? eq.g[i] : 0));
+  }
+  function guardarEq() { guardar('eq', JSON.stringify(eq)); guardar('eqOn', eqOn ? '1' : '0'); guardar('eqPreset', eqPreset); }
   const igual = (a, b) => !!a && !!b && (a.yt ? a.yt === b.yt : a.ruta === b.ruta);
   const indice = () => pistas().findIndex(p => igual(p, sonando));
   const esYt = p => !!(p && p.yt);
   function decir(t, ms = 1600) { aviso = t; avisoHasta = performance.now() + ms; }
 
   // ---------- el audio de los archivos: una sola cadena, con rampas (ningún parámetro salta de golpe) ----------
-  let ctx = null, analiza = null, volNodo = null, voz = null, fuente = null;
+  let ctx = null, analiza = null, volNodo = null, voz = null, fuente = null, preNodo = null, bandasNodo = [];
   const RAMPA = 0.02;
   async function audio() {
     if (!ctx) {
@@ -358,6 +413,16 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
       const lim = ctx.createDynamicsCompressor();          // limitador: la gente prueba con audífonos
       lim.threshold.value = -3; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = .002; lim.release.value = .12;
       analiza = ctx.createAnalyser(); analiza.fftSize = 2048; analiza.smoothingTimeConstant = .72;
+      // el ecualizador: preamp y 10 filtros en fila, antes del volumen
+      preNodo = ctx.createGain(); preNodo.gain.value = eqOn ? Math.pow(10, eq.pre / 20) : 1;
+      let antes = preNodo;
+      bandasNodo = FRECS.map((f, i) => {
+        const b = ctx.createBiquadFilter();
+        b.type = i === 0 ? 'lowshelf' : i === FRECS.length - 1 ? 'highshelf' : 'peaking';
+        b.frequency.value = f; b.Q.value = 1.1; b.gain.value = eqOn ? eq.g[i] : 0;
+        antes.connect(b); antes = b; return b;
+      });
+      antes.connect(volNodo);
       volNodo.connect(lim); lim.connect(analiza); analiza.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') await ctx.resume();
@@ -393,7 +458,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     if (mia !== ficha) return;
     soltarVoz();
     const v = ctx.createGain(), f = ctx.createBufferSource(), t = ctx.currentTime;
-    f.buffer = buf; f.connect(v); v.connect(volNodo);
+    f.buffer = buf; f.connect(v); v.connect(preNodo);
     v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(1, t + RAMPA);
     desde = Math.min(Math.max(0, desde), Math.max(0, buf.duration - .01));
     f.start(t, desde);
@@ -526,20 +591,33 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     const m = t.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})/);
     return m ? m[1] : (/^[\w-]{11}$/.test(t) ? t : null);
   }
+  // la carpeta de neli no se toca: si estás en ella, lo nuevo va a "mi lista"
+  function listaParaAgregar() {
+    const l = listaActiva(); if (!l.fija) return { l, salto: false };
+    let m = listas.find(x => x.nombre === 'mi lista');
+    if (!m) { m = { id: 'l' + Date.now().toString(36), nombre: 'mi lista', items: [] }; listas.push(m); }
+    activa = m.id; return { l: m, salto: true };
+  }
   async function agregarYt(link) {
-    const l = listaActiva(); if (l.fija) return false;
-    const id = idDeYoutube(link);
-    if (!id) { decir('ESE LINK NO ES DE YOUTUBE', 2500); return false; }
-    if (l.items.some(it => it.yt === id)) { decir('YA ESTA EN LA LISTA', 2000); return false; }
+    const id0 = idDeYoutube(link);
+    if (!id0) { decir('ESE LINK NO ES DE YOUTUBE', 2500); return false; }
+    const { l, salto } = listaParaAgregar();
+    const id = id0;
+    if (l.items.some(it => it.yt === id)) { guardarListas(); decir('YA ESTA EN LA LISTA', 2000); publicar(); return false; }
     const it = { yt: id, nombre: 'video de youtube', dur: 0 };
-    l.items.push(it); guardarListas(); decir('AGREGADO'); publicar();
+    l.items.push(it); guardarListas(); decir(salto ? 'AGREGADO A MI LISTA' : 'AGREGADO', 2200); publicar();
     try {   // el nombre, si youtube lo cuenta; si no, aparece cuando suena
       const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
       if (r.ok) { const j = await r.json(); if (j.title) { it.nombre = j.title; guardarListas(); publicar(); } }
     } catch (e) {}
     return true;
   }
-  function agregarArchivo(ruta) { const l = listaActiva(); if (l.fija || !archivos.some(a => a.ruta === ruta)) return; l.items.push({ ruta }); guardarListas(); publicar(); }
+  function agregarArchivo(ruta) {
+    if (!archivos.some(a => a.ruta === ruta)) return;
+    const { l, salto } = listaParaAgregar();
+    if (l.items.some(x => x.ruta === ruta)) { guardarListas(); decir('YA ESTA EN LA LISTA', 2000); publicar(); return; }
+    l.items.push({ ruta }); guardarListas(); decir(salto ? 'AGREGADO A MI LISTA' : 'AGREGADO', 2200); publicar();
+  }
   function quitar(k) {
     const l = listaActiva(); if (l.fija) return;
     const it = datosDe(l.items[k]); if (!it) return;
@@ -584,7 +662,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
   function estadoPublico() {
     return { tipo: 'estado', listas: todasLasListas().map(l => ({ id: l.id, nombre: l.nombre, fija: !!l.fija })), activa,
              pistas: pistas().map(p => ({ nombre: p.nombre, dur: p.dur || 0, yt: p.yt || null, ruta: p.ruta || null })), actual: indice(),
-             archivos: archivos.map(a => ({ ruta: a.ruta, nombre: a.nombre })), vol, mudo, estado };
+             archivos: archivos.map(a => ({ ruta: a.ruta, nombre: a.nombre })), vol, mudo, estado, eq, eqOn, eqPreset, yt: esYt(sonando) };
   }
   canal && canal.addEventListener('message', e => {
     const m = e.data;
@@ -604,6 +682,9 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     if (a === 'elegirLista') elegirLista(m.id);
     if (a === 'vol') { vol = Math.max(0, Math.min(100, +m.v)); guardar('vol', vol); aplicarVolumen(); decir(vol === 0 ? 'VOL 0%' : 'VOL ' + vol + '% ' + dbTxt(vol).replace(' ', ''), 900); publicar(); }
     if (a === 'mudo') { mudo = !mudo; aplicarVolumen(); decir(mudo ? 'SILENCIO' : 'VOL ' + vol + '%'); publicar(); }
+    if (a === 'eqBanda') { const v = Math.max(-12, Math.min(12, +m.v)); if (m.i === 'pre') eq.pre = v; else eq.g[m.i] = v; eqPreset = ''; aplicarEq(); guardarEq(); decir((m.i === 'pre' ? 'PREAMP' : FRECS[m.i] >= 1000 ? FRECS[m.i] / 1000 + 'K' : FRECS[m.i] + 'HZ') + ' ' + (v > 0 ? '+' : '') + String(v).replace('.', ',') + 'DB', 900); publicar(); }
+    if (a === 'eqOn') { eqOn = !eqOn; aplicarEq(); guardarEq(); decir(eqOn ? 'EQ ON' : 'EQ OFF'); publicar(); }
+    if (a === 'eqPreset' && PRESETS[m.nombre]) { const pr = PRESETS[m.nombre]; eq = { pre: pr.pre, g: pr.g.slice() }; eqPreset = m.nombre; aplicarEq(); guardarEq(); decir('EQ ' + m.nombre); publicar(); }
     if (a === 'pegar') ponerModulo(m.mod, 'adentro');
     if (a === 'esconder') ponerModulo(m.mod, 'oculto');
     if (a === 'soltar') ponerModulo(m.mod, 'afuera');
@@ -760,9 +841,51 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     for (const id of ['ytLink', 'nomLista']) $(id).addEventListener('keydown', e => e.stopPropagation());
   }
   function montarMixer() {
-    $('vol').addEventListener('input', e => { pintarRiel(e.target); $('volTxt').textContent = e.target.value + '% · ' + dbTxt(+e.target.value); orden({ accion: 'vol', v: +e.target.value }); });
+    $('vol').addEventListener('input', e => { $('volTxt').textContent = e.target.value + '% · ' + dbTxt(+e.target.value); orden({ accion: 'vol', v: +e.target.value }); });
+    document.querySelectorAll('#eq .fader input').forEach(el => el.addEventListener('input', () => pintarBanda(el)));
+    $('pre').addEventListener('input', e => orden({ accion: 'eqBanda', i: 'pre', v: +e.target.value }));
+    document.querySelectorAll('.banda-in').forEach(el => el.addEventListener('input', e => orden({ accion: 'eqBanda', i: +e.target.dataset.i, v: +e.target.value })));
+    // doble clic en una banda: vuelve a 0
+    document.querySelectorAll('#eq .fader input').forEach(el => el.addEventListener('dblclick', () => { if (el.id === 'vol') return; el.value = 0; el.dispatchEvent(new Event('input')); }));
+    $('bEq').addEventListener('click', () => orden({ accion: 'eqOn' }));
+    $('bPlano').addEventListener('click', () => orden({ accion: 'eqPreset', nombre: 'plano' }));
+    $('presets').addEventListener('change', e => { if (e.target.value) orden({ accion: 'eqPreset', nombre: e.target.value }); });
     $('bMudo').addEventListener('click', () => orden({ accion: 'mudo' }));
     const md = $('medidor'); for (let i = 0; i < 14; i++) { const s = document.createElement('i'); if (i >= 9) s.className = 'medio'; if (i >= 12) s.className = 'alto'; md.append(s); }
+    if (window.ResizeObserver) new ResizeObserver(() => dibujarCurva()).observe(document.querySelector('.eq-arriba'));
+    const ps = $('presets'); ps.innerHTML = '<option value="">presets</option>' + Object.keys(PRESETS).map(n => '<option value="' + n + '">' + n + '</option>').join('');
+  }
+  // la barra va del 0 a la perilla (el volumen, desde abajo); sube hacia el coral, baja hacia el lila
+  function pintarBanda(el) {
+    const a = +el.min, b = +el.max, p = (+el.value - a) / (b - a) * 100, cero = el.id === 'vol' ? 0 : 50;
+    el.style.setProperty('--a', Math.min(p, cero) + '%'); el.style.setProperty('--b', Math.max(p, cero) + '%');
+    el.style.setProperty('--color', el.id === 'vol' ? 'var(--lcd-acento)' : +el.value >= 0 ? 'var(--lcd-alto)' : 'var(--lcd-bajo)');
+  }
+  // la curva: la respuesta de verdad de los 10 filtros, calculada con los mismos filtros (en un contexto que no suena)
+  var curvaCtx = null, curvaFiltros = null;
+  var curvaUlt = null;
+  function dibujarCurva(s) {
+    s = s || curvaUlt; if (!s) return; curvaUlt = s;
+    const cv = $('curva'), g2 = cv.getContext('2d');
+    const anchoCss = cv.parentElement.clientWidth - $('bEq').offsetWidth - $('presets').offsetWidth - 12 - 4;
+    const wq = Math.max(40, Math.floor(anchoCss / 2)); if (cv.width !== wq) { cv.width = wq; cv.height = 20; cv.style.width = (wq * 2) + 'px'; cv.style.flex = 'none'; }
+    const W2 = cv.width, H2 = cv.height;
+    const cs = getComputedStyle(document.body), col = n => cs.getPropertyValue('--' + n).trim();
+    g2.fillStyle = col('lcd'); g2.fillRect(0, 0, W2, H2);
+    g2.fillStyle = col('lcd-apagado'); for (let x = 0; x < W2; x += 2) g2.fillRect(x, H2 / 2, 1, 1);
+    try {
+      if (!curvaCtx) { const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext; curvaCtx = new Off(1, 1, 48000); curvaFiltros = FRECS.map((f, i) => { const b = curvaCtx.createBiquadFilter(); b.type = i === 0 ? 'lowshelf' : i === FRECS.length - 1 ? 'highshelf' : 'peaking'; b.frequency.value = f; b.Q.value = 1.1; return b; }); }
+      const fs = new Float32Array(W2), mag = new Float32Array(W2), fase = new Float32Array(W2), tot = new Float32Array(W2).fill(s.eqOn ? s.eq.pre : 0);
+      for (let x = 0; x < W2; x++) fs[x] = 30 * Math.pow(18000 / 30, x / (W2 - 1));
+      curvaFiltros.forEach((b, i) => { b.gain.value = s.eqOn ? s.eq.g[i] : 0; b.getFrequencyResponse(fs, mag, fase); for (let x = 0; x < W2; x++) tot[x] += 20 * Math.log10(mag[x] || 1e-6); });
+      g2.fillStyle = s.eqOn ? col('lcd-on') : col('lcd-bajo');
+      let antes = null;
+      for (let x = 0; x < W2; x++) {
+        const y = Math.round(H2 / 2 - Math.max(-18, Math.min(18, tot[x])) / 18 * (H2 / 2 - 1));
+        if (antes !== null) { const a = Math.min(antes, y), b2 = Math.max(antes, y); g2.fillRect(x, a, 1, b2 - a + 1); } else g2.fillRect(x, y, 1, 1);
+        antes = y;
+      }
+    } catch (e) {}
   }
   function pintarMedidor(v) {
     const n = Math.round(Math.min(1, v) * 14);
@@ -773,8 +896,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     const sel = $('selLista'), act = s.listas.find(l => l.id === s.activa) || s.listas[0];
     sel.innerHTML = ''; for (const l of s.listas) { const o = document.createElement('option'); o.value = l.id; o.textContent = l.nombre; if (l.id === s.activa) o.selected = true; sel.append(o); }
     const fija = !!(act && act.fija);
-    $('bBorrar').hidden = fija; $('bArchivo').hidden = fija; $('bYt').hidden = fija;
-    if (fija) { $('fYt').hidden = true; $('elegirArchivo').hidden = true; }
+    $('bBorrar').hidden = fija;
     const ol = $('pistas'); ol.innerHTML = '';
     if (!s.pistas.length) { const li = document.createElement('li'); li.className = 'vacia'; li.textContent = fija ? 'no hay audios en la carpeta.' : 'lista vacía. agrega videos de youtube o audios de la carpeta.'; ol.append(li); }
     s.pistas.forEach((p, k) => {
@@ -792,7 +914,14 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     $('tot').textContent = s.pistas.length + (s.pistas.length === 1 ? ' pista · ' : ' pistas · ') + mmss(s.pistas.reduce((t, p) => t + (p.dur || 0), 0));
     const ea = $('elegirArchivo'); ea.innerHTML = '';
     for (const a of s.archivos) { const b = document.createElement('button'); b.textContent = '+ ' + a.nombre; b.addEventListener('click', () => orden({ accion: 'agregarArchivo', ruta: a.ruta })); ea.append(b); }
-    if (document.activeElement !== $('vol')) { $('vol').value = s.vol; pintarRiel($('vol')); }
+    if (document.activeElement !== $('vol')) $('vol').value = s.vol;
+    if (document.activeElement !== $('pre')) $('pre').value = s.eq.pre;
+    document.querySelectorAll('.banda-in').forEach(el => { if (document.activeElement !== el) el.value = s.eq.g[+el.dataset.i]; });
+    document.querySelectorAll('#eq .fader input').forEach(pintarBanda);
+    $('bEq').setAttribute('aria-pressed', String(!!s.eqOn)); $('eq').classList.toggle('apagado', !s.eqOn || !!s.yt);
+    $('eq').title = s.yt ? 'el ecualizador suena con los archivos de la carpeta; youtube llega ya mezclado' : '';
+    $('presets').value = PRESETS[s.eqPreset] ? s.eqPreset : '';
+    dibujarCurva(s);
     $('volTxt').textContent = s.mudo ? 'silencio' : s.vol + '% · ' + dbTxt(s.vol);
     $('bMudo').setAttribute('aria-pressed', String(!!s.mudo));
     if (PRINCIPAL) { $('bPlay').setAttribute('aria-pressed', String(s.estado === 'play')); $('bPausa').setAttribute('aria-pressed', String(s.estado === 'pausa')); }

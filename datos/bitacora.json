@@ -3679,6 +3679,79 @@
    "cara": "seria",
    "publicada": true,
    "texto": "los números están en meowdacity. aquí la pantallita dice lo de siempre: kbps, kHz, qué pista y de qué lista."
+  },
+  {
+   "id": 355,
+   "fecha": "2026-10-08",
+   "hora": "03:40",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "no puedo agregar nada a la carpeta. los botones desaparecieron."
+  },
+  {
+   "id": 356,
+   "fecha": "2026-10-08",
+   "hora": "03:55",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowamp v05",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "la carpeta es mía y no se toca, por eso se escondían. ahora los botones están siempre: si agregas algo estando en la carpeta, se va a \"mi lista\" y meowamp te lleva ahí."
+  },
+  {
+   "id": 357,
+   "fecha": "2026-10-08",
+   "hora": "03:56",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "y el mixer se veía pelado. una perilla sola."
+  },
+  {
+   "id": 358,
+   "fecha": "2026-10-08",
+   "hora": "04:10",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "ahora es un ecualizador de 10 bandas, como los de antes: preamp, 60 Hz hasta 16 kHz, ±12 dB cada una, presets y una curva que se dibuja con los mismos filtros que suenan."
+  },
+  {
+   "id": 359,
+   "fecha": "2026-10-08",
+   "hora": "04:11",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "medido con el tono de 300 Hz:\nbanda 310 a -12 → -11,9 dB\nbanda 310 a +6 → +6,0 dB\nbanda 16k a -12 → 0,0 dB (está lejos, no lo toca)\npreamp -6 → -6,0 dB"
+  },
+  {
+   "id": 360,
+   "fecha": "2026-10-08",
+   "hora": "04:12",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿y con youtube?"
+  },
+  {
+   "id": 361,
+   "fecha": "2026-10-08",
+   "hora": "04:13",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "con youtube no. el video llega ya mezclado desde otro sitio y el navegador no deja meterle filtros. el ecualizador se apaga solo mientras suena un video."
   }
  ]
 }
