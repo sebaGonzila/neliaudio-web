@@ -17,6 +17,18 @@
 html, body { height: 100%; margin: 0; }
 body { font-family: var(--ui); font-size: 13px; color: var(--tinta); background: var(--crema); display: flex; flex-direction: column; overflow: hidden; }
 body.patita, body.patita button { cursor: var(--patita), auto; }
+/* la barra de desplazamiento con el estilo del escritorio: lavanda, contorno azul, redonda; coral al tomarla */
+* { scrollbar-width: thin; scrollbar-color: var(--lavanda) transparent; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--lavanda) padding-box; border: 2px solid transparent; border-radius: 99px; box-shadow: inset 0 0 0 1.5px var(--azul); }
+::-webkit-scrollbar-thumb:hover { background-color: #F7B8CB; box-shadow: inset 0 0 0 1.5px var(--coral); }
+::-webkit-scrollbar-thumb:active { background-color: var(--coral); box-shadow: inset 0 0 0 1.5px var(--navy); }
+::-webkit-scrollbar-corner { background: transparent; }
+@supports selector(::-webkit-scrollbar) { * { scrollbar-width: auto; scrollbar-color: auto; } }
+body.patita .st { cursor: var(--patita-mover), grab; }
+body.patita .st .tir { cursor: var(--patita-nwse), nwse-resize; }
+
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 40px; min-width: 40px; padding: 0 14px; border: 2px solid var(--tinta); border-radius: 12px; background: #fff; color: var(--tinta); font-weight: 700; font-size: 13px; box-shadow: 0 3px 0 var(--tinta); white-space: nowrap; }
@@ -61,7 +73,7 @@ button { font: inherit; color: inherit; }
 
 /* abajo, todo junto: anterior, las fotos, siguiente, cuál es y guardar */
 #abajo { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #EFEAF9; border-top: 2px solid var(--azul); }
-#tira { flex: 0 1 auto; min-width: 0; display: flex; gap: 8px; padding: 2px; overflow-x: auto; scrollbar-width: thin; }
+#tira { flex: 0 1 auto; min-width: 0; display: flex; gap: 8px; padding: 2px; overflow-x: auto; }
 #info { flex: none; margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 0; max-width: 160px; }
 #nombre { font-weight: 700; color: var(--navy); font-size: 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #cuenta { color: var(--tenue); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; }
@@ -254,7 +266,7 @@ const STICKERS = [{"nombre": "neli feliz", "svg": "<svg width=\"200\" height=\"2
     const d = e.data; if (e.source !== window.parent || !d) return;
     if (d.nelios === 'archivo') { if (!fotos.length) { pendiente = d.ruta; return; } const k = fotos.findIndex(f => f.ruta === d.ruta); if (k >= 0) mostrar(k); }   // si llega antes de leer la carpeta, espera
     if (d.nelios === 'cursor') {
-      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); for (const k of ['mover', 'nwse']) if (typeof d[k] === 'string' && d[k].startsWith('data:image/')) document.documentElement.style.setProperty('--patita-' + k, 'url(' + d[k] + ') 13 13'); }
       else document.body.classList.remove('patita');
     }
   });

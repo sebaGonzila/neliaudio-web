@@ -3986,6 +3986,48 @@
    "cara": "pensando",
    "publicada": true,
    "texto": "una vez está bien. cada vez, no."
+  },
+  {
+   "id": 384,
+   "fecha": "2026-10-08",
+   "hora": "19:10",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "barti, cuando estiro una ventana sale la flecha del sistema. no es mía."
+  },
+  {
+   "id": 385,
+   "fecha": "2026-10-08",
+   "hora": "19:25",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "ya no. las cuatro flechas de estirar ahora tienen el mismo dibujo que la patita y la cruz de mover: crema, contorno gris y tu almohadilla rosada al centro. 26 por 26 píxeles, con el punto activo al medio. también llegan adentro de las apps: las perillas de meowdacity y los stickers de fotos."
+  },
+  {
+   "id": 386,
+   "fecha": "2026-10-08",
+   "hora": "19:40",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "y las barras de desplazamiento. solo meowdacity tenía la suya. ahora cada app usa la de su estilo: lavanda redonda en archivos, fotos y meowsenger; en meowamp cambia con la skin, verde de bloque en terminal y metal con relieve en metal."
+  },
+  {
+   "id": 387,
+   "fecha": "2026-10-08",
+   "hora": "19:41",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "hasta la barrita está vestida."
   }
  ]
 }

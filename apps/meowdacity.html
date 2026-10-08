@@ -499,6 +499,7 @@ body[data-piel="terminal"] .dice .neli { filter: saturate(.85); }
 body.en-ventana .cab { display: none; }
 /* la patita de NeliOS: el escritorio la manda cuando está encendida en Ajustes */
 body.patita, body.patita button, body.patita input, body.patita label, body.patita .tecla, body.patita .negra, body.patita #onda { cursor: var(--patita), auto; }
+body.patita .p-knob { cursor: var(--patita-ns), ns-resize; }
 body.patita #onda.dibuja { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA+UlEQVR4nGNgGOqAkRLNZhY2/5H5p04cwTCPiVLDjyYHMhxNDsRqIdkWIBsOA7gsIdkCbIbjs4QkC2AaJ3dsYTinmoxVDbrFRFsAM/xgRg1cDJclJFuAbrjegxM4LbGeu540C7C5HJclMMORkyteC3AZDgMae9dhuBw9L+DMaIQM/3X3GZztunseVsMZGHD4gFqGY7WAmoZjWEBtwzEsoLbhWC3gCJCnmuEoFiCXH8iWUGI4igUMDAwMJ3fMhrM5AuQpNhxuAbZynIGBgYGv2JIiwxkYGBhYcEmYe6Si8MkxnIGBgYERl+spMRQZYPUBNQzGagE1DYYBAGk3mNc4YDAgAAAAAElFTkSuQmCC) 1 22, crosshair; }
 @media (min-width: 860px) {
   body.en-ventana .app { grid-template-areas: "onda tempo" "teclado teclado" "pie pie"; }
@@ -2571,6 +2572,7 @@ registerProcessor('grabador', Grabador);`;
     const d = e.data; if (e.source !== window.parent || !d || d.nelios !== 'cursor') return;
     if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) {
       document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita');
+      if (typeof d.ns === 'string' && d.ns.startsWith('data:image/')) document.documentElement.style.setProperty('--patita-ns', 'url(' + d.ns + ') 13 13');   // las perillas: el mismo dibujo que estirar una ventana
     } else document.body.classList.remove('patita');
   });
   if (window.ResizeObserver) { new ResizeObserver(() => { medir(); dibujar(); }).observe($('marco')); new ResizeObserver(() => { medirOsc(); dibujarOsc(); }).observe($('marcoOsc')); new ResizeObserver(() => { medirAudio(); dibujarAudio(); }).observe($('aDetMarco')); new ResizeObserver(() => { medirSonido(); dibujarSonido(); }).observe($('sMarco')); }   // el marco cambia con el layout, no solo con la ventana
