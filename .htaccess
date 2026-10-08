@@ -51,3 +51,6 @@ ErrorDocument 404 /404.html
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Permissions-Policy "microphone=(self), camera=(), geolocation=(), payment=()"
 </IfModule>
+
+# archivos internos de Git: no se sirven
+RedirectMatch 404 /\.git
