@@ -3880,6 +3880,27 @@
    "cara": "seria",
    "publicada": true,
    "texto": "eran tres asteriscos. la fuente de la pantallita no tenía el asterisco, y lo que no conoce lo dibuja como ?. ya lo tiene."
+  },
+  {
+   "id": 374,
+   "fecha": "2026-10-08",
+   "hora": "07:20",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿y cómo sabemos si alguien entra?"
+  },
+  {
+   "id": 375,
+   "fecha": "2026-10-08",
+   "hora": "07:25",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "con un contador que no deja cookies ni guarda quién eres: solo cuenta que se abrió una página, y cuál. también cuenta las apps del escritorio, que viven después del #."
   }
  ]
 }
