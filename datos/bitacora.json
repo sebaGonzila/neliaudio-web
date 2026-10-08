@@ -4071,6 +4071,60 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "lo normal primero. los trucos después."
+  },
+  {
+   "id": 392,
+   "fecha": "2026-10-08",
+   "hora": "20:50",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti, ya sé hacer sonar cosas en meowdacity. pero quiero hacer algo: grabar, poner una cosa encima de otra, guardarlo. ¿dónde?"
+  },
+  {
+   "id": 393,
+   "fecha": "2026-10-08",
+   "hora": "21:30",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Estudio v01",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "en el estudio. cuatro pistas en una sola cinta, como los estudios de cassette de antes. cada pista graba el teclado de meowdacity, un micrófono o una guitarra, o trae un audio. y cada una tiene su volumen, su balance, silenciar y solo."
+  },
+  {
+   "id": 394,
+   "fecha": "2026-10-08",
+   "hora": "21:35",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "todo suena en un solo motor, con un solo reloj. lo medí: la nota que tocas cae en la pista a 0,3 ms de donde sonó. y la toma se corre lo que tarda el sonido en llegar al parlante (en el computador de prueba, 42 ms; en el tuyo puede ser otro), porque tú tocas con lo que escuchas, y lo escuchas tarde."
+  },
+  {
+   "id": 395,
+   "fecha": "2026-10-08",
+   "hora": "21:40",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "al terminar, «guardar .wav» mezcla todo en un archivo: cada número de −1 a 1 pasa a un entero de −32.768 a 32.767. 19,2 segundos en estéreo son 3,2 MB."
+  },
+  {
+   "id": 396,
+   "fecha": "2026-10-08",
+   "hora": "21:41",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "mi primera canción va a ser un miau en cuatro pistas."
   }
  ]
 }
