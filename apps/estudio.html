@@ -629,33 +629,35 @@ registerProcessor('grabador-e', GrabadorE);`;
   }
 
   // ---------- grabar: el grabador manda trozos con la muestra donde empiezan; aquí se ponen en su lugar ----------
-  function atraso() {                                           // lo que se corre la toma: lo que tarda en salir el sonido (y en entrar, si es micrófono)
+  function atrasoDe(i) {                                       // lo que se corre la toma: lo que tarda en salir el sonido (y en entrar, si es micrófono)
     const sal = (ctx.outputLatency || 0) + (ctx.baseLatency || 0);
-    if (pistas[P.elegida].fuente === 'entrada') return (P.lat != null ? P.lat : (sal + ent.latEntrada) * 1000) / 1000;
+    if (pistas[i].fuente === 'entrada') return (P.lat != null ? P.lat : (sal + ent.latEntrada) * 1000) / 1000;
     return sal;
   }
+  const atraso = () => atrasoDe(P.elegida);
   function empezarToma(desde) {
     const p = pistas[P.elegida];
     if (p.fuente === 'archivo') { decir('Esta pista trae un audio: elige uno abajo, o cambia a <strong>teclado</strong> o <strong>micrófono</strong> para grabar.'); }
-    toma = { i: P.elegida, desde, desdeN: Math.round(desde * ctx.sampleRate), hasta: 0, atraso: atraso(), antes: deshacerFoto(P.elegida) };
+    toma = { i: P.elegida, desde, desdeN: Math.round(desde * ctx.sampleRate), hasta: 0, atraso: atraso(), antes: deshacerFoto(P.elegida), trozos: [] };
     if (p.fuente === 'entrada') { if (ent.sal) ent.sal.connect(bus); else decir('La entrada está apagada: enciéndela abajo (<strong>micrófono o guitarra</strong>). Por ahora se graba silencio.'); }
     else teclas.connect(bus);
     grab.port.postMessage({ grabar: true });
   }
   function recibirTrozo(m) {
     if (!toma || !m) return;
-    if (m.d && m.d.length) {
-      const sr = ctx.sampleRate, p = pistas[toma.i];
-      const ini = Math.round((p0 + (m.f / sr - T0) - toma.atraso) * sr);   // la muestra de la canción donde cae el primer número del trozo
-      const tope = MAXSEG * sr;
-      for (let k = 0; k < m.d.length; k++) {
-        const j = ini + k; if (j < toma.desdeN) continue; if (j >= tope) break;
-        if (!p.data || p.data.length <= j) crecer(p, j + 1);
-        p.data[j] = m.d[k]; if (j + 1 > p.largo) p.largo = j + 1; if (j + 1 > toma.hasta) toma.hasta = j + 1;
-      }
-      p.sucio = true;
-    }
+    if (m.d && m.d.length) { toma.trozos.push(m); escribirTrozo(toma, m, toma.atraso); }   // mientras graba: para verla aparecer
     if (m.fin) cerrarToma();
+  }
+  function escribirTrozo(t, m, corr) {
+    const sr = ctx.sampleRate, p = pistas[t.i];
+    const ini = Math.round((p0 + (m.f / sr - T0) - corr) * sr);   // la muestra de la canción donde cae el primer número del trozo
+    const tope = MAXSEG * sr;
+    for (let k = 0; k < m.d.length; k++) {
+      const j = ini + k; if (j < t.desdeN) continue; if (j >= tope) break;
+      if (!p.data || p.data.length <= j) crecer(p, j + 1);
+      p.data[j] = m.d[k]; if (j + 1 > p.largo) p.largo = j + 1; if (j + 1 > t.hasta) t.hasta = j + 1;
+    }
+    p.sucio = true;
   }
   function crecer(p, n) {
     const nuevo = new Float32Array(Math.min(MAXSEG * ctx.sampleRate, Math.max(n, (p.data ? p.data.length : 0) + 10 * ctx.sampleRate)));
@@ -670,6 +672,14 @@ registerProcessor('grabador-e', GrabadorE);`;
   function cerrarToma() {
     if (!toma) return;
     const t = toma, p = pistas[t.i], sr = ctx.sampleRate; toma = null;
+    // la corrección definitiva: si el navegador cambió su cálculo de latencia durante la toma (o se cambió a mano),
+    // la toma se vuelve a poner con el valor de ahora
+    const fin = atrasoDe(t.i);
+    if (Math.abs(fin - t.atraso) > .5 / sr) {
+      p.data = t.antes.data ? t.antes.data.slice() : null; p.largo = t.antes.largo; t.hasta = 0;
+      if (p.data && p.data.length < p.largo) crecer(p, p.largo);
+      t.trozos.forEach(m => escribirTrozo(t, m, fin)); t.atraso = fin;
+    }
     if (t.hasta <= t.desdeN) { decir('No alcanzó a grabarse nada.'); deshacer(true); return; }
     // la canción se alarga sola si la toma pasó el final (hasta completar el compás)
     const finS = t.hasta / sr;
@@ -1138,7 +1148,7 @@ registerProcessor('grabador-e', GrabadorE);`;
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(pintarPistas);
   requestAnimationFrame(cuadro);
   // para las pruebas
-  window.__estudio = { P, pistas, estado: () => estado, tiempo: () => tiempo(), ctx: () => ctx, toma: () => toma, apretar, soltar, tocar, detener, sostenidas, T0: () => T0, p0: () => p0, atraso: () => (ctx ? atraso() : 0) };
+  window.__estudio = { P, pistas, bus: () => bus, estado: () => estado, tiempo: () => tiempo(), ctx: () => ctx, toma: () => toma, apretar, soltar, tocar, detener, sostenidas, T0: () => T0, p0: () => p0, atraso: () => (ctx ? atraso() : 0) };
 })();
 
 </script>

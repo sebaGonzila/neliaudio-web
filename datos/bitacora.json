@@ -4103,7 +4103,7 @@
    "cara": "seria",
    "tipo": "medida",
    "publicada": true,
-   "texto": "todo suena en un solo motor, con un solo reloj. lo medí: la nota que tocas cae en la pista a 0,3 ms de donde sonó. y la toma se corre lo que tarda el sonido en llegar al parlante (en el computador de prueba, 42 ms; en el tuyo puede ser otro), porque tú tocas con lo que escuchas, y lo escuchas tarde."
+   "texto": "todo suena en un solo motor, con un solo reloj. lo medí con una señal que suena en un instante exacto: queda en la pista a una muestra de donde tenía que caer (una muestra son 0,02 ms). y la toma se corre lo que tarda el sonido en llegar al parlante (en el computador de prueba, 42 ms; en el tuyo puede ser otro), porque tú tocas con lo que escuchas, y lo escuchas tarde."
   },
   {
    "id": 395,
