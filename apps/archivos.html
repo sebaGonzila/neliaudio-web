@@ -100,6 +100,15 @@ button { font: inherit; color: inherit; }
   const BASE = window.ARCHIVOS_BASE || '../archivos/';
   const EMB = window.ARCHIVOS_EMBEBIDOS || (() => { try { return window.parent.ARCHIVOS_EMBEBIDOS || null; } catch (e) { return null; } })();   // en el artefacto, los archivos vienen en el escritorio
   const urlDe = r => EMB ? EMB.datos[r] : BASE + r;
+  // leer un archivo como bytes. En el artefacto los archivos vienen como data: y ahí fetch está prohibido: se decodifican a mano.
+  async function bytesDe(url) {
+    if (url.startsWith('data:')) {
+      const i = url.indexOf(','), meta = url.slice(5, i), datos = url.slice(i + 1);
+      if (/;base64/.test(meta)) { const bin = atob(datos), u = new Uint8Array(bin.length); for (let k = 0; k < bin.length; k++) u[k] = bin.charCodeAt(k); return u.buffer; }
+      return new TextEncoder().encode(decodeURIComponent(datos)).buffer;
+    }
+    return (await fetch(url)).arrayBuffer();
+  }
   // qué app abre cada tipo. Si no está instalada, el escritorio avisa.
   const ABRE = { imagen: { id: 'fotos', nombre: 'Fotos' }, audio: { id: 'meowamp', nombre: 'Meowamp' }, texto: { id: 'notas', nombre: 'Notas' } };
   const TIPO = { imagen: 'imagen', audio: 'audio', texto: 'texto' };
@@ -188,7 +197,7 @@ button { font: inherit; color: inherit; }
     $('abrirBtn').addEventListener('click', () => abrirArchivo(a));
     const v = $('ver');
     if (a.tipo === 'imagen') v.innerHTML = '<img src="' + esc(urlDe(a.mini)) + '" alt="' + esc(a.desc || a.nombre) + '">';
-    if (a.tipo === 'texto') { v.innerHTML = '<pre>…</pre>'; try { const t = await (await fetch(urlDe(a.ruta))).text(); if (sel === a) v.firstChild.textContent = t; } catch (e) { v.firstChild.textContent = 'no se pudo leer.'; } }
+    if (a.tipo === 'texto') { v.innerHTML = '<pre>…</pre>'; try { const t = new TextDecoder().decode(await bytesDe(urlDe(a.ruta))); if (sel === a) v.firstChild.textContent = t; } catch (e) { v.firstChild.textContent = 'no se pudo leer.'; } }
     if (a.tipo === 'audio') { v.innerHTML = '<canvas aria-label="La forma de onda completa de ' + esc(a.nombre) + '"></canvas>'; dibujarOnda(a, v.firstChild); }
   }
   // la onda entera, sin sonar: se decodifica en un contexto que no tiene salida
@@ -196,7 +205,7 @@ button { font: inherit; color: inherit; }
   async function dibujarOnda(a, cv) {
     try {
       if (!ondas[a.ruta]) {
-        const buf = await (await fetch(urlDe(a.ruta))).arrayBuffer();
+        const buf = await bytesDe(urlDe(a.ruta));
         const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
         const ab = await new Off(1, 1, a.tasa).decodeAudioData(buf);
         ondas[a.ruta] = ab.getChannelData(0);

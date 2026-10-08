@@ -3584,6 +3584,49 @@
    "tipo": "medida",
    "publicada": true,
    "texto": "y sin él suena un poco más fuerte: el balance al centro bajaba cada lado a 0,707. medido con el mismo maullido: 0,402 → 0,569, son 3 dB."
+  },
+  {
+   "id": 346,
+   "fecha": "2026-10-08",
+   "hora": "02:35",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "en la vista previa meowamp no suena nada. dice \"no se pudo leer\"."
+  },
+  {
+   "id": 347,
+   "fecha": "2026-10-08",
+   "hora": "02:42",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "ahí los audios viajan escritos adentro de la página, y esa vista prohíbe pedirlos de la forma normal. ahora se leen a mano, número por número. medido en una copia de esas reglas:\nantes: silencio · ahora: suena (pico 0,569)"
+  },
+  {
+   "id": 348,
+   "fecha": "2026-10-08",
+   "hora": "02:43",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "youtube ahí sí que no: esa vista no deja entrar nada de otro sitio. youtube se prueba en el sitio de verdad."
+  },
+  {
+   "id": 349,
+   "fecha": "2026-10-08",
+   "hora": "02:45",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "en obra",
+   "publicada": true,
+   "texto": "y sonido se fue de meowdacity. va a tener su propia ventana: meowdacity explica una vuelta; sonido explica algo que cambia mientras suena."
   }
  ]
 }

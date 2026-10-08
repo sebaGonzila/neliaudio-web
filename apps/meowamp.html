@@ -141,6 +141,15 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   const BASE = window.ARCHIVOS_BASE || '../archivos/';
   const EMB = window.ARCHIVOS_EMBEBIDOS || (() => { try { return window.parent.ARCHIVOS_EMBEBIDOS || null; } catch (e) { return null; } })();
   const urlDe = r => EMB ? EMB.datos[r] : BASE + r;
+  // leer un archivo como bytes. En el artefacto los archivos vienen como data: y ahí fetch está prohibido: se decodifican a mano.
+  async function bytesDe(url) {
+    if (url.startsWith('data:')) {
+      const i = url.indexOf(','), meta = url.slice(5, i), datos = url.slice(i + 1);
+      if (/;base64/.test(meta)) { const bin = atob(datos), u = new Uint8Array(bin.length); for (let k = 0; k < bin.length; k++) u[k] = bin.charCodeAt(k); return u.buffer; }
+      return new TextEncoder().encode(decodeURIComponent(datos)).buffer;
+    }
+    return (await fetch(url)).arrayBuffer();
+  }
   const leer = (k, d) => { try { const v = localStorage.getItem('nelios.meowamp.' + k); return v === null ? d : v; } catch (e) { return d; } };
   const guardar = (k, v) => { try { localStorage.setItem('nelios.meowamp.' + k, v); } catch (e) {} };
 
@@ -214,7 +223,7 @@ body[data-skin="terminal"] .b { box-shadow: none; }
   const buffers = {};
   async function cargar(p) {
     if (!buffers[p.ruta]) {
-      const ab = await (await fetch(urlDe(p.ruta))).arrayBuffer();
+      const ab = await bytesDe(urlDe(p.ruta));
       buffers[p.ruta] = await ctx.decodeAudioData(ab);
     }
     return buffers[p.ruta];

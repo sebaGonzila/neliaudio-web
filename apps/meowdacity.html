@@ -524,7 +524,7 @@ body.en-ventana { padding: 12px; }
   <section class="panel p-onda" id="pOnda" aria-labelledby="tOnda">
     <div class="barra">
       <h2><svg class="g ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8h2M4 5v6M7 2v12M10 4v8M13 6v4M15 8h0"/></svg><span id="tOnda">LEE Y ACELERA · 200 NÚMEROS</span></h2>
-      <div class="vista" id="vista" role="tablist" aria-label="Qué mirar"><button type="button" role="tab" data-v="onda" aria-selected="true">onda</button><button type="button" role="tab" data-v="audio" aria-selected="false">audio</button><button type="button" role="tab" data-v="sonido" aria-selected="false">sonido</button></div>
+      <div class="vista" id="vista" role="tablist" aria-label="Qué mirar"><button type="button" role="tab" data-v="onda" aria-selected="true">onda</button><button type="button" role="tab" data-v="audio" aria-selected="false">audio</button></div>
     </div>
     <div class="formas" id="formas" role="group" aria-label="Formas de onda">
       <button data-f="sine" aria-pressed="false"><svg class="g" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6Q6.5-3 12 6T23 6"/></svg>sinusoide</button>
@@ -1331,6 +1331,7 @@ registerProcessor('grabador', Grabador);`;
   const aLen = () => muestra ? muestra.length : 0;
   const tasaDe = m => Math.pow(2, (m - 45) / 12);       // La2 = velocidad original
   function ponerModo(v) {
+    if (v === 'sonido') v = 'onda';                      // SONIDO se va a su propia app; aquí queda dormido hasta mudarse
     if (v === modo) return;
     soltarTeclas(); pararEscucha(); soltarAviso();
     modo = v;
