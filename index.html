@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>neli.audio · NeliOS, el escritorio de Neli</title>
-<meta name="description" content="NeliOS: un escritorio web con apps gratis para entender cómo funciona el audio digital. Juega con Meowdacity: 200 números que se vuelven golpes, notas, miaus y loops.">
+<meta name="description" content="Escritorio web con apps gratis para entender el audio digital: Meowdacity convierte números en sonido, Meowamp toca tus listas y Fotos le pone stickers a Neli.">
 <link rel="canonical" href="https://neliaudio.com/">
 <meta name="theme-color" content="#DCCEF8">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="neli.audio">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="neli.audio · NeliOS, el escritorio de Neli">
-<meta property="og:description" content="NeliOS: un escritorio web con apps gratis para entender cómo funciona el audio digital. Juega con Meowdacity: 200 números que se vuelven golpes, notas, miaus y loops.">
+<meta property="og:description" content="Escritorio web con apps gratis para entender el audio digital: Meowdacity convierte números en sonido, Meowamp toca tus listas y Fotos le pone stickers a Neli.">
 <meta property="og:url" content="https://neliaudio.com/">
 <meta property="og:image" content="https://neliaudio.com/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -307,7 +307,7 @@ body {
   font-size: 10.5px;
   font-weight: 400;
   letter-spacing: .04em;
-  color: #6B70A6;
+  color: #575C93;
   white-space: nowrap;
 }
 .btn-ventana {
@@ -323,7 +323,7 @@ body {
 }
 .btn-ventana svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .agrandar svg { width: 13px; height: 13px; stroke-width: 1.5; }   /* el cuadrado con orejas: la misma silueta de las carpetas */
-.btn-ventana:hover { filter: none; border-color: #6B70A6; }
+.btn-ventana:hover { filter: none; border-color: #575C93; }
 .minimizar, .agrandar { background: #fff; }
 .cerrar { background: #fff; }
 .cerrar:hover { background: #F27FA3; border-color: #E8668F; color: #fff; }
@@ -400,12 +400,12 @@ body.patita .ventana.agrandada .titulo { cursor: var(--patita), auto; }
   padding: 5px 10px; background: #fff; border: 1.5px solid #B7C1EC; border-radius: 9px;
   box-shadow: 0 1px 2px rgba(72, 76, 150, .12);
 }
-.chip-os:hover { border-color: #6B70A6; }
+.chip-os:hover { border-color: #575C93; }
 .chip-os[aria-pressed="true"] { background: #FFE6EE; border-color: #E8668F; color: #2B2F66; }
 .chip-os i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(59, 63, 119, .35); }
 .ajustes-os h3 { margin: 4px 0 8px; font-family: 'Silkscreen', monospace; font-size: 11px; letter-spacing: .1em; color: #2B2F66; }
 .ajustes-os .fila { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.ajustes-os p { margin: 0; font-size: 12px; line-height: 1.5; color: #6B70A6; }
+.ajustes-os p { margin: 0; font-size: 12px; line-height: 1.5; color: #575C93; }
 @media (max-width: 719px) { #neli { bottom: 66px; right: 10px; } #neli img { width: 64px; } #globo { max-width: 190px; } }
 
 /* los bordes para cambiar el tamaño: invisibles, solo cambian el cursor */
@@ -435,6 +435,9 @@ body[data-borde="nw"], body[data-borde="se"] { cursor: nwse-resize !important; }
   <p>Un escritorio web con apps gratis para entender cómo funciona el audio digital, de verdad y con los números a la vista. Sin cuenta y sin instalar nada.</p>
   <ul>
     <li><a href="/meowdacity/">Meowdacity</a>: la app para entender por qué algo suena. Un loop de 200 números, golpes que se vuelven notas, formas de onda, miaus, ritmo y una loopera.</li>
+    <li><a href="/meowamp/">Meowamp</a>: un reproductor como los de antes, con listas, videos de YouTube, ecualizador de 10 bandas y skins.</li>
+    <li><a href="/fotos/">Fotos</a>: las fotos reales de Neli, con stickers para ponerle encima y guardar.</li>
+    <li><a href="/archivos/">Archivos</a>: la carpeta de Neli, con los números de cada foto, audio y documento.</li>
     <li><a href="/bitacora/">La bitácora</a>: el historial de Neli y Barti construyendo todo esto, mensaje por mensaje.</li>
   </ul>
 </section>

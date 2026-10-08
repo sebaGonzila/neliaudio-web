@@ -12,7 +12,7 @@
 @font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
 </style>
 <style>
-:root { --crema: #FAF4E9; --azul: #A8B8E4; --navy: #3B3F77; --tinta: #2A2D52; --coral: #F17D9E; --lavanda: #DCCEF8; --tenue: #6A6E9C; --linea: #D9DEF3; --sel: #E7E0FB; --ui: "MS Sans Serif", "Microsoft Sans Serif", Verdana, sans-serif; }
+:root { --crema: #FAF4E9; --azul: #A8B8E4; --navy: #3B3F77; --tinta: #2A2D52; --coral: #F17D9E; --lavanda: #DCCEF8; --tenue: #55598A; --linea: #D9DEF3; --sel: #E7E0FB; --ui: "MS Sans Serif", "Microsoft Sans Serif", Verdana, sans-serif; }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body { font-family: var(--ui); font-size: 13px; color: var(--tinta); background: var(--crema); display: flex; flex-direction: column; overflow: hidden; }
@@ -24,7 +24,7 @@ button { font: inherit; color: inherit; }
 .btn:hover { background: #F6F3FF; }
 .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--tinta); }
 .btn.cuadro { padding: 0; width: 40px; font-size: 18px; }
-.btn.prin { background: var(--coral); color: #fff; }
+.btn.prin { background: var(--coral); color: var(--tinta); }
 .btn.prin:hover { background: #E96A8E; }
 .btn[aria-pressed="true"] { background: var(--lavanda); }
 .btn:disabled { opacity: .45; pointer-events: none; }

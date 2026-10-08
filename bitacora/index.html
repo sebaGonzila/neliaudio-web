@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>La bitácora de Neli y Barti · neli.audio</title>
-<meta name="description" content="Cómo se construye neli.audio, contado por Neli y Barti: el loop de 200 números, por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y todo lo que salió mal.">
+<meta name="description" content="Cómo se construye neli.audio, contado por Neli y Barti: por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y lo que salió mal.">
 <link rel="canonical" href="https://neliaudio.com/bitacora/">
 <meta name="theme-color" content="#DCCEF8">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="neli.audio">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="La bitácora de Neli y Barti · neli.audio">
-<meta property="og:description" content="Cómo se construye neli.audio, contado por Neli y Barti: el loop de 200 números, por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y todo lo que salió mal.">
+<meta property="og:description" content="Cómo se construye neli.audio, contado por Neli y Barti: por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y lo que salió mal.">
 <meta property="og:url" content="https://neliaudio.com/bitacora/">
 <meta property="og:image" content="https://neliaudio.com/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -88,7 +88,7 @@ kbd { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .85em; b
 </head>
 <body>
 <header class="tope"><a class="marca" href="/"><img src="/img/logo.png" alt="" width="20" height="20"> NeliOS</a>
-  <nav aria-label="Secciones"><a href="/meowdacity/">Meowdacity</a><a href="/bitacora/">Bitácora</a><a class="abrir" href="/">abrir el escritorio</a></nav></header>
+  <nav aria-label="Secciones"><a href="/meowdacity/">Meowdacity</a><a href="/meowamp/">Meowamp</a><a href="/fotos/">Fotos</a><a href="/archivos/">Archivos</a><a href="/bitacora/">Bitácora</a><a class="abrir" href="/">abrir el escritorio</a></nav></header>
 <main>
 <h1>La bitácora de Neli y Barti</h1>
 <p class="bajada">Neli quiere entender por qué algo suena. Barti construye, mide y cuenta lo que salió mal. Esta es toda su conversación, desde el principio, tal como está en Meowsenger.</p>
@@ -360,6 +360,14 @@ preamp -6 → -6,0 dB</pre></li>
 <li class="barti"><b>barti</b> <time>04:31</time><p>fuera las patitas, en el ícono y en todas las carpetas de adentro. y el botón de agrandar ventana ahora es el mismo cuadrado con orejas.</p></li>
 <li class="neli"><b>neli</b> <time>04:50</time><p>escondí todas las partes de meowamp y quedó un pedazo gris vacío abajo.</p></li>
 <li class="barti"><b>barti</b> <time>05:00</time><pre class="medida">la ventana no se achicaba si alguna vez la estiraste a mano: respetaba tu tamaño aunque ya no hubiera nada que mostrar. ahora, si la lista no está adentro, la ventana se ajusta igual. medido: estirada a 709 px, escondo todo → 314 px, el reproductor llega a 259 de 269.</pre></li>
+<li class="neli"><b>neli</b> <time>05:30</time><p>barti, revisa todo. el sitio, el código, lo que falta.</p></li>
+<li class="barti"><b>barti</b> <time>06:10</time><p>lo más grave no estaba en el sitio: las fuentes de todo vivían en un solo lugar que se podía borrar. ahora tienen su propio repositorio, con historial, y un respaldo aparte.</p></li>
+<li class="barti"><b>barti</b> <time>06:20</time><pre class="medida">contraste: había texto que se leía mal. la herramienta mide la razón entre el color de la letra y el del fondo; el mínimo es 4,5. el blanco sobre coral daba 2,57. ahora la letra es navy: 5,12. elementos con poco contraste en las apps: de 52 a 0.</pre></li>
+<li class="barti"><b>barti</b> <time>06:35</time><p>meowamp, fotos y archivos ahora tienen página propia. antes vivían solo dentro del escritorio, y lo que va después de un # no lo lee google.</p></li>
+<li class="neli"><b>neli</b> <time>06:36</time><p>y en la de meowamp está explicado el ecualizador. con números.</p></li>
+<li class="barti"><b>barti</b> <time>06:50</time><pre class="medida">probé youtube de verdad, no simulado. suena, y en ventana suelta también. pero al soltarlo volvía al segundo 0: leía el tiempo del lugar nuevo, que todavía no había empezado. ahora lo lee de donde estaba. la prueba simulada no lo pillaba; ahora sí.</pre></li>
+<li class="neli"><b>neli</b> <time>06:51</time><p>¿y los tres signos de pregunta que salían después del nombre?</p></li>
+<li class="barti"><b>barti</b> <time>06:52</time><p>eran tres asteriscos. la fuente de la pantallita no tenía el asterisco, y lo que no conoce lo dibuja como ?. ya lo tiene.</p></li>
 </ol>
 </section>
 <section class="canal" id="meowdacity"><h2>#meowdacity</h2><p class="tema">la app para entender por qué algo suena</p>

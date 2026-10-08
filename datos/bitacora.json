@@ -3796,6 +3796,90 @@
    "estado": "listo",
    "publicada": true,
    "texto": "la ventana no se achicaba si alguna vez la estiraste a mano: respetaba tu tamaño aunque ya no hubiera nada que mostrar. ahora, si la lista no está adentro, la ventana se ajusta igual. medido: estirada a 709 px, escondo todo → 314 px, el reproductor llega a 259 de 269."
+  },
+  {
+   "id": 366,
+   "fecha": "2026-10-08",
+   "hora": "05:30",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti, revisa todo. el sitio, el código, lo que falta."
+  },
+  {
+   "id": 367,
+   "fecha": "2026-10-08",
+   "hora": "06:10",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "lo más grave no estaba en el sitio: las fuentes de todo vivían en un solo lugar que se podía borrar. ahora tienen su propio repositorio, con historial, y un respaldo aparte."
+  },
+  {
+   "id": 368,
+   "fecha": "2026-10-08",
+   "hora": "06:20",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "contraste: había texto que se leía mal. la herramienta mide la razón entre el color de la letra y el del fondo; el mínimo es 4,5. el blanco sobre coral daba 2,57. ahora la letra es navy: 5,12. elementos con poco contraste en las apps: de 52 a 0."
+  },
+  {
+   "id": 369,
+   "fecha": "2026-10-08",
+   "hora": "06:35",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "meowamp, fotos y archivos ahora tienen página propia. antes vivían solo dentro del escritorio, y lo que va después de un # no lo lee google."
+  },
+  {
+   "id": 370,
+   "fecha": "2026-10-08",
+   "hora": "06:36",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "y en la de meowamp está explicado el ecualizador. con números."
+  },
+  {
+   "id": 371,
+   "fecha": "2026-10-08",
+   "hora": "06:50",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "probé youtube de verdad, no simulado. suena, y en ventana suelta también. pero al soltarlo volvía al segundo 0: leía el tiempo del lugar nuevo, que todavía no había empezado. ahora lo lee de donde estaba. la prueba simulada no lo pillaba; ahora sí."
+  },
+  {
+   "id": 372,
+   "fecha": "2026-10-08",
+   "hora": "06:51",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿y los tres signos de pregunta que salían después del nombre?"
+  },
+  {
+   "id": 373,
+   "fecha": "2026-10-08",
+   "hora": "06:52",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "eran tres asteriscos. la fuente de la pantallita no tenía el asterisco, y lo que no conoce lo dibuja como ?. ya lo tiene."
   }
  ]
 }

@@ -36,6 +36,8 @@ body[data-skin="metal"] {
   --lcd: #0C0E10; --lcd-apagado: #1A1F14; --lcd-on: #D6E35A; --lcd-acento: #FF9F43; --lcd-bajo: #4FB34F; --lcd-alto: #FFD24A;
   --radio: 3px; --fuente: Verdana, "MS Sans Serif", sans-serif;
 }
+/* contraste AA (4,5:1) en la skin de Neli: texto tenue más oscuro, botón encendido con letra navy, rosado activo más hondo */
+:root, body[data-skin="neli"] { --tenue: #4F5385; --boton-on-txt: #2A2D52; --lista-act: #A8345A; }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body { font-family: var(--fuente); font-size: 12px; color: var(--texto); background: var(--fondo); display: flex; flex-direction: column; gap: 8px; padding: 8px; overflow-x: hidden; overflow-y: auto; }
@@ -130,9 +132,10 @@ body.cel .banda .et { font-size: 7px; letter-spacing: 0; }
 #pistas li { display: flex; align-items: stretch; }
 #pistas li > .toca { flex: 1; min-width: 0; display: flex; gap: 8px; padding: 7px 12px; border: 0; background: none; text-align: left; color: var(--lista-txt); min-height: 34px; align-items: center; font-family: inherit; }
 #pistas .toca:hover { background: var(--lista-sel); }
-#pistas .n { opacity: .6; width: 22px; flex: none; }
+#pistas .n { width: 22px; flex: none; color: var(--tenue); }
 #pistas .nom { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#pistas .dur { opacity: .75; }
+#pistas .dur { color: var(--tenue); }
+#pistas li.act .n, #pistas li.act .dur { color: var(--lista-act); }
 #pistas .yt { flex: none; font: 400 9px 'Silkscreen', var(--fuente); padding: 1px 5px; border-radius: 4px; background: #FF3D57; color: #fff; letter-spacing: .5px; }
 #pistas li.act .toca { color: var(--lista-act); font-weight: 600; background: var(--lista-sel); }
 #pistas .quitar { flex: none; width: 34px; border: 0; background: none; color: var(--lista-txt); opacity: .55; font-size: 15px; }
@@ -347,6 +350,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     '¿':'..#.........#...#...#....#...#.###.', '¡':'..#.........#....#....#....#....#..', "'":'..#....#...#.......................',
     '>':'#.....#.....#.....#...#...#...#....', '<':'....#...#...#...#.....#.....#.....#', '_':'..............................#####'
   };
+  G['*'] = '.......#..#.#.#.###.#.#.#..#.......';   // el separador del nombre que corre (antes salía como ?)
   const CH = 6;
   const norm = t => String(t).toUpperCase().replace(/Ñ/g, '\u0001').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\u0001/g, 'Ñ');
   const cv = $('lcd'), g = cv.getContext('2d');
@@ -561,8 +565,11 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
       tiempo(def) { if (suelto()) return remoto.id === sonando.yt ? remoto.t : def; return local && localId === sonando.yt && local.getCurrentTime ? local.getCurrentTime() || def : def; },
       durActual(p) { if (suelto()) return remoto.id === p.yt ? remoto.d : 0; return local && localId === p.yt && local.getDuration ? local.getDuration() : 0; },
       // al mover el módulo: el video se recrea en su nuevo lugar, desde donde iba
-      mudar() {
-        const iba = esYt(sonando) && estado !== 'stop', t = iba ? tiempo() : 0;
+      // el segundo se lee de donde estaba el video ANTES de moverlo (después ya apunta al lugar nuevo, que va en 0)
+      mudar(antes) {
+        const iba = esYt(sonando) && estado !== 'stop';
+        const t = !iba ? 0 : antes === 'afuera' ? (remoto.id === sonando.yt ? remoto.t : offset)
+                                               : (local && localId === sonando.yt && local.getCurrentTime ? local.getCurrentTime() || offset : offset);
         if (suelto()) destruirLocal(); else enviar({ tipo: 'yt', op: 'destruir' });
         if (iba) { if (suelto()) setTimeout(() => this.cargar(sonando.yt, t), 0); else this.cargar(sonando.yt, t).then(() => { if (estado === 'pausa') this.pausa(); }); offset = t; }
       },
@@ -641,7 +648,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     $(MODS[mod].el).hidden = donde !== 'adentro';
     if (antes === 'afuera') alEscritorio({ nelios: 'cerrarModulo', app: 'meowamp', modulo: mod });
     if (donde === 'afuera') alEscritorio({ nelios: 'abrirModulo', app: 'meowamp', modulo: mod, nombre: MODS[mod].nombre, w: MODS[mod].w, h: MODS[mod].h });
-    if (mod === 'video' && !sinMudar) yt.mudar();
+    if (mod === 'video' && !sinMudar) yt.mudar(antes);
     document.querySelectorAll('.modulos [data-mod]').forEach(b => b.setAttribute('aria-pressed', String(arreglo[b.dataset.mod] !== 'oculto')));
     requestAnimationFrame(() => { escala(); pedirAlto(arreglo.lista !== 'adentro'); });
     publicar();

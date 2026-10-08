@@ -43,7 +43,7 @@
 body[data-piel="neli"] {
   --fondo: #E4E0F8; --fondo-img: radial-gradient(1200px 600px at 15% -10%, #F3EEFF 0%, transparent 60%), radial-gradient(900px 500px at 110% 110%, #D6DDF8 0%, transparent 60%), linear-gradient(160deg, #E9E3FB, #DCDDF7);
   --panel: rgba(255,255,255,.74); --barra: linear-gradient(180deg, #F1F3FE, #E4E9FB); --linea: #B7C1EC; --linea-suave: #D4DAF4;
-  --tenue: #6B70A6; --neon: #F27FA3; --neon-borde: #E8668F; --neon-suave: #FFE6EE; --texto: #3E4380; --tinta: #2B2F66; --sobre-neon: #FFFFFF;
+  --tenue: #575C93; --neon: #F27FA3; --neon-borde: #E8668F; --neon-suave: #FFE6EE; --texto: #3E4380; --tinta: #2B2F66; --sobre-neon: #2A2D52;
   --lienzo: #FBFAFF; --rejilla: #ECEAFB; --cero: #D9D3F6; --onda: #DCD4FA; --alto: #7A63E0; --ve: #7A63E0; --cabezal: #5BBFEF; --salto: #F27FA3;
   --umbral: #F27FA3; --ambar: #D9962A; --nota: #3D8FC6; --tecla: #FFFFFF; --negra: #3E4380; --brillo: rgba(242,127,163,.35);
   --radio: 14px; --radio-btn: 9px; --pista: #D6DBF4; --boton: #FFFFFF;
@@ -388,7 +388,7 @@ body[data-piel="neli"] .tb svg { width: 16px; height: 16px; }
 body[data-piel="terminal"] .tb:active { transform: translate(3px, 3px); box-shadow: none; }
 body[data-piel="neli"] .tb:active { transform: translateY(1px); }
 .tb[aria-pressed="true"] { color: var(--sobre-neon); background: var(--neon); border-color: var(--neon-borde); box-shadow: 0 0 12px var(--brillo); }
-body[data-piel="neli"] .tb[aria-pressed="true"] { background: var(--neon); color: #fff; box-shadow: 0 0 0 3px rgba(242,127,163,.2), 0 2px 6px rgba(232,102,143,.35); }
+body[data-piel="neli"] .tb[aria-pressed="true"] { background: var(--neon); color: var(--tinta); box-shadow: 0 0 0 3px rgba(242,127,163,.2), 0 2px 6px rgba(232,102,143,.35); }
 .tb.ancho { width: auto; padding: 0 12px; grid-auto-flow: column; gap: 8px; font-family: var(--f-etiqueta); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
 .volumen { display: flex; align-items: center; gap: 10px; flex: 1 1 100%; min-width: 180px; padding: 0 2px; }
 .volumen label { display: grid; place-items: center; color: var(--tenue); }
