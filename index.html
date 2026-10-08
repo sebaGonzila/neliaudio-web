@@ -885,9 +885,11 @@ window.addEventListener('message', (e) => {
   // una app puede pedir que su ventana tenga el alto justo de lo que muestra (si el usuario no la estiró a mano)
   if (d.nelios === 'ajustarAlto') {
     const v = Object.values(abiertas).find((x) => { const f = x.querySelector('iframe'); return f && f.contentWindow === e.source; });
-    if (!v || v.dataset.estirada || v.classList.contains('agrandada') || innerWidth < 720) return;
+    if (!v || (v.dataset.estirada && !d.forzar) || v.classList.contains('agrandada') || innerWidth < 720) return;
     const titulo = v.querySelector('.titulo').offsetHeight;
     v.style.height = Math.max(MIN_H, Math.min(escritorio.clientHeight - v.offsetTop - 8, Math.round(+d.alto) + titulo + 4)) + 'px';
+    // si tenía un tamaño guardado, se guarda el nuevo alto (el ancho que eligió la persona se respeta)
+    if (v.dataset.estirada) { const id = Object.keys(abiertas).find((k) => abiertas[k] === v); if (id) guardarPosicion(id, v.offsetLeft, v.offsetTop, v.offsetWidth, v.offsetHeight); }
     return;
   }
   if (d.nelios === 'abrirModulo' || d.nelios === 'cerrarModulo') {

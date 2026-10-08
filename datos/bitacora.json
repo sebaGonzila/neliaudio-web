@@ -3773,6 +3773,29 @@
    "estado": "listo",
    "publicada": true,
    "texto": "fuera las patitas, en el ícono y en todas las carpetas de adentro. y el botón de agrandar ventana ahora es el mismo cuadrado con orejas."
+  },
+  {
+   "id": 364,
+   "fecha": "2026-10-08",
+   "hora": "04:50",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "escondí todas las partes de meowamp y quedó un pedazo gris vacío abajo."
+  },
+  {
+   "id": 365,
+   "fecha": "2026-10-08",
+   "hora": "05:00",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "version": "Meowamp v06",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "la ventana no se achicaba si alguna vez la estiraste a mano: respetaba tu tamaño aunque ya no hubiera nada que mostrar. ahora, si la lista no está adentro, la ventana se ajusta igual. medido: estirada a 709 px, escondo todo → 314 px, el reproductor llega a 259 de 269."
   }
  ]
 }

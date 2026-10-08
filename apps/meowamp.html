@@ -643,14 +643,16 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
     if (donde === 'afuera') alEscritorio({ nelios: 'abrirModulo', app: 'meowamp', modulo: mod, nombre: MODS[mod].nombre, w: MODS[mod].w, h: MODS[mod].h });
     if (mod === 'video' && !sinMudar) yt.mudar();
     document.querySelectorAll('.modulos [data-mod]').forEach(b => b.setAttribute('aria-pressed', String(arreglo[b.dataset.mod] !== 'oculto')));
-    requestAnimationFrame(() => { escala(); pedirAlto(); });
+    requestAnimationFrame(() => { escala(); pedirAlto(arreglo.lista !== 'adentro'); });
     publicar();
   }
   // la ventana del escritorio toma el alto justo: si la lista se suelta, el reproductor queda chico, como los de antes
-  function pedirAlto() {
+  // forzar: sin la lista adentro no hay nada que llene el espacio sobrante, así que la ventana se ajusta
+  // aunque la persona la haya estirado antes (si no, queda un espacio gris vacío). Con la lista adentro, la lista lo llena.
+  function pedirAlto(forzar) {
     const vis = ['mPrincipal', ...Object.values(MODS).map(m => m.el)].map($).filter(el => !el.hidden);
     const alto = 16 + vis.reduce((t, el) => t + (el.id === 'mLista' ? 330 : el.offsetHeight), 0) + 8 * (vis.length - 1);
-    alEscritorio({ nelios: 'ajustarAlto', alto });
+    alEscritorio({ nelios: 'ajustarAlto', alto, forzar: !!forzar });
   }
 
   // ---------- contarle el estado a las ventanas sueltas ----------
@@ -807,6 +809,7 @@ form.linea input { flex: 1; min-width: 0; height: 30px; border: 2px solid var(--
   }
   document.querySelectorAll('.modulos [data-mod]').forEach(b => b.setAttribute('aria-pressed', String(arreglo[b.dataset.mod] !== 'oculto')));
   escala(); if (window.ResizeObserver) new ResizeObserver(escala).observe($('pantalla')); else addEventListener('resize', escala);
+  if (PRINCIPAL) setTimeout(() => pedirAlto(arreglo.lista !== 'adentro'), 300);   // al abrir, también
   raf = requestAnimationFrame(cuadro);
   (async () => {
     let ind;
