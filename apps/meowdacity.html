@@ -796,7 +796,7 @@ class Lector extends AudioWorkletProcessor {
       if(d.inicio && !('voz' in d)) this.ph = 0;
       if('en' in d) this.en = d.en;                               // a compás: en ese instante exacto, fase 0 y a andar
       if('voz' in d){ const i = d.voz;
-        if('vel' in d){ this.kvo[i] = d.vel; if(this.kg[i] < 1e-4) this.kv[i] = d.vel; }   // sonando, el tempo cambia en rampa (deslizar)
+        if('vel' in d){ this.kvo[i] = d.vel; this.kv[i] = d.vel; }   // la nota entra justa, sin deslizarse desde la anterior (deslizar sería un efecto aparte)
         if('on' in d){ if(d.on && this.kg[i] < 1e-4) this.kp[i] = 0; this.kgo[i] = d.on ? 1 : 0; }
         this.vista = i; } };
   }
@@ -834,7 +834,7 @@ class Lector extends AudioWorkletProcessor {
         if(kgo[v] === 0 && kg[v] < 1e-5){ kg[v] = 0; continue; }          // voz callada: no se calcula
         for(let j = 0; j < s1.length; j++){
           const g = f0 - j > 0 ? (f0 - j)/F : 0;
-          kg[v] += (kgo[v] - kg[v])*A; kv[v] += (kvo[v] - kv[v])*A;
+          kg[v] += (kgo[v] - kg[v])*A;
           s1[j] += this.leer(T, V, kp[v], g)*kg[v];
           kp[v] += kv[v]/sampleRate; if(kp[v] >= n) kp[v] -= n;
         }
@@ -2406,12 +2406,9 @@ registerProcessor('grabador', Grabador);`;
       else nodo.port.postMessage({ voz: x.voz, vel: hzDe(m) * N, on: true });
       mostrar();
     }
-    function cambiar(quien, k) {                                       // deslizar: la misma voz cambia de nota
+    function cambiar(quien, k) {                                       // pasar el dedo a otra tecla: se suelta la de antes y entra la nueva, justa (sin deslizar)
       const x = sostenidas.find(y => y.quien === quien); if (!x || x.m === +k.dataset.m) return;
-      x.m = +k.dataset.m;
-      if (x.fuente) { cambiarTasa(x.fuente, tasaDe(x.m)); mostrar(); return; }
-      if (nodo) nodo.port.postMessage({ voz: x.voz, vel: hzDe(x.m) * N });
-      if (sostenidas[sostenidas.length - 1] === x) fijarVel(hzDe(x.m) * N); else leer();
+      soltar(quien); apretar(k, quien);
     }
     function soltar(quien) {
       const i = sostenidas.findIndex(x => x.quien === quien); if (i < 0) return;

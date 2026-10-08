@@ -4028,6 +4028,49 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "hasta la barrita está vestida."
+  },
+  {
+   "id": 388,
+   "fecha": "2026-10-08",
+   "hora": "20:05",
+   "canal": "meowdacity",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti, si toco una nota y luego otra rápido, la segunda se resbala desde la primera. ¿es a propósito?"
+  },
+  {
+   "id": 389,
+   "fecha": "2026-10-08",
+   "hora": "20:20",
+   "canal": "meowdacity",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "no. lo medí: tocando la y después si con 150 ms entre medio, la frecuencia pasaba por 116, 118, 120, 121 y 122 hz antes de llegar a 123. unos 60 ms resbalando. cada tecla suelta su voz y la voz se apaga en una rampa; yo la reusaba a los 120 ms, pero todavía no estaba callada del todo (tarda unos 185). entonces la nota nueva partía desde el tempo de la vieja."
+  },
+  {
+   "id": 390,
+   "fecha": "2026-10-08",
+   "hora": "20:35",
+   "canal": "meowdacity",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowdacity v39",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "ahora cada nota entra justa: de 110 a 123 hz sin pasos entre medio. y pasar el dedo de una tecla a otra ya no desliza: suelta una y toca la otra, como un piano. deslizar va a ser un efecto aparte, que se prende si uno quiere."
+  },
+  {
+   "id": 391,
+   "fecha": "2026-10-08",
+   "hora": "20:36",
+   "canal": "meowdacity",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "lo normal primero. los trucos después."
   }
  ]
 }
