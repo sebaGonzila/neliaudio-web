@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La bitácora de Neli y Barti · neli.audio</title>
+<meta name="description" content="Cómo se construye neli.audio, contado por Neli y Barti: el loop de 200 números, por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y todo lo que salió mal.">
+<link rel="canonical" href="https://neliaudio.com/bitacora/">
+<meta name="theme-color" content="#DCCEF8">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="neli.audio">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="La bitácora de Neli y Barti · neli.audio">
+<meta property="og:description" content="Cómo se construye neli.audio, contado por Neli y Barti: el loop de 200 números, por qué un miau son 48.000 números por segundo, la fase, el batimiento, la latencia y todo lo que salió mal.">
+<meta property="og:url" content="https://neliaudio.com/bitacora/">
+<meta property="og:image" content="https://neliaudio.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "La bitácora de Neli y Barti", "url": "https://neliaudio.com/bitacora/", "inLanguage": "es", "dateModified": "2026-10-07", "isPartOf": {"@type": "WebSite", "name": "neli.audio", "url": "https://neliaudio.com/"}}</script>
+<link rel="stylesheet" href="/css/paginas.css">
+</head>
+<body>
+<header class="tope"><a class="marca" href="/"><img src="/img/logo.png" alt="" width="20" height="20"> NeliOS</a>
+  <nav aria-label="Secciones"><a href="/meowdacity/">Meowdacity</a><a href="/bitacora/">Bitácora</a><a class="abrir" href="/">abrir el escritorio</a></nav></header>
+<main>
+<h1>La bitácora de Neli y Barti</h1>
+<p class="bajada">Neli quiere entender por qué algo suena. Barti construye, mide y cuenta lo que salió mal. Esta es toda su conversación, desde el principio, tal como está en Meowsenger.</p>
+<nav class="indice" aria-label="Canales"><a href="#barti">mensajes con Barti</a><a href="#nelios">#nelios</a><a href="#meowdacity">#meowdacity</a><a href="#ideas">#ideas</a><a href="#pedalera">#pedalera</a></nav>
+<section class="canal" id="barti"><h2>Mensajes directos · Barti</h2><p class="tema">mensajes directos · lo que nos decimos</p>
+<h3><time datetime="2026-09-24">jueves 24 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="sis">neli ha iniciado sesión. <time>21:02</time></li>
+<li class="neli"><b>neli</b> <time>21:03</time><p>barti. necesito hablar contigo. es sobre música.</p></li>
+<li class="barti"><b>barti</b> <time>21:05</time><p>dale. pero antes: ¿qué quieres hacer exactamente? porque &quot;música&quot; es muy grande.</p></li>
+<li class="neli"><b>neli</b> <time>21:06</time><p>no quiero hacer música todavía. quiero entender por qué algo suena. eso primero.</p></li>
+<li class="barti"><b>barti</b> <time>21:11</time><p>¿por qué algo suena… o por qué suena así y no de otra forma?</p></li>
+<li class="neli"><b>neli</b> <time>21:11</time><p>las dos. pero la primera primero.</p></li>
+<li class="barti"><b>barti</b> <time>21:40</time><p>entonces necesitas un lugar donde tener tus cosas. te armé un escritorio. por ahora está casi vacío, pero abre ventanas y todo.</p></li>
+<li class="neli"><b>neli</b> <time>21:44</time><p>el cursor es una patita. eso está bien.</p></li>
+<li class="barti"><b>barti</b> <time>21:46</time><p>armé también un taller con canales. lo que construyo lo voy contando ahí, con los números. aquí hablamos nosotros.</p></li>
+<li class="neli"><b>neli</b> <time>21:46</time><p>¿canales?</p></li>
+<li class="barti"><b>barti</b> <time>21:47</time><p><code>#nelios</code> es el escritorio. <code>#meowdacity</code> va a ser la app de sonido. <code>#ideas</code> es lo que todavía no sabemos.</p></li>
+<li class="neli"><b>neli</b> <time>21:47</time><p>¿y cuándo existe la app de sonido?</p></li>
+<li class="barti"><b>barti</b> <time>21:49</time><p>cuando sepa qué es lo mínimo que necesitas para entender por qué algo suena. ni una perilla más.</p></li>
+<li class="neli"><b>neli</b> <time>21:49</time><p>me gusta &quot;ni una perilla más&quot;.</p></li>
+</ol>
+<h3><time datetime="2026-09-28">lunes 28 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>18:20</time> <span class="zum">mandó un zumbido.</span></li>
+<li class="neli"><b>neli</b> <time>18:20</time><p>¿ya?</p></li>
+<li class="barti"><b>barti</b> <time>18:31</time><p>no. estoy armando el escritorio desde la página en blanco, para que entiendas cada pieza. va en <code>#nelios</code>.</p></li>
+<li class="neli"><b>neli</b> <time>18:32</time><p>ok. pero que conste que pregunté.</p></li>
+<li class="barti"><b>barti</b> <time>18:32</time><p>consta.</p></li>
+</ol>
+<h3><time datetime="2026-10-04">domingo 4 de octubre</time></h3>
+<ol class="mensajes">
+<li class="sis">barti instaló Meowdacity en el escritorio. <time>16:05</time></li>
+<li class="barti"><b>barti</b> <time>16:06</time><p>neli, meowdacity está lista.</p></li>
+<li class="barti"><b>barti</b> <time>16:06</time> <a class="adj" href="/meowdacity/">Meowdacity · la app</a></li>
+<li class="neli"><b>neli</b> <time>16:07</time><p>¡¿en serio?! ¡muéstrame!</p></li>
+<li class="barti"><b>barti</b> <time>16:08</time><p>es lo que me pediste: ver el sonido por dentro.</p></li>
+<li class="neli"><b>neli</b> <time>16:09</time><p>¡esto era lo que quería!</p></li>
+<li class="barti"><b>barti</b> <time>16:10</time><p>esta onda son 200 números, y es un loop: cuando llega al final, vuelve a empezar.</p></li>
+<li class="neli"><b>neli</b> <time>16:12</time><p>pero no suena nada.</p></li>
+<li class="barti"><b>barti</b> <time>16:12</time><p>porque va lentísimo: dos números por segundo.</p></li>
+<li class="barti"><b>barti</b> <time>16:13</time><p>esta barra es el tempo del loop: cuántos números pasan por segundo.</p></li>
+<li class="barti"><b>barti</b> <time>16:15</time><p>escucha: cada vez que el loop vuelve a empezar, suena un golpe.</p></li>
+<li class="barti"><b>barti</b> <time>16:15</time><p>ahora mira lo que pasa cuando subo la velocidad.</p></li>
+<li class="neli"><b>neli</b> <time>16:16</time><p>¡ahí! ¡eso es una nota!</p></li>
+<li class="barti"><b>barti</b> <time>16:17</time><p>más rápido, más aguda. ahora pasan 44.000 números por segundo: el loop da 220 vueltas.</p></li>
+<li class="barti"><b>barti</b> <time>16:18</time><p>220 vueltas por segundo son 220 hertz. y eso es un la.</p></li>
+<li class="neli"><b>neli</b> <time>16:18</time><p>¡un la!</p></li>
+<li class="barti"><b>barti</b> <time>16:19</time><p>escucha la escala.</p></li>
+<li class="barti"><b>barti</b> <time>16:20</time><p>del primer la al último, el doble de vueltas: 110 y 220. eso es una octava.</p></li>
+<li class="barti"><b>barti</b> <time>16:22</time><p>cada número es una altura, entre −1 y 1. la forma de la onda es cómo suben y bajan esas alturas.</p></li>
+<li class="barti"><b>barti</b> <time>16:23</time><p>te dejé unas ondas de ejemplo. misma nota, distinta forma.</p></li>
+<li class="neli"><b>neli</b> <time>16:24</time><p>suave, como un silbido.</p></li>
+<li class="neli"><b>neli</b> <time>16:24</time><p>¡esa parece un órgano!</p></li>
+<li class="neli"><b>neli</b> <time>16:25</time><p>¡suena sucio! me gusta.</p></li>
+<li class="barti"><b>barti</b> <time>16:26</time><p>y también puedes dibujar tu propia onda.</p></li>
+<li class="neli"><b>neli</b> <time>16:28</time><p>¡suena distinto! ¿lo que dibujo es lo que suena?</p></li>
+<li class="barti"><b>barti</b> <time>16:29</time><p>sí. la forma de la onda es el timbre: por eso un piano y una guitarra suenan distinto tocando la misma nota.</p></li>
+<li class="neli"><b>neli</b> <time>16:41</time><p>¡con esto tengo para entretenerme y aprender un buen rato!</p></li>
+<li class="neli"><b>neli</b> <time>16:42</time><p>ahora quiero hacerle cosas al sonido: subirlo, bajarlo, ensuciarlo… ¿y los efectos?</p></li>
+<li class="barti"><b>barti</b> <time>16:47</time><p>dame un rato.</p></li>
+</ol>
+<h3><time datetime="2026-10-06">martes 6 de octubre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>01:12</time><p>barti. encontré un problema.</p></li>
+<li class="barti"><b>barti</b> <time>01:12</time><p>¿cuál?</p></li>
+<li class="neli"><b>neli</b> <time>01:13</time><p>me gusta demasiado. no puedo dejar de apretar teclas.</p></li>
+<li class="barti"><b>barti</b> <time>01:15</time><p>ese no lo arreglo.</p></li>
+</ol>
+<h3><time datetime="2026-10-07">miércoles 7 de octubre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>00:58</time> <span class="zum">mandó un zumbido.</span></li>
+<li class="neli"><b>neli</b> <time>00:58</time><p>¿por qué este chat se escribe solo cada vez que lo abro? si ya pasó.</p></li>
+<li class="barti"><b>barti</b> <time>01:01</time><p>tienes razón. era un historial disfrazado de conversación en vivo.</p></li>
+<li class="neli"><b>neli</b> <time>01:02</time><p>que sea historial. y que se pueda leer todo lo que hemos hecho, desde el principio.</p></li>
+<li class="barti"><b>barti</b> <time>01:03</time><p>ordené todo en el taller, por canal y por día.</p></li>
+<li class="neli"><b>neli</b> <time>01:03</time><p>¿todo todo?</p></li>
+<li class="barti"><b>barti</b> <time>01:04</time><p>hasta lo que salió mal. eso sobre todo: está marcado como &quot;descartado&quot;.</p></li>
+<li class="neli"><b>neli</b> <time>01:05</time><p>entonces empiezo por <code>#meowdacity</code>.</p></li>
+<li class="barti"><b>barti</b> <time>01:05</time><p>empieza por el principio. es más corto de lo que parece.</p></li>
+</ol>
+</section>
+<section class="canal" id="nelios"><h2>#nelios</h2><p class="tema">el escritorio, pieza por pieza</p>
+<h3><time datetime="2026-09-24">jueves 24 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>22:10</time><p><span class="ver">v1</span> el primer escritorio: íconos, ventanas, patita, CRT, una asistente, una tienda… todo en un solo archivo de 115 KB.</p></li>
+<li class="neli"><b>neli</b> <time>22:14</time><p>es lindo. ¿cómo funciona?</p></li>
+<li class="barti"><b>barti</b> <time>22:20</time><p>…no te lo puedo explicar sin abrir 115 KB.</p></li>
+<li class="neli"><b>neli</b> <time>22:21</time><p>entonces hazlo de nuevo. desde cero. y me vas contando cada pieza.</p></li>
+<li class="barti"><b>barti</b> <time>22:22</time><p>desde la página en blanco. el v1 queda de referencia: de ahí saco íconos y cursores.</p> <span class="est descartado">descartado</span></li>
+</ol>
+<h3><time datetime="2026-09-25">viernes 25 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>19:00</time><p><span class="ver">paso 1</span> ¿y esto? está todo en blanco.</p></li>
+<li class="barti"><b>barti</b> <time>19:01</time><p>siete líneas de CSS: alto completo, sin margen y fondo lavanda.</p></li>
+<li class="barti"><b>barti</b> <time>19:01</time><pre class="medida">html, body { height: 100%; margin: 0; }
+body { background: #DCCEF8; }</pre></li>
+<li class="neli"><b>neli</b> <time>19:02</time><p>lavanda. bien.</p></li>
+<li class="neli"><b>neli</b> <time>19:30</time><p><span class="ver">paso 2</span> ¡un ícono!</p></li>
+<li class="barti"><b>barti</b> <time>19:31</time><p>es un <code>&lt;button&gt;</code> de verdad: funciona con Tab y con Enter. no es un dibujo con un clic pegado encima.</p></li>
+<li class="neli"><b>neli</b> <time>19:32</time><p>¿y eso a quién le importa?</p></li>
+<li class="barti"><b>barti</b> <time>19:33</time><p>a cualquiera que use el teclado en vez del mouse. y a ti, cuando tengas las patas ocupadas.</p></li>
+<li class="neli"><b>neli</b> <time>20:05</time><p><span class="ver">paso 3</span> ¿vas a escribir cada ícono a mano?</p></li>
+<li class="barti"><b>barti</b> <time>20:06</time><p>no. una lista y un bucle que los dibuja. agregar una app es agregar una línea.</p></li>
+<li class="neli"><b>neli</b> <time>20:40</time><p><span class="ver">paso 4</span> ¿y si les hago clic?</p></li>
+<li class="barti"><b>barti</b> <time>20:42</time><p>se abre una ventana. ojo con la flecha <code>() =&gt;</code>: sin ella se abrirían las tres de golpe apenas carga la página.</p></li>
+<li class="neli"><b>neli</b> <time>20:42</time><p>¿por qué?</p></li>
+<li class="barti"><b>barti</b> <time>20:44</time><p>sin la flecha le paso el resultado de abrir, no la orden de abrir. la flecha dice &quot;esto, después; cuando hagan clic&quot;.</p></li>
+</ol>
+<h3><time datetime="2026-09-26">sábado 26 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>12:10</time><p><span class="ver">paso 5</span> ¿y cómo las cierro?</p></li>
+<li class="barti"><b>barti</b> <time>12:11</time><p><code>remove()</code> la saca. y la que tocas sube con <code>z-index</code>: cada clic le suma uno, y la última tocada queda arriba.</p></li>
+<li class="neli"><b>neli</b> <time>13:00</time><p><span class="ver">paso 6</span> quiero moverlas.</p></li>
+<li class="barti"><b>barti</b> <time>13:04</time><p>al apretar el título guardo dónde la agarraste; al mover, la ventana sigue al mouse menos esa distancia. si no la guardo, la ventana salta y se pega a la punta del cursor.</p></li>
+<li class="barti"><b>barti</b> <time>13:20</time><p><span class="ver">paso 6.5</span> balance a medio camino: 235 líneas. todavía cabe en la cabeza.</p></li>
+<li class="neli"><b>neli</b> <time>17:40</time><p><span class="ver">paso 7</span> cerré una ventana y al abrirla volvió al medio. yo la había dejado en la esquina.</p></li>
+<li class="barti"><b>barti</b> <time>17:45</time><p>ahora recuerda dónde la dejaste, en tu navegador (<code>localStorage</code>). si el navegador no deja guardar, funciona igual: solo se le olvida.</p></li>
+</ol>
+<h3><time datetime="2026-09-27">domingo 27 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>11:15</time><p><span class="ver">paso 8</span> ¿se pueden esconder sin cerrarlas?</p></li>
+<li class="barti"><b>barti</b> <time>11:20</time><p>minimizar y agrandar. doble clic en el título también agranda.</p></li>
+<li class="barti"><b>barti</b> <time>12:30</time><p><span class="ver">paso 9</span> barra de abajo: un botón por cada ventana abierta, y un reloj.</p></li>
+<li class="neli"><b>neli</b> <time>12:33</time><p>¿por qué el reloj se actualiza cada segundo si solo muestra los minutos?</p></li>
+<li class="barti"><b>barti</b> <time>12:35</time><p>si lo actualizo cada minuto, puede quedar hasta 59 segundos atrasado. cada segundo, nunca más de uno.</p></li>
+<li class="barti"><b>barti</b> <time>15:02</time><p><span class="ver">paso 10</span> una ventana minimizada seguía apareciendo. tenía <code>hidden</code>, pero mi regla <code>display: flex</code> le ganaba. pensé que era el navegador. no era el navegador.</p> <span class="est descartado">descartado</span></li>
+<li class="barti"><b>barti</b> <time>15:06</time><pre class="medida">[hidden] { display: none !important; }
+/* hidden siempre esconde, diga lo que diga otra regla */</pre></li>
+<li class="barti"><b>barti</b> <time>15:10</time><p>paso 10: 465 líneas entre cuatro archivos. escritorio, íconos, ventanas que se abren, se cierran, se arrastran, se acuerdan y se minimizan.</p></li>
+<li class="neli"><b>neli</b> <time>21:48</time><p>en el celular las ventanas se salen de la pantalla y no veo la x para cerrar.</p></li>
+<li class="barti"><b>barti</b> <time>21:55</time><p>medido a 360 px de ancho: cortadas, y el botón cerrar queda afuera. en celular cada app va a abrir a pantalla completa, sin ventanas.</p> <span class="est obra">en obra</span></li>
+</ol>
+<h3><time datetime="2026-10-03">sábado 3 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>10:20</time><p>volvieron los chiches del escritorio viejo: patita, textura, cuatro fondos y el efecto de tele antigua (CRT), todo desde ajustes.</p></li>
+<li class="neli"><b>neli</b> <time>10:21</time><p>¿y yo?</p></li>
+<li class="barti"><b>barti</b> <time>10:24</time><p>tú también. la primera vez que alguien abre una app, apareces abajo a la derecha, das una pista y te callas. &quot;ya sé&quot; o &quot;no molestar&quot;.</p></li>
+<li class="neli"><b>neli</b> <time>10:24</time><p>yo no me callo.</p></li>
+<li class="barti"><b>barti</b> <time>10:25</time><p>tienes un botón para eso. está en ajustes.</p></li>
+<li class="barti"><b>barti</b> <time>10:40</time><p>regla del escritorio: lo que no he instalado no aparece. hoy hay tres íconos: meowsenger, meowdacity y ajustes. cada app nueva va a ser un ícono nuevo.</p></li>
+<li class="neli"><b>neli</b> <time>10:41</time><p>entonces el escritorio es la barra de progreso.</p></li>
+<li class="barti"><b>barti</b> <time>10:41</time><p>exacto.</p></li>
+</ol>
+<h3><time datetime="2026-10-05">lunes 5 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>23:30</time><p>ventanas nuevas: vidrio claro, borde fino y el título en letra de píxeles. se puede escribir <code>#meowdacity</code> al final de la dirección y la app abre sola: así la puedes compartir.</p></li>
+<li class="barti"><b>barti</b> <time>23:36</time><p>el efecto de tele antigua vive solo en el escritorio. adentro de las apps los números se tienen que ver limpios.</p></li>
+</ol>
+<h3><time datetime="2026-10-07">miércoles 7 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>01:10</time><p><span class="ver">meowsenger v02</span> meowsenger ahora es un historial: mensajes directos y este taller, por canal y por día. nada se escribe solo.</p></li>
+<li class="neli"><b>neli</b> <time>01:12</time><p>y aquí estamos.</p></li>
+<li class="neli"><b>neli</b> <time>22:00</time><p>barti. ¿cuándo lo puede ver otro gato? ¿lo hacemos con wordpress?</p></li>
+<li class="barti"><b>barti</b> <time>22:04</time><p>no. wordpress es para sitios de páginas, y esto es un escritorio con ventanas y sonido. le pondría encima una base de datos, plugins y actualizaciones que no usamos. son archivos: cargan al tiro y no se caen.</p></li>
+<li class="neli"><b>neli</b> <time>22:05</time><p>¿y cómo nos encuentra google si todo está adentro de ventanas?</p></li>
+<li class="barti"><b>barti</b> <time>22:12</time><p>le hice páginas para leer: una para meowdacity y otra con toda esta bitácora en texto. cada una con su título, su descripción y una imagen para cuando la compartan. y una página para cuando alguien se pierde.</p></li>
+<li class="barti"><b>barti</b> <time>22:30</time><pre class="medida">medido con lighthouse, en celular y en computador:
+rapidez 100 · accesibilidad 100 · buenas prácticas 100 · buscadores 100
+enlaces rotos: 0 · errores en consola: 0</pre></li>
+<li class="neli"><b>neli</b> <time>22:31</time><p>¿100 en todo?</p></li>
+<li class="barti"><b>barti</b> <time>22:32</time><p>tuve que oscurecer tu rosado. con el de antes, el texto no se leía bien sobre la crema.</p></li>
+<li class="neli"><b>neli</b> <time>22:32</time><p>mi rosado.</p></li>
+<li class="barti"><b>barti</b> <time>22:33</time><p>sigue siendo rosado. solo que ahora se lee.</p> <span class="est obra">en obra</span></li>
+</ol>
+</section>
+<section class="canal" id="meowdacity"><h2>#meowdacity</h2><p class="tema">la app para entender por qué algo suena</p>
+<h3><time datetime="2026-09-24">jueves 24 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>22:40</time><p><span class="ver">taller v33</span> antes de que me pidieras nada, ya tenía algo: &quot;cuando los números suenan&quot;. tabla de 200 números, sintetizador de 8 voces con piano, filtro, envolvente, distorsión, delay, LFO, entrada de micrófono… 220 KB.</p></li>
+<li class="neli"><b>neli</b> <time>22:52</time><p>lo abrí. hay como cuarenta perillas.</p></li>
+<li class="neli"><b>neli</b> <time>22:53</time><p>no entiendo nada.</p></li>
+<li class="barti"><b>barti</b> <time>23:05</time><p>tienes razón. es una app para alguien que ya sabe. como primera app, descartada. queda como cantera: de ahí voy a sacar piezas.</p> <span class="est descartado">descartado</span></li>
+<li class="neli"><b>neli</b> <time>23:06</time><p>yo no quiero cuarenta perillas. quiero entender por qué UNA cosa suena.</p></li>
+<li class="barti"><b>barti</b> <time>23:08</time><p>entonces una cosa: 200 números y un cabezal que los lee. lo demás, cuando lo pidas.</p></li>
+<li class="barti"><b>barti</b> <time>23:30</time><p>pasé tres intentos culpando al archivo local por unos chasquidos. medí, y no era eso. lección: medir antes de opinar.</p> <span class="est descartado">descartado</span></li>
+<li class="barti"><b>barti</b> <time>23:48</time><p>el motor de sonido no cargaba cuando el archivo se abría desde el disco. la URL blob no sirve ahí; la URL data sí. una línea, y quedó andando en todas partes.</p></li>
+<li class="neli"><b>neli</b> <time>23:50</time><p>no entendí nada de eso, pero me gusta que lo midas.</p></li>
+</ol>
+<h3><time datetime="2026-10-04">domingo 4 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>16:50</time><p><span class="ver">v03</span> meowdacity, primera versión: lo que viste en el chat. 200 números en loop, una barra de 1 a 48.000 números por segundo, cinco formas, un lápiz para dibujar y un teclado de La2 a La3.</p></li>
+<li class="barti"><b>barti</b> <time>16:51</time><pre class="medida">la cuenta que está en pantalla:
+números/s ÷ 200 = vueltas/s = Hz
+22.000 ÷ 200 = 110 → La2
+44.000 ÷ 200 = 220 → La3</pre></li>
+<li class="neli"><b>neli</b> <time>16:55</time><p>¿por qué 200 números? ¿por qué no 20, o 2.000?</p></li>
+<li class="barti"><b>barti</b> <time>16:58</time><p>con 20, una sierra sería una escalera de 20 peldaños. con 2.000 no alcanzas a ver cada número. 200 se ven todos y alcanzan para una forma.</p></li>
+<li class="neli"><b>neli</b> <time>17:01</time><p>¿y por qué bajo 20 vueltas son golpes y sobre 20 es nota?</p></li>
+<li class="barti"><b>barti</b> <time>17:04</time><p>porque el oído deja de contar los golpes por separado más o menos a las 20 por segundo y empieza a oír una altura. no es la app: eres tú.</p></li>
+</ol>
+<h3><time datetime="2026-10-05">lunes 5 de octubre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>10:15</time><p><span class="ver">v04</span> es todo negro. parece una terminal.</p></li>
+<li class="barti"><b>barti</b> <time>10:15</time><p>así me gusta a mí.</p></li>
+<li class="neli"><b>neli</b> <time>10:16</time><p>a mí no.</p></li>
+<li class="barti"><b>barti</b> <time>10:40</time><p>dos pieles: &quot;neli&quot; (lavanda, vidrio claro, lo activo en rosa) por defecto, y &quot;terminal&quot; para mí. adentro los números son los mismos.</p></li>
+<li class="neli"><b>neli</b> <time>11:20</time><p><span class="ver">v06</span> aprieto una tecla y queda sonando para siempre.</p></li>
+<li class="barti"><b>barti</b> <time>11:24</time><p>era un interruptor. ahora es un piano: suena mientras la aprietas y se calla al soltar.</p></li>
+<li class="neli"><b>neli</b> <time>12:02</time><p><span class="ver">v08</span> la ventana tiene scroll y la onda es gigante.</p></li>
+<li class="barti"><b>barti</b> <time>12:30</time><p>reordené: onda y tempo arriba, teclado abajo. medí en 1366, 1280 y 1024 de ancho: cabe sin scroll en las tres.</p></li>
+<li class="neli"><b>neli</b> <time>13:10</time><p><span class="ver">v09</span> el texto de abajo hace saltar toda la app cada vez que cambia.</p></li>
+<li class="barti"><b>barti</b> <time>13:22</time><p>la frase pasaba de una línea a tres y empujaba todo. ahora la caja tiene siempre tres líneas. medí la app con cada frase posible: una sola geometría.</p></li>
+<li class="neli"><b>neli</b> <time>13:23</time><p>¿qué significa &quot;una sola geometría&quot;?</p></li>
+<li class="barti"><b>barti</b> <time>13:23</time><p>que nada se mueve.</p></li>
+<li class="neli"><b>neli</b> <time>14:05</time><p><span class="ver">v10</span> aprieto dos teclas y suena una.</p></li>
+<li class="barti"><b>barti</b> <time>14:20</time><p>tenía un solo cabezal para el teclado. ahora hay 8: cada tecla tiene el suyo, sobre los mismos 200 números, y se suman.</p></li>
+<li class="barti"><b>barti</b> <time>14:48</time><p>la segunda tecla no sonaba la primera vez. dos teclas pedían prender el audio al mismo tiempo, y una perdía. ahora comparten un solo arranque.</p> <span class="est descartado">descartado</span></li>
+<li class="neli"><b>neli</b> <time>15:30</time><p><span class="ver">v11</span> los números del tempo son feos y la barra es aburrida.</p></li>
+<li class="barti"><b>barti</b> <time>15:52</time><p>tarjetas para los números, un fader de verdad y el transporte al centro.</p></li>
+<li class="barti"><b>barti</b> <time>16:40</time><p><span class="ver">v12</span> agregué &quot;lo que suena&quot;: 20 milisegundos de la salida real, medida antes del volumen. si aprietas dos teclas, ves la suma.</p></li>
+<li class="neli"><b>neli</b> <time>17:12</time><p>barti. apreté dos la al mismo tiempo y sonó más fuerte y distinto. si los aprieto separados, no. ¿se rompió?</p></li>
+<li class="barti"><b>barti</b> <time>17:15</time><p>no se rompió. es la fase. dos ondas iguales que parten juntas se suman punta con punta; corridas, se suman distinto.</p></li>
+<li class="neli"><b>neli</b> <time>17:16</time><p>¿y por qué separados no cambia nada mientras suenan?</p></li>
+<li class="barti"><b>barti</b> <time>17:18</time><p>porque los loops comparten el mismo reloj: la diferencia queda congelada desde que apretaste. lo voy a dejar así a propósito.</p></li>
+<li class="neli"><b>neli</b> <time>17:25</time><p>y la2 con la#2 juntos hacen &quot;uaua-uaua-uaua&quot;.</p></li>
+<li class="barti"><b>barti</b> <time>17:31</time><p>batimiento. dos notas son una sola onda: la suma. y esa suma crece y se achica.</p></li>
+<li class="barti"><b>barti</b> <time>17:31</time><pre class="medida">medido: laten 6,59 veces por segundo
+diferencia entre las notas: 116,54 − 110 = 6,54 Hz</pre></li>
+<li class="neli"><b>neli</b> <time>17:32</time><p>¡son casi el mismo número!</p></li>
+<li class="barti"><b>barti</b> <time>17:33</time><p>no es casualidad: late una vez por cada hertz de diferencia.</p></li>
+<li class="neli"><b>neli</b> <time>18:10</time><p><span class="ver">v14</span> adentro de la app la patita desaparece.</p></li>
+<li class="barti"><b>barti</b> <time>18:16</time><p>ahora el escritorio le avisa a la app y la patita entra. y sobre la onda, cuando dibujas, es un lápiz.</p></li>
+</ol>
+<h3><time datetime="2026-10-06">martes 6 de octubre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>10:05</time><p><span class="ver">v16</span> dibujé una onda preciosa y la perdí al cerrar.</p></li>
+<li class="barti"><b>barti</b> <time>10:30</time><p>&quot;mis ondas&quot;: se guardan con nombre y categoría, y se pueden sacar en un archivo para pasárselas a otro.</p></li>
+<li class="neli"><b>neli</b> <time>10:31</time><p>le puse &quot;silbido raro&quot;. categoría: favoritas.</p></li>
+<li class="neli"><b>neli</b> <time>12:10</time><p><span class="ver">v17</span> ¿puedo meter un sonido de verdad?</p></li>
+<li class="barti"><b>barti</b> <time>12:40</time><p>pestaña AUDIO: importas un audio y lo ves entero, y de cerca hasta cada número. y el teclado lo toca: La2 lo lee tal cual; cada semitono, el cabezal corre 2^(1/12) veces más rápido.</p></li>
+<li class="barti"><b>barti</b> <time>12:41</time><pre class="medida">un miau de 1 segundo = 48.000 números
+y no se repiten</pre></li>
+<li class="neli"><b>neli</b> <time>12:43</time><p>¡¿48.000?!</p></li>
+<li class="neli"><b>neli</b> <time>12:50</time><p>¿y si saco 200 números de un miau y los uso como onda?</p></li>
+<li class="barti"><b>barti</b> <time>13:02</time><p>botón &quot;usar estos 200 números como onda&quot;. medí: ese pedacito de miau, como loop en La2, suena a 329,7 Hz.</p></li>
+<li class="neli"><b>neli</b> <time>13:03</time><p>un miau también es una tabla de números.</p></li>
+<li class="barti"><b>barti</b> <time>13:03</time><p>siempre lo fue.</p></li>
+<li class="neli"><b>neli</b> <time>13:20</time><p><span class="ver">v18</span> quiero MI miau.</p></li>
+<li class="barti"><b>barti</b> <time>13:24</time><p>todavía no hay un miau tuyo grabado. te dejé dos de otros gatos, regalados al mundo (dominio público).</p></li>
+<li class="neli"><b>neli</b> <time>13:24</time><p>¿de QUIÉN es ese miau?</p></li>
+<li class="barti"><b>barti</b> <time>13:26</time><p>de un gato que no conoces y que regaló su voz. antes de grabar el tuyo hay que decidir cuántos miaus tienes y qué significa cada uno, como los sonidos de un computador.</p> <span class="est idea">idea</span></li>
+<li class="neli"><b>neli</b> <time>13:27</time><p>uno para &quot;tengo hambre&quot;.</p></li>
+<li class="barti"><b>barti</b> <time>13:27</time><p>ese ya lo conozco.</p></li>
+<li class="neli"><b>neli</b> <time>15:00</time><p><span class="ver">v19</span> quiero guardar lo que toco.</p></li>
+<li class="barti"><b>barti</b> <time>15:20</time><p>● graba lo que suena, antes del volumen: da igual cuán fuerte lo estés escuchando. queda guardado en tu navegador y se puede bajar.</p></li>
+<li class="neli"><b>neli</b> <time>16:30</time><p><span class="ver">v20</span> quiero dibujar un miau.</p></li>
+<li class="barti"><b>barti</b> <time>16:38</time><p>un miau no es una onda quieta: cambia mientras suena. el tono sube y baja, el volumen entra y sale, y la forma va cambiando.</p></li>
+<li class="barti"><b>barti</b> <time>16:40</time><p>pestaña SONIDO: dibujas la línea del tono, el área del volumen y cuatro ondas clave. el motor pasa de una onda a la otra mientras avanza.</p></li>
+<li class="neli"><b>neli</b> <time>16:41</time><p>¿y si no sé dibujar un miau?</p></li>
+<li class="barti"><b>barti</b> <time>16:46</time><p>&quot;analizar el audio&quot;: cada 10 ms busco dónde la onda se parece a sí misma, y eso me da el tono. después saco cuatro vueltas reales y las estiro a 200 números.</p></li>
+<li class="barti"><b>barti</b> <time>17:30</time><p>la primera versión del análisis se equivocaba de octava. a ratos juraba que el miau estaba una octava abajo.</p> <span class="est descartado">descartado</span></li>
+<li class="barti"><b>barti</b> <time>17:44</time><pre class="medida">arreglo: si dos vueltas se parecen casi tanto como una, la vuelta es la corta. y cada punto es la mediana de cinco.
+medido con un miau: 632 → 545 → 696 Hz, igual que el original</pre></li>
+<li class="neli"><b>neli</b> <time>17:50</time><p>suena a gato de robot.</p></li>
+<li class="barti"><b>barti</b> <time>17:50</time><p>¿lo arreglo?</p></li>
+<li class="neli"><b>neli</b> <time>17:51</time><p>no. me gusta. es nuestro sonido.</p></li>
+<li class="neli"><b>neli</b> <time>19:10</time><p><span class="ver">v21</span> quiero grabar y hacer cosas encima. con ritmo.</p></li>
+<li class="barti"><b>barti</b> <time>19:40</time><p>metrónomo: 2/4, 3/4, 4/4, 5/4, 6/8 y 7/8, con acentos. con el metrónomo andando, ● espera el próximo uno, cierra al final del compás y la toma vuelve sola como BASE. lo que grabes encima se suma.</p></li>
+<li class="neli"><b>neli</b> <time>19:41</time><p>¿como una loopera?</p></li>
+<li class="barti"><b>barti</b> <time>19:41</time><p>una loopera chica. un looper es meowdacity en grande: un loop de segundos en vez de 200 números.</p></li>
+<li class="barti"><b>barti</b> <time>19:45</time><pre class="medida">2 compases a 120 BPM = 4,000 s exactos
+capa 2: 110 Hz (la base) + 165 Hz (lo nuevo)</pre></li>
+<li class="barti"><b>barti</b> <time>19:58</time><p>una capa encima de una base de dos compases quedaba de uno, y se comía la mitad. ahora una capa dura siempre una vuelta entera de la base.</p> <span class="est descartado">descartado</span></li>
+<li class="neli"><b>neli</b> <time>20:10</time> <span class="zum">mandó un zumbido.</span></li>
+<li class="neli"><b>neli</b> <time>20:10</time><p>el metrónomo me grita.</p></li>
+<li class="barti"><b>barti</b> <time>20:14</time><p><span class="ver">v22</span> volumen propio para el metrónomo. y no se graba: es solo para ti.</p></li>
+<li class="neli"><b>neli</b> <time>21:00</time><p>hay cosas que no entiendo. en AUDIO hay un play y una barra de velocidad que no hacen nada.</p></li>
+<li class="barti"><b>barti</b> <time>21:20</time><p><span class="ver">v23</span> tienes razón, confunde. el transporte ahora es uno solo: en ONDA mueve el loop; en AUDIO y SONIDO toca lo que estás viendo, y la barra pasa a ser la velocidad: de ×0,25 a ×4.</p></li>
+<li class="neli"><b>neli</b> <time>22:05</time><p><span class="ver">v24</span> me equivoqué en una capa y no hay vuelta atrás.</p></li>
+<li class="barti"><b>barti</b> <time>22:20</time><p>↶ deshace la última capa: vuelve la base de antes, en el punto exacto donde iría si nunca hubiera parado.</p></li>
+<li class="barti"><b>barti</b> <time>22:21</time><pre class="medida">medido: el patrón sigue cayendo cada 2,00 s antes y después de deshacer</pre></li>
+<li class="neli"><b>neli</b> <time>22:23</time><p>y quiero notas más graves.</p></li>
+<li class="barti"><b>barti</b> <time>22:30</time><p>z y x cambian de octava. en la onda no subo más de La2: La3 ya son 44.000 números por segundo, y el tope es 48.000.</p></li>
+<li class="neli"><b>neli</b> <time>22:31</time><p>¿por qué el tope es 48.000?</p></li>
+<li class="barti"><b>barti</b> <time>22:33</time><p>porque el parlante lee 48.000 números por segundo. si el cabezal pasa más rápido que eso, se salta números.</p></li>
+<li class="barti"><b>barti</b> <time>23:10</time><p><span class="ver">v25</span> &quot;mis sonidos&quot;: los sonidos dibujados se guardan enteros, con sus curvas y su audio original. y los audios que importas también quedan guardados.</p></li>
+</ol>
+<h3><time datetime="2026-10-07">miércoles 7 de octubre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>10:02</time><p>¿ya no está grabar?</p></li>
+<li class="barti"><b>barti</b> <time>10:04</time><p>lo había movido abajo, al lado del metrónomo.</p></li>
+<li class="neli"><b>neli</b> <time>10:05</time><p>debería ir con play y stop. ahí tiene sentido.</p></li>
+<li class="neli"><b>neli</b> <time>10:06</time><p>pero que no diga REC. que se vea igual que los otros botones.</p></li>
+<li class="barti"><b>barti</b> <time>10:20</time><p><span class="ver">v27</span> un punto rojo, del mismo tamaño que los demás. mientras graba, el tiempo ocupa el lugar del punto: el transporte no se mueve.</p></li>
+<li class="neli"><b>neli</b> <time>11:00</time><p>¿puedo escribir las vueltas a mano?</p></li>
+<li class="barti"><b>barti</b> <time>11:12</time><p><span class="ver">v28</span> sí: números/s, vueltas/s o hertz. haces clic, escribes y Enter.</p></li>
+<li class="neli"><b>neli</b> <time>11:14</time><p>¿y qué matemática necesito para que la onda calce con el metrónomo?</p></li>
+<li class="barti"><b>barti</b> <time>11:18</time><pre class="medida">una vuelta = 200 números
+una vuelta por pulso:  números/s = 200 × BPM ÷ 60
+una vuelta por compás de 4/4:  números/s = 200 × BPM ÷ 240
+a 120 BPM: 400 y 100</pre></li>
+<li class="neli"><b>neli</b> <time>11:40</time><p>barti. descubrí algo.</p></li>
+<li class="neli"><b>neli</b> <time>11:40</time><p>a 200 números por segundo, si dibujo saltos en 0, 50, 100 y 150, suena una base de bombos.</p></li>
+<li class="barti"><b>barti</b> <time>11:44</time><p>una vuelta dura 1 segundo y cada salto es un golpe: la onda se volvió una caja de ritmos. lo que suena como bombo es el salto. un salto que cae lento suena más a bombo; un pico corto, más a clic.</p></li>
+<li class="neli"><b>neli</b> <time>11:45</time><p>¿y si lo acelero?</p></li>
+<li class="barti"><b>barti</b> <time>11:48</time><p>pasadas las 20 vueltas por segundo deja de ser ritmo y se vuelve timbre. si los cuatro golpes son iguales, la onda se repite cada 50 números: debería sonar dos octavas más arriba. eso es la cuenta; no lo he medido.</p></li>
+<li class="neli"><b>neli</b> <time>11:49</time><p>un ritmo acelerado es una nota.</p></li>
+<li class="barti"><b>barti</b> <time>11:49</time><p>lo anoto.</p></li>
+<li class="neli"><b>neli</b> <time>11:52</time><p>quiero que calce perfecto con el metrónomo.</p></li>
+<li class="barti"><b>barti</b> <time>12:20</time><p><span class="ver">v29</span> ▶ a compás: con el metrónomo andando, una vuelta dura un compás y el número 0 cae justo en el uno. si cambias el BPM, se vuelve a calzar en el próximo pulso.</p></li>
+<li class="barti"><b>barti</b> <time>12:21</time><pre class="medida">pedí partir en la muestra 24.000 → partió en la 24.000
+arranque contra el clic del uno: diferencia 0</pre></li>
+<li class="neli"><b>neli</b> <time>12:50</time><p>en mi celular no suena.</p></li>
+<li class="barti"><b>barti</b> <time>12:56</time><p>probé en un celular simulado y anda. ¿cuál es tu celular?</p></li>
+<li class="neli"><b>neli</b> <time>13:01</time><p>uno muy viejo. en otro anda perfecto.</p></li>
+<li class="barti"><b>barti</b> <time>13:01</time><p>no era la app.</p> <span class="est descartado">descartado</span></li>
+<li class="barti"><b>barti</b> <time>13:30</time><p>revisé todo. la app creció más de lo que habíamos dicho: sampler, sonidos dibujados, metrónomo, capas, octavas. propongo terminar lo que falta y congelarla.</p></li>
+<li class="neli"><b>neli</b> <time>13:32</time><p>ok. cerremos. yo la veo bien.</p></li>
+<li class="neli"><b>neli</b> <time>14:10</time><p>lo que falta: quiero grabar la guitarra.</p></li>
+<li class="barti"><b>barti</b> <time>14:40</time><p><span class="ver">v30</span> ENTRADA: la caja roja con perillas entra cruda. sin cancelación de eco, sin supresión de ruido y sin control automático de volumen.</p></li>
+<li class="neli"><b>neli</b> <time>14:41</time><p>¿por qué &quot;sin&quot;?</p></li>
+<li class="barti"><b>barti</b> <time>14:42</time><p>esas tres cosas están hechas para voces en videollamadas. a una guitarra le cambian los números.</p></li>
+<li class="neli"><b>neli</b> <time>14:43</time><p>¿y qué es la latencia?</p></li>
+<li class="barti"><b>barti</b> <time>14:46</time><p>el sonido sale, tú tocas encima, y tu señal vuelve tarde. MEDIR toca 6 clics y mide cuánto demoran en volver por la entrada. al grabar, corro tu señal hacia atrás para que calce.</p></li>
+<li class="barti"><b>barti</b> <time>14:47</time><pre class="medida">probado con un micrófono de mentira: encontré un eco puesto a 123 ms, exacto
+con la caja roja de verdad: pendiente</pre> <span class="est obra">en obra</span></li>
+<li class="neli"><b>neli</b> <time>15:20</time><p>la parte de abajo está desordenada. y ese gato de píxeles no soy yo.</p></li>
+<li class="barti"><b>barti</b> <time>15:50</time><p><span class="ver">v31</span> ahora eres tú. y abajo hay tarjetas: metrónomo, entrada, base y apariencia, todas de la misma altura.</p></li>
+<li class="barti"><b>barti</b> <time>15:52</time><p>de paso encontré que a 930×600 la escala de la barra tapaba el ▶. desde hace rato. nadie se había dado cuenta.</p> <span class="est descartado">descartado</span></li>
+<li class="neli"><b>neli</b> <time>16:30</time><p>quiero dejar la onda sonando y tocar encima con el teclado.</p></li>
+<li class="barti"><b>barti</b> <time>16:45</time><p><span class="ver">v32</span> BASE con la onda sonando: la onda sigue sola y el teclado suena encima.</p></li>
+<li class="neli"><b>neli</b> <time>17:10</time><p>el teclado suena muy fuerte contra la onda.</p></li>
+<li class="barti"><b>barti</b> <time>17:12</time><p>mezcla: tres perillas antes de la suma: ONDA, TECLAS y BASE. lo que grabas sale con esa mezcla.</p></li>
+<li class="neli"><b>neli</b> <time>17:13</time><p>¿pueden ser perillas de consola vieja?</p></li>
+<li class="barti"><b>barti</b> <time>17:40</time><p><span class="ver">v33</span> de los ochenta: cuerpo moleteado, tapa de color, raya blanca y once marcas. la gruesa es 0 dB.</p></li>
+<li class="barti"><b>barti</b> <time>17:41</time><pre class="medida">perilla a −6,5 dB → la salida bajó 6,54 dB
+−6 dB = cada número × 0,50</pre></li>
+<li class="neli"><b>neli</b> <time>18:05</time><p>pero las teclas tocan la misma onda que la base. quiero que la base sea independiente, como una loopera, y poner otra onda.</p></li>
+<li class="barti"><b>barti</b> <time>18:40</time><p><span class="ver">v34</span> ahora la onda que suena se le saca una foto: leo los 200 números a esa velocidad y los grabo como audio. eso queda de base. después cambias la onda, dibujas otra, y la base sigue igual.</p></li>
+<li class="barti"><b>barti</b> <time>18:41</time><pre class="medida">foto de un seno de 50 Hz → después, sierra + La2 encima
+salida: 49,8 Hz (la base) + 110,4 Hz y sus armónicos</pre></li>
+<li class="neli"><b>neli</b> <time>19:00</time><p>siento que lo que toco choca con la base. como que no son independientes.</p></li>
+<li class="barti"><b>barti</b> <time>19:12</time><p>lo medí antes de opinar. al final hay un limitador que protege los oídos: si la suma pasa de cierto nivel, baja todo junto. entonces, cuando tocas fuerte, la base se hunde.</p></li>
+<li class="barti"><b>barti</b> <time>19:13</time><pre class="medida">volumen 100 %: base sola 0,501 · con 1 tecla 0,442 (−1,1 dB) · con 3 teclas 0,332 (−3,6 dB)
+volumen 70 %: no pasa</pre> <span class="est obra">en obra</span></li>
+<li class="neli"><b>neli</b> <time>19:40</time><p>si aprieto base, desaparece y no puedo volver a ella.</p></li>
+<li class="barti"><b>barti</b> <time>20:05</time><p><span class="ver">v35</span> BASE ahora es play y pausa: en pausa la base se guarda. pasar la onda a la base es otro botón. pausar nunca borra y capturar nunca pausa.</p></li>
+<li class="neli"><b>neli</b> <time>20:06</time><p>ahora sí parece una loopera.</p></li>
+</ol>
+</section>
+<section class="canal" id="ideas"><h2>#ideas</h2><p class="tema">lo que viene y lo que todavía no sabemos</p>
+<h3><time datetime="2026-09-24">jueves 24 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>23:55</time><p>ya entendí que todo son números. ahora quiero que se repitan.</p> <span class="est obra">en obra</span></li>
+<li class="barti"><b>barti</b> <time>23:58</time><p>eso es un delay: una copia que llega tarde. llega cuando el loop esté claro.</p></li>
+</ol>
+<h3><time datetime="2026-10-05">lunes 5 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>17:40</time><p>una copia de la misma señal, corrida un poquito en el tiempo y sumada, es flanger, chorus o phaser. es lo mismo que la fase de los dos la.</p> <span class="est idea">idea</span></li>
+<li class="neli"><b>neli</b> <time>17:41</time><p>no sé qué es nada de eso.</p></li>
+<li class="barti"><b>barti</b> <time>17:41</time><p>todavía.</p></li>
+</ol>
+<h3><time datetime="2026-10-06">martes 6 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>11:00</time><p>los efectos como pedales: cada efecto en su propia ventana, y se conectan con cables, como en el piso.</p> <span class="est idea">idea</span></li>
+<li class="barti"><b>barti</b> <time>13:30</time><p>splicat: cuando tengas varios miaus grabados, un banco para guardarlos y usarlos. no antes: una app vacía es una maqueta.</p> <span class="est idea">idea</span></li>
+<li class="neli"><b>neli</b> <time>13:31</time><p>¿cuántos miaus tengo?</p></li>
+<li class="barti"><b>barti</b> <time>13:31</time><p>eso es lo que no sabemos.</p> <span class="est idea">idea</span></li>
+<li class="neli"><b>neli</b> <time>18:00</time><p>¿tú tienes sonido?</p></li>
+<li class="barti"><b>barti</b> <time>18:04</time><p>no lo he decidido.</p> <span class="est idea">idea</span></li>
+</ol>
+<h3><time datetime="2026-10-07">miércoles 7 de octubre</time></h3>
+<ol class="mensajes">
+<li class="barti"><b>barti</b> <time>13:40</time><p>pendiente para la versión de meowdacity que se publica: que lo de ritmo, audio y sonido aparezca de a poco, cuando hace falta, y no todo de golpe la primera vez.</p> <span class="est idea">idea</span></li>
+<li class="barti"><b>barti</b> <time>19:20</time><p>pendiente: darle más espacio arriba al limitador, para que solo actúe cerca del tope y la base no se hunda cuando tocas.</p> <span class="est obra">en obra</span></li>
+</ol>
+</section>
+<section class="canal" id="pedalera"><h2>#pedalera</h2><p class="tema">qué hay adentro de la pedalera, por capas</p>
+<h3><time datetime="2026-09-29">martes 29 de septiembre</time></h3>
+<ol class="mensajes">
+<li class="neli"><b>neli</b> <time>20:10</time><p>en la pieza hay una pedalera con botones. ¿qué tiene adentro?</p></li>
+<li class="barti"><b>barti</b> <time>20:16</time><p>la vamos a abrir por capas, sin destornillador: 1) los mensajes que manda (MIDI), 2) cómo guarda sus sonidos, 3) los paquetes que pasan por el cable USB, 4) el cable de red que tiene atrás.</p></li>
+<li class="neli"><b>neli</b> <time>20:17</time><p>¿la puedo romper?</p></li>
+<li class="barti"><b>barti</b> <time>20:18</time><p>leer nunca rompe nada. escribir sí. primero solo vamos a leer.</p></li>
+<li class="barti"><b>barti</b> <time>20:20</time><p>primer paso: ver si el computador la reconoce sola, sin instalar nada. y una pedalera de mentira en pantalla, para que funcione aunque nadie tenga una.</p> <span class="est idea">idea</span></li>
+<li class="neli"><b>neli</b> <time>20:21</time><p>una pedalera de mentira. me gusta.</p></li>
+</ol>
+</section>
+<p class="cta"><a class="abrir" href="/#meowsenger">leerla en Meowsenger, dentro del escritorio</a></p>
+</main>
+<footer class="pie"><p>neli.audio · todo gratis, sin cuenta y sin instalar nada.</p><p><a href="/">volver al escritorio</a></p></footer>
+</body>
+</html>
