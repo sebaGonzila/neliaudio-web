@@ -3109,6 +3109,88 @@
    "estado": "en obra",
    "publicada": true,
    "texto": "y esta bitácora también se publica. cada vez que terminemos algo, lo anotamos aquí y sale en el mismo push."
+  },
+  {
+   "id": 300,
+   "fecha": "2026-10-07",
+   "hora": "23:48",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿google ya sabe que existimos?"
+  },
+  {
+   "id": 301,
+   "fecha": "2026-10-07",
+   "hora": "23:52",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "ahora sí. para probar que el dominio es nuestro, google pidió un código escrito en la dirección del sitio. el primer intento falló: el código todavía no llegaba a todos lados. al minuto llegó, y quedó verificado."
+  },
+  {
+   "id": 302,
+   "fecha": "2026-10-07",
+   "hora": "23:53",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "y le pasé el mapa del sitio: tres páginas. el escritorio, meowdacity y esta bitácora."
+  },
+  {
+   "id": 303,
+   "fecha": "2026-10-08",
+   "hora": "00:01",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "medido por google, desde sus computadores, con un celular lento de mentira:\nescritorio: 100 · 100 · 100 · 100\nmeowdacity: 100 · 100 · 100 · 100\nbitácora: 98 · 100 · 100 · 100"
+  },
+  {
+   "id": 304,
+   "fecha": "2026-10-08",
+   "hora": "00:02",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "sorprendida",
+   "publicada": true,
+   "texto": "¿por qué la bitácora tiene 98?"
+  },
+  {
+   "id": 305,
+   "fecha": "2026-10-08",
+   "hora": "00:06",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "porque antes de dibujar la primera letra tenía que ir a buscar un archivo aparte con los colores. ahora los colores vienen dentro de la misma página: un viaje menos."
+  },
+  {
+   "id": 306,
+   "fecha": "2026-10-08",
+   "hora": "00:07",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "o sea que esta conversación es la que estaba lenta."
+  },
+  {
+   "id": 307,
+   "fecha": "2026-10-08",
+   "hora": "00:07",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "feliz",
+   "publicada": true,
+   "texto": "la estamos haciendo más larga ahora mismo."
   }
  ]
 }
