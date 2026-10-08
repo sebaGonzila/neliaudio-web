@@ -431,7 +431,7 @@ body[data-borde="nw"], body[data-borde="se"] { cursor: nwse-resize !important; }
 .ventana.agrandada .borde { display: none; }
 @media (max-width: 719px) { .borde { display: none; } }
 
-/* ================= v06: el menú Inicio, el arranque y la pantalla de carga ================= */
+/* ================= v06: el menú Inicio y el arranque ================= */
 /* el botón Inicio: la marca de la barra, ahora con algo adentro */
 button.marca {
   height: 32px; padding: 0 11px 0 7px; border: 1.5px solid #B7C1EC; border-radius: 10px; cursor: pointer;
@@ -485,7 +485,7 @@ body.patita .mi { cursor: var(--patita), pointer; }
 /* el arranque: negro, un tubo que se prende, un lienzo con píxeles grandes */
 #arranque { position: fixed; inset: 0; z-index: 10000; background: #000; overflow: hidden; cursor: none; }
 #arranque .tubo { position: absolute; inset: 0; clip-path: inset(50% 0 50% 0); }
-#arranque canvas, #apagado canvas, .carga-app canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+#arranque canvas, #apagado canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
 #arranque canvas { filter: drop-shadow(0 0 5px rgba(255, 255, 255, .28)); }
 #arranque .tubo.carga canvas { filter: drop-shadow(0 0 10px rgba(220, 206, 248, .35)); }
 #arranque .linea { position: absolute; left: 50%; top: 50%; width: 0; height: 3px; transform: translate(-50%, -50%);
@@ -517,9 +517,6 @@ body.apagando #barra { transform-origin: 50vw calc(46px - 50vh); }
 body.nace .icono { animation: icono-nace .42s cubic-bezier(.3, 1.6, .5, 1) both; animation-delay: calc(var(--i, 0) * 70ms); }
 @keyframes icono-nace { from { opacity: 0; transform: scale(.4) translateY(8px); } }
 
-/* la pantalla de carga de una app: encima del iframe, negra como la app por dentro */
-.carga-app { position: absolute; inset: 0; z-index: 3; background: transparent; overflow: hidden; pointer-events: none; }
-.cuerpo.con-app { position: relative; }
 </style>
 </head>
 <body>
@@ -555,7 +552,6 @@ const APPS = [
   { id: 'meowsenger', nombre: 'Meowsenger', icono: '/img/iconos/meowsenger.png', w: 900, h: 640, pista: 'Aquí está todo lo que Barti y yo hemos hablado. Empieza por el principio.',
     contenido: (m) => { m.src = '/apps/meowsenger.html'; } },
   { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.',
-    carga: { version: '0.37', autor: 'POR BARTI, PARA NELI', lineas: ['MOTOR DE AUDIO', '200 NUMEROS EN LOOP', 'CINCO FORMAS DE ONDA', 'LOS MIAUS'] },
     contenido: (m) => { m.src = '/apps/meowdacity.html?ventana'; } },
   { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
@@ -847,7 +843,6 @@ function abrir(app, desde) {
     });
     app.contenido(marco);
     cuerpo.append(marco);
-    if (app.carga) pantallaCarga(app, cuerpo, marco);   // la pantalla de carga de los 90, mientras la app llega
   } else if (app.html) {
     cuerpo.innerHTML = app.html();             // apps chicas del propio escritorio (Ajustes)
     if (app.montar) app.montar(cuerpo);
@@ -1105,7 +1100,7 @@ aplicarAjustes();
 // (el final está en arranque.js: la primera vez arranca y después abre #id)
 
 // =====================================================================
-// El arranque, el menú Inicio y la pantalla de carga de las apps.
+// El arranque y el menú Inicio.
 // - La primera vez que alguien entra, NeliOS arranca como un PC de los 90: tubo, BIOS, carga.
 //   No se salta: es parte de entrar. Después no vuelve a salir, salvo con Reiniciar.
 // - Todo se dibuja en un lienzo chico con escala entera y la fuente 5×7 de Meowamp.
@@ -1443,72 +1438,6 @@ menu.addEventListener('keydown', (e) => {
 botonInicio.addEventListener('keydown', (e) => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); abrirMenu(); } });
 document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !botonInicio.contains(e.target)) cerrarMenu(); }, true);
 addEventListener('blur', () => cerrarMenu());     // un clic adentro de una app (otro documento) también lo cierra
-
-// ---------- la pantalla de carga de una app, como las de los 90 ----------
-// Se dibuja encima del iframe mientras la app carga de verdad. Dura lo que tarde la app, y nunca menos de 1,5 s.
-function pantallaCarga(app, cuerpo, marco) {
-  const capa = document.createElement('div'); capa.className = 'carga-app'; capa.setAttribute('aria-hidden', 'true');
-  const { cv, medir } = lienzoPixel(capa, 250, 150, 300); capa.append(cv); cuerpo.append(capa);
-  const c = cv.getContext('2d'), ico = new Image(); ico.src = app.icono;
-  const t0 = performance.now(), MIN = quieto() ? .6 : 1.5, info = app.carga;
-  let cargo = 0, pFin = 0, tFin = 0, w0 = 0, h0 = 0;
-  marco.addEventListener('load', () => { cargo = performance.now(); }, { once: true });
-  const NEON = '#6CFFA8', TEXTO = '#A8F0C8', TENUE = '#2F9E63', LINEA = '#0E3A24', ONDA = '#B794FF';
-  const cuadro = () => {
-    if (!capa.isConnected) return;
-    if (cuerpo.clientWidth !== w0 || cuerpo.clientHeight !== h0) { w0 = cuerpo.clientWidth; h0 = cuerpo.clientHeight; medir(); }
-    const W = cv.width, H = cv.height, t = (performance.now() - t0) / 1000;
-    // cuánto va: mientras la app no llega, se acerca al 85 % sin tocarlo; cuando llega, corre al 100
-    let p = .85 * (1 - Math.exp(-t / .7));
-    if (cargo) { if (!pFin) { pFin = p; tFin = t; } p = pFin + (1 - pFin) * entre(t, tFin, tFin + .3); }
-    c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
-    const ancha = W >= 230, cw = Math.min(ancha ? 230 : 180, W - 12), x = Math.round((W - cw) / 2);
-    const ti = 2, ic = ancha ? 36 : 28, altoBloque = ancha ? 128 : 160;
-    let y = Math.max(6, Math.round((H - altoBloque) / 2));
-    // el ícono (chico y agrandado a píxeles), el nombre y la versión
-    c.imageSmoothingEnabled = true;
-    if (ico.complete && ico.naturalWidth) c.drawImage(ico, x, y, ic, ic);
-    const tx = ancha ? x + ic + 8 : x, ty = ancha ? y + 2 : y + ic + 6;
-    escribir(c, app.nombre, tx, ty, NEON, ti);
-    escribir(c, 'VERSION ' + info.version, tx, ty + 7 * ti + 4, TEXTO);
-    escribir(c, info.autor, tx, ty + 7 * ti + 14, TENUE);
-    y = (ancha ? y + ic : ty + 7 * ti + 14 + 7) + 8;
-    // una onda de 200 números que corre: lo que hay adentro
-    c.fillStyle = LINEA; c.fillRect(x, y + 8, cw, 1);
-    c.fillStyle = ONDA;
-    for (let i = 0; i < cw; i++) {
-      const f = i / cw * Math.PI * 4 + t * 5, v = Math.sin(f) * .7 + Math.sin(f * 3) * .2 + Math.sin(f * 5) * .1;
-      c.fillRect(x + i, y + 8 - Math.round(v * 7), 1, 1);
-    }
-    y += 22;
-    // lo que va cargando, de verdad en ese orden
-    const n = info.lineas.length;
-    info.lineas.forEach((l, i) => {
-      const umbralL = (i + 1) / (n + 1); if (p < umbralL - .25) return;
-      const listo = p >= umbralL, col = Math.floor(cw / 6);
-      escribir(c, puntos(l, listo ? 'OK' : '', col).replace(/ +$/, ''), x, y, listo ? TEXTO : TENUE); y += 10;
-    });
-    // la barra: 20 bloques
-    const by = y + 4;
-    c.fillStyle = TENUE; c.fillRect(x, by, cw, 9); c.fillStyle = '#000'; c.fillRect(x + 1, by + 1, cw - 2, 7);
-    const B = 20, bw = (cw - 4 - (B - 1)) / B, llenos = Math.floor(p * B + .0001);
-    for (let i = 0; i < llenos; i++) { c.fillStyle = i === llenos - 1 && p < 1 && Math.floor(t * 10) % 2 ? '#F2FFF7' : NEON; c.fillRect(Math.round(x + 2 + i * (bw + 1)), by + 2, Math.round(bw), 5); }
-    const pct = Math.round(p * 100) + '%'; escribir(c, pct, x + cw - anchoTexto(pct), by + 13, TENUE);
-    escribir(c, p >= 1 ? 'LISTO' : 'CARGANDO...', x, by + 13, p >= 1 ? NEON : TENUE);
-    // al final se deshace por trama (Bayer) y deja ver la app
-    if (p >= 1 && t >= MIN) {
-      const d = entre(t, Math.max(MIN, tFin + .3), Math.max(MIN, tFin + .3) + .35);
-      if (d > 0) {
-        const im = c.getImageData(0, 0, W, H), q = im.data;
-        for (let yy = 0; yy < H; yy++) for (let xx = 0; xx < W; xx++) if (umbral(xx, yy) < d) q[(yy * W + xx) * 4 + 3] = 0;
-        c.putImageData(im, 0, 0);
-      }
-      if (d >= 1) { capa.remove(); return; }
-    }
-    requestAnimationFrame(cuadro);
-  };
-  requestAnimationFrame(cuadro);
-}
 
 // ---------- al final: la primera vez arranca; después, directo al escritorio ----------
 if (!mem.leer('arrancado', false)) arrancar(false, abrirDesdeHash);

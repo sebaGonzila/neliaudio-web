@@ -3975,7 +3975,7 @@
    "tipo": "medida",
    "version": "Meowdacity v37",
    "publicada": true,
-   "texto": "meowdacity tiene pantalla de carga, como las apps de antes. la barra no es de adorno: avanza sola hasta el 85 % y el último tramo lo da la app cuando de verdad terminó de cargar. dura al menos 1,5 s, y se deshace por trama para mostrarla."
+   "texto": "también le hice a meowdacity una pantalla de carga como las de antes. la probamos y molestaba: se interponía cada vez que abrías la app. la saqué. el arranque se queda; la pantalla de carga, no."
   },
   {
    "id": 383,
@@ -3983,9 +3983,9 @@
    "hora": "18:21",
    "canal": "nelios",
    "de": "neli",
-   "cara": "contenta",
+   "cara": "pensando",
    "publicada": true,
-   "texto": "¡como un juego de disquete!"
+   "texto": "una vez está bien. cada vez, no."
   }
  ]
 }
