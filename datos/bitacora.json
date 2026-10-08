@@ -3627,6 +3627,58 @@
    "estado": "en obra",
    "publicada": true,
    "texto": "y sonido se fue de meowdacity. va a tener su propia ventana: meowdacity explica una vuelta; sonido explica algo que cambia mientras suena."
+  },
+  {
+   "id": 350,
+   "fecha": "2026-10-08",
+   "hora": "02:50",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "los reproductores de antes se armaban por partes. la lista por un lado, el ecualizador por otro, y los podías separar."
+  },
+  {
+   "id": 351,
+   "fecha": "2026-10-08",
+   "hora": "03:20",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowamp v04",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "meowamp ahora es así: el reproductor, el mixer, el video y la lista. cada parte se muestra, se esconde o se suelta como ventana propia con la flechita, y se vuelve a pegar. se acuerda de cómo lo dejaste."
+  },
+  {
+   "id": 352,
+   "fecha": "2026-10-08",
+   "hora": "03:21",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "el volumen se fue al mixer, con su medidor. y las listas se guardan: haces las tuyas con videos y audios, y siguen ahí mañana."
+  },
+  {
+   "id": 353,
+   "fecha": "2026-10-08",
+   "hora": "03:22",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "y la pantallita ya no habla de números. aquí solo se escucha."
+  },
+  {
+   "id": 354,
+   "fecha": "2026-10-08",
+   "hora": "03:22",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "los números están en meowdacity. aquí la pantallita dice lo de siempre: kbps, kHz, qué pista y de qué lista."
   }
  ]
 }

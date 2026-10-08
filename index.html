@@ -463,8 +463,9 @@ const APPS = [
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
   { id: 'fotos',      nombre: 'Fotos',      icono: '/img/iconos/fotos.svg', w: 940, h: 640, pista: 'Ponle stickers a mis fotos. Que salga linda.',
     contenido: (m) => { m.src = '/apps/fotos.html'; } },
-  { id: 'meowamp',    nombre: 'Meowamp',    icono: '/img/iconos/meowamp.svg', w: 460, h: 700, pista: 'Aquí suenan mis audios. Toca la pantallita: cambia entre la onda y las frecuencias.',
-    contenido: (m) => { m.src = '/apps/meowamp.html'; } },
+  { id: 'meowamp',    nombre: 'Meowamp',    icono: '/img/iconos/meowamp.svg', w: 460, h: 720, pista: 'Aquí suenan mis audios. Toca la pantallita: cambia entre la onda y las frecuencias.',
+    contenido: (m) => { m.src = '/apps/meowamp.html'; },
+    modulo: (m, mod) => { m.src = '/apps/meowamp.html?modulo=' + mod; } },
   { id: 'ajustes',    nombre: 'Ajustes',    icono: '/img/iconos/ajustes.png', w: 460, h: 250, pista: 'Puedes apagarme desde aquí si te canso. No me ofendo.' }
 ];
 </script>
@@ -510,7 +511,7 @@ function pintarBarra() {
 
   for (const id in abiertas) {
     const ventana = abiertas[id];
-    const app = APPS.find((a) => a.id === id);
+    const app = ventana._app || APPS.find((a) => a.id === id);   // un módulo suelto no está en APPS: la ventana sabe de quién es
 
     const boton = document.createElement('button');
     boton.className = 'barra-item';
@@ -633,6 +634,8 @@ function elegirActiva() {
 }
 
 function cerrar(id) {
+  // si una app tiene módulos sueltos (la lista de Meowamp, su mixer...), se cierran con ella
+  for (const otro of Object.keys(abiertas)) if (otro.startsWith(id + '~')) cerrar(otro);
   abiertas[id].remove();     // la saca de la página (y con ella el iframe: la app deja de sonar)
   if (location.hash === '#' + id) history.replaceState(null, '', location.pathname + location.search);
   delete abiertas[id];       // y la borra del diccionario
@@ -677,6 +680,7 @@ function hacerAjustable(ventana, id) {
       const soltar = () => {
         removeEventListener('pointermove', mover); removeEventListener('pointerup', soltar); removeEventListener('pointercancel', soltar);
         document.body.classList.remove('arrastrando'); delete document.body.dataset.borde;
+        ventana.dataset.estirada = '1';
         guardarPosicion(id, ventana.offsetLeft, ventana.offsetTop, ventana.offsetWidth, ventana.offsetHeight);
       };
       addEventListener('pointermove', mover); addEventListener('pointerup', soltar); addEventListener('pointercancel', soltar);
@@ -763,10 +767,11 @@ function abrir(app, desde) {
   // donde la dejaron la última vez (y del tamaño que la dejaron), o un lugar libre si es la primera
   const guardada = leerPosiciones()[app.id];
   if (guardada && guardada.w) {
+    ventana.dataset.estirada = '1';                  // el tamaño lo eligió la persona: la app no lo cambia sola
     ventana.style.width  = Math.min(guardada.w, escritorio.clientWidth - 24) + 'px';
     ventana.style.height = Math.min(guardada.h, escritorio.clientHeight - 24) + 'px';
   }
-  const pos = guardada || (app.w ? centrada(ventana) : posicionLibre());
+  const pos = guardada || (app.cerca && abiertas[app.cerca] ? alLado(abiertas[app.cerca], ventana) : app.w ? centrada(ventana) : posicionLibre());
   ubicar(ventana, pos.x, pos.y);
 
   // se abre creciendo desde el ícono que la llamó
@@ -777,9 +782,10 @@ function abrir(app, desde) {
     ventana.classList.add('abriendo');
     ventana.addEventListener('animationend', () => ventana.classList.remove('abriendo'), { once: true });
   }
-  if (location.hash !== '#' + app.id) history.replaceState(null, '', '#' + app.id);
+  if (!app.modulo && location.hash !== '#' + app.id) history.replaceState(null, '', '#' + app.id);   // un módulo suelto no cambia la dirección
 
   abiertas[app.id] = ventana;
+  ventana._app = app;
 
   hacerArrastrable(ventana, titulo, app.id);
   hacerAjustable(ventana, app.id);
@@ -807,6 +813,18 @@ for (const app of APPS) {
   boton.append(imagen, texto);
   boton.addEventListener('click', () => abrir(app, boton));
   contenedor.append(boton);
+}
+
+// un módulo suelto aparece pegado a su ventana: a la derecha si cabe, si no a la izquierda o abajo
+function alLado(padre, ventana) {
+  // debajo de los módulos que ya están sueltos, como una columna
+  const hermanos = Object.keys(abiertas).filter((k) => k.startsWith(padre._app.id + '~')).map((k) => abiertas[k]).filter((v) => v !== ventana);
+  const x = padre.offsetLeft + padre.offsetWidth + 8;
+  let y = padre.offsetTop + hermanos.reduce((t, v) => t + v.offsetHeight + 8, 0);
+  if (y + 80 > escritorio.clientHeight) y = padre.offsetTop + hermanos.length * 34;
+  if (x + ventana.offsetWidth <= escritorio.clientWidth) return { x, y };
+  if (padre.offsetLeft - ventana.offsetWidth - 8 >= 0) return { x: padre.offsetLeft - ventana.offsetWidth - 8, y };
+  return { x: padre.offsetLeft + hermanos.length * 34, y: Math.min(escritorio.clientHeight - ventana.offsetHeight, padre.offsetTop + padre.offsetHeight + 8) };
 }
 
 // centrada en el escritorio (para las apps que piden tamaño propio)
@@ -859,6 +877,26 @@ function entregar(id) {
   try { f.contentWindow.postMessage({ nelios: 'archivo', ruta: pendientes[id] }, '*'); } catch (e) {}
   delete pendientes[id];
 }
+// Una app puede soltar una parte suya como ventana propia (como en los reproductores de antes): un "módulo".
+// El módulo es la misma app con otro modo; se habla con la ventana principal por su cuenta (BroadcastChannel).
+window.addEventListener('message', (e) => {
+  const d = e.data; if (!d || typeof d.nelios !== 'string') return;
+  // una app puede pedir que su ventana tenga el alto justo de lo que muestra (si el usuario no la estiró a mano)
+  if (d.nelios === 'ajustarAlto') {
+    const v = Object.values(abiertas).find((x) => { const f = x.querySelector('iframe'); return f && f.contentWindow === e.source; });
+    if (!v || v.dataset.estirada || v.classList.contains('agrandada') || innerWidth < 720) return;
+    const titulo = v.querySelector('.titulo').offsetHeight;
+    v.style.height = Math.max(MIN_H, Math.min(escritorio.clientHeight - v.offsetTop - 8, Math.round(+d.alto) + titulo + 4)) + 'px';
+    return;
+  }
+  if (d.nelios === 'abrirModulo' || d.nelios === 'cerrarModulo') {
+    const app = APPS.find((a) => a.id === d.app); if (!app || !app.modulo || !/^[a-z]+$/.test(d.modulo || '')) return;
+    const id = app.id + '~' + d.modulo;
+    if (d.nelios === 'cerrarModulo') { if (abiertas[id]) cerrar(id); return; }
+    abrir({ id, modulo: d.modulo, cerca: app.id, nombre: app.nombre + ' · ' + String(d.nombre || d.modulo).slice(0, 20), icono: app.icono,
+            w: Math.min(+d.w || 420, 900), h: Math.min(+d.h || 360, 900), contenido: (m) => app.modulo(m, d.modulo) });
+  }
+});
 window.addEventListener('message', (e) => {
   const d = e.data; if (!d || d.nelios !== 'abrir') return;
   const app = APPS.find((a) => a.id === d.id);
