@@ -528,6 +528,24 @@ body.nace .icono { animation: icono-nace .42s cubic-bezier(.3, 1.6, .5, 1) both;
 #menuInicio .lista::-webkit-scrollbar { width: 12px; }
 #menuInicio .lista::-webkit-scrollbar-thumb { background: #DCCEF8 padding-box; border: 2px solid transparent; border-radius: 99px; box-shadow: inset 0 0 0 1.5px #A8B8E4; }
 @supports selector(::-webkit-scrollbar) { #menuInicio .lista { scrollbar-width: auto; scrollbar-color: auto; } }
+
+/* ================= v07: los enchufes y el cable entre Meowdacity y el Estudio ================= */
+.regleta { display: flex; align-items: center; background: linear-gradient(180deg, #F0EFFC, #E6E5F8); color: #575C93; font-family: 'Silkscreen', monospace; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.regleta.abajo { flex: 0 0 26px; justify-content: flex-end; gap: 8px; padding: 0 10px; border-top: 1px solid #D4DAF4; }
+.regleta.izq { flex: 0 0 26px; position: relative; border-right: 1px solid #D4DAF4; }
+.jack { width: 20px; height: 20px; padding: 0; border-radius: 50%; cursor: grab; border: 3px solid #2A2D52;
+  background: radial-gradient(circle, #0E0F1E 0 34%, #C9CDD6 36% 58%, #8E93A6 60%); box-shadow: 0 1px 2px rgba(42,45,82,.35); touch-action: none; }
+.regleta.izq .jack { position: absolute; left: 3px; margin-top: -10px; }
+.jack:hover, .jack.cerca { box-shadow: 0 0 0 4px rgba(242,127,163,.35); }
+.jack[aria-pressed="true"] { background: radial-gradient(circle, #F27FA3 0 40%, #2A2D52 42% 52%, #C9CDD6 54%); }
+.jack:focus-visible { outline: 2px solid #3B3F77; outline-offset: 2px; }
+body.con-cable, body.con-cable * { cursor: grabbing !important; }
+body.patita .jack { cursor: var(--patita-mover), grab; }
+#cables { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 7900; overflow: visible; }
+#cables .cable-borde { fill: none; stroke: #2A2D52; stroke-width: 8; stroke-linecap: round; }
+#cables .cable { fill: none; stroke: #F27FA3; stroke-width: 4; stroke-linecap: round; }
+#cables .punta { fill: #2A2D52; stroke: #F27FA3; stroke-width: 2; }
+@media (max-width: 719px) { .regleta { display: none !important; } #cables { display: none; } }
 </style>
 </head>
 <body>
@@ -562,9 +580,9 @@ const IMG = {"cursor": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAaCA
 const APPS = [
   { id: 'meowsenger', nombre: 'Meowsenger', icono: '/img/iconos/meowsenger.png', w: 900, h: 640, pista: 'Aquí está todo lo que Barti y yo hemos hablado. Empieza por el principio.',
     contenido: (m) => { m.src = '/apps/meowsenger.html'; } },
-  { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.',
+  { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.', enchufes: 'salida',
     contenido: (m) => { m.src = '/apps/meowdacity.html?ventana'; } },
-  { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 1040, h: 680, pista: 'Aquí se graba. Elige una pista, aprieta el punto rojo y toca con las letras.',
+  { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 860, h: 520, pista: 'Ponme al lado de Meowdacity y conecta el cable: lo que grabes allá queda en mis pistas.', enchufes: 'entradas', cerca: 'meowdacity',
     contenido: (m) => { m.src = '/apps/estudio.html?ventana'; } },
   { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
@@ -746,12 +764,15 @@ function cerrar(id) {
   abiertas[id].remove();     // la saca de la página (y con ella el iframe: la app deja de sonar)
   if (location.hash === '#' + id) history.replaceState(null, '', location.pathname + location.search);
   delete abiertas[id];       // y la borra del diccionario
+  if (cable && (id === 'meowdacity' || id === 'estudio')) desenchufar();   // sin una de las dos puntas, no hay cable
   elegirActiva();
+  pintarCable();
 }
 
 function minimizar(ventana) {
   ventana.hidden = true;     // sigue abierta y en la barra, pero no se ve
   elegirActiva();
+  pintarCable();
 }
 
 function agrandar(ventana) {
@@ -853,6 +874,7 @@ function abrir(app, desde) {
       avisarCursor(marco);                     // la patita también adentro de la app
       marco.dataset.lista = '1'; entregar(app.id);   // si alguien le mandó un archivo antes de que cargara
       if (activa === ventana) enfocarApp(ventana);   // recién abierta: las teclas ya son de la app
+      avisarCable();                                  // si hay un cable, la app recién cargada se entera
     });
     app.contenido(marco);
     cuerpo.append(marco);
@@ -864,6 +886,7 @@ function abrir(app, desde) {
   }
 
   ventana.append(titulo, cuerpo);
+  if (app.enchufes) ponerEnchufes(app, ventana, cuerpo);   // los enchufes del borde (salida de Meowdacity, entradas del Estudio)
   if (app.w) {
     // el tamaño que pide la app, sin pasarse del escritorio
     ventana.style.width  = Math.min(app.w, escritorio.clientWidth - 24) + 'px';
@@ -901,6 +924,7 @@ function abrir(app, desde) {
   ventana.addEventListener('pointerdown', () => alFrente(ventana));
   alFrente(ventana);
   saludar(app);
+  if ((app.id === 'estudio' && abiertas.meowdacity) || (app.id === 'meowdacity' && abiertas.estudio)) juntarSiSeTapan();
 }
 
 const contenedor = document.getElementById('iconos');
@@ -1115,6 +1139,135 @@ if (appAjustes) { appAjustes.html = htmlAjustes; appAjustes.montar = montarAjust
 
 aplicarAjustes();
 // (el final está en arranque.js: la primera vez arranca y después abre #id)
+
+// =====================================================================
+// Los cables: la salida de Meowdacity se enchufa a una pista del Estudio.
+// Cada app vive en su propio documento, así que el cable lo dibuja el escritorio, por encima de las ventanas.
+// El sonido no viaja por aquí: el Estudio suena con el motor de Meowdacity. El cable solo dice adónde va la toma.
+// =====================================================================
+let cable = mem.leer('cable', null);        // { pista: 0..7 } o null
+let arrastreCable = null;                   // mientras se arrastra: { x, y }
+const capaCables = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+capaCables.id = 'cables'; capaCables.setAttribute('aria-hidden', 'true');
+escritorio.append(capaCables);
+function ponerEnchufes(app, ventana, cuerpo) {
+  if (app.enchufes === 'salida') {
+    const r = document.createElement('div'); r.className = 'regleta abajo';
+    r.innerHTML = '<span>salida</span><button type="button" class="jack salida" aria-label="Salida de Meowdacity: arrástrala hasta una pista del Estudio" title="Salida: arrástrala hasta una pista del Estudio"></button>';
+    ventana.append(r);
+    const j = r.querySelector('.jack');
+    j.addEventListener('pointerdown', (e) => tomarCable(e, j));
+    j.addEventListener('click', () => {
+      if (j._movio) return;
+      if (cable) { desenchufar(); return; }
+      if (!abiertas.estudio) { abrir(APPS.find((a) => a.id === 'estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de Meowdacity hasta una pista.'); }
+    });
+  } else if (app.enchufes === 'entradas') {
+    const r = document.createElement('div'); r.className = 'regleta izq';
+    cuerpo.prepend(r);
+  }
+}
+// el Estudio dice a qué altura está cada pista; aquí se ponen sus enchufes
+function ponerEntradas(ys) {
+  const v = abiertas.estudio, r = v && v.querySelector('.regleta.izq'); if (!r) return;
+  r.replaceChildren();
+  ys.slice(0, 8).forEach((y, i) => {
+    const j = document.createElement('button'); j.type = 'button'; j.className = 'jack entrada'; j.dataset.pista = i;
+    j.style.top = Math.round(y) + 'px';
+    j.setAttribute('aria-label', 'Entrada de la pista ' + (i + 1) + ': conectar la salida de Meowdacity');
+    j.title = 'Pista ' + (i + 1) + ': aquí entra el cable';
+    j.addEventListener('pointerdown', (e) => { if (cable && cable.pista === i) tomarCable(e, j); });
+    j.addEventListener('click', () => { if (j._movio) return; if (cable && cable.pista === i) desenchufar(); else enchufar(i); });
+    r.append(j);
+  });
+  pintarCable();
+}
+// Meowdacity y el Estudio se usan juntos: si una tapa a la otra, se ponen lado a lado (Meowdacity a la izquierda)
+function juntarSiSeTapan() {
+  const vm = abiertas.meowdacity, ve = abiertas.estudio; if (!vm || !ve || innerWidth < 720) return;
+  const caja = (v) => ({ left: v.offsetLeft, top: v.offsetTop, right: v.offsetLeft + v.offsetWidth, bottom: v.offsetTop + v.offsetHeight });   // sin la animación de abrir
+  const a = caja(vm), b = caja(ve);
+  if (a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top) return;
+  const W = escritorio.clientWidth, H = escritorio.clientHeight, m = 10;
+  const wm = Math.round((W - 3 * m) * .6), we = W - 3 * m - wm, h = Math.min(H - 2 * m, 760);
+  [[vm, m, wm], [ve, 2 * m + wm, we]].forEach(([v, x, w]) => {
+    v.classList.remove('agrandada'); v.hidden = false; v.dataset.estirada = '1';
+    v.style.width = w + 'px'; v.style.height = h + 'px'; ubicar(v, x, m);
+  });
+  pintarCable();
+}
+function enchufar(i) {
+  if (!abiertas.meowdacity) { hablar('Primero abre Meowdacity: el cable sale de ella.'); abrir(APPS.find((a) => a.id === 'meowdacity')); return; }
+  cable = { pista: i }; mem.guardar('cable', cable); avisarCable(); pintarCable();
+}
+function desenchufar() { cable = null; mem.guardar('cable', null); avisarCable(); pintarCable(); }
+function avisarCable() {
+  const m = abiertas.meowdacity && abiertas.meowdacity.querySelector('iframe'), e = abiertas.estudio && abiertas.estudio.querySelector('iframe');
+  const ok = !!(cable && m && e);
+  try { if (m) m.contentWindow.postMessage({ nelios: 'cable', conectado: ok }, '*'); } catch (er) {}
+  try { if (e) e.contentWindow.postMessage({ nelios: 'cable', pista: ok ? cable.pista : null, meowdacity: !!m }, '*'); } catch (er) {}
+}
+// arrastrar el cable: mientras tanto los iframes no se quedan con el puntero (body.arrastrando)
+function tomarCable(e, j) {
+  if (e.button !== 0) return;
+  e.preventDefault(); j._movio = false;
+  const x0 = e.clientX, y0 = e.clientY;
+  document.body.classList.add('arrastrando', 'con-cable');
+  const mover = (ev) => {
+    if (!j._movio && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 6) return;
+    if (!j._movio) { j._movio = true; if (cable) { cable = null; avisarCable(); } }
+    const r = escritorio.getBoundingClientRect();
+    arrastreCable = { x: ev.clientX - r.left, y: ev.clientY - r.top };
+    document.querySelectorAll('.jack.entrada').forEach((k) => k.classList.toggle('cerca', k === document.elementFromPoint(ev.clientX, ev.clientY)));
+    pintarCable();
+  };
+  const soltar = (ev) => {
+    document.removeEventListener('pointermove', mover); document.removeEventListener('pointerup', soltar);
+    document.body.classList.remove('arrastrando', 'con-cable');
+    document.querySelectorAll('.jack.cerca').forEach((k) => k.classList.remove('cerca'));
+    if (j._movio) {
+      const destino = document.elementFromPoint(ev.clientX, ev.clientY);
+      if (destino && destino.classList.contains('entrada')) enchufar(+destino.dataset.pista);
+      else desenchufar();
+      setTimeout(() => { j._movio = false; }, 0);
+    }
+    arrastreCable = null; pintarCable();
+  };
+  document.addEventListener('pointermove', mover); document.addEventListener('pointerup', soltar);
+}
+// el dibujo: un cable que cuelga entre las dos puntas, con su enchufe en cada extremo
+function centroDe(el) {
+  const r = el.getBoundingClientRect(), e = escritorio.getBoundingClientRect();
+  return { x: Math.round(r.left + r.width / 2 - e.left), y: Math.round(r.top + r.height / 2 - e.top) };
+}
+let relojCable = 0, rutaAnterior = '';
+function pintarCable() {
+  document.querySelectorAll('.jack.entrada').forEach((k) => k.setAttribute('aria-pressed', cable && +k.dataset.pista === cable.pista ? 'true' : 'false'));
+  const vm = abiertas.meowdacity, ve = abiertas.estudio, js = vm && !vm.hidden && vm.querySelector('.jack.salida');
+  if (vm) { const s = vm.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cable ? 'true' : 'false'); }
+  let b = arrastreCable;
+  if (!b && cable && ve && !ve.hidden) { const je = ve.querySelector('.jack.entrada[data-pista="' + cable.pista + '"]'); if (je) b = centroDe(je); }
+  if (!js || !b || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
+  const a = centroDe(js), d = Math.hypot(b.x - a.x, b.y - a.y), piso = escritorio.clientHeight - 12;
+  const cae = Math.max(0, Math.min(160, 30 + d * .3, piso - Math.max(a.y, b.y)));   // cuelga, pero sin salirse del escritorio
+  const ruta = `M${a.x},${a.y} C${a.x + 40},${a.y + cae} ${b.x - 40},${b.y + cae} ${b.x},${b.y}`;
+  if (ruta !== rutaAnterior) {                       // solo se redibuja si algo se movió
+    rutaAnterior = ruta;
+    capaCables.innerHTML = `<path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/>`;
+  }
+  // mientras haya cable, se mira cada cuadro si las ventanas se movieron: el cable las sigue
+  if (!relojCable) { const vigilar = () => { relojCable = 0; pintarCable(); }; relojCable = requestAnimationFrame(vigilar); }
+  else { cancelAnimationFrame(relojCable); relojCable = requestAnimationFrame(() => { relojCable = 0; pintarCable(); }); }
+}
+window.addEventListener('message', (e) => {
+  const d = e.data; if (!d || typeof d.nelios !== 'string') return;
+  const ve = abiertas.estudio, f = ve && ve.querySelector('iframe');
+  if (!f || e.source !== f.contentWindow) return;
+  if (d.nelios === 'jacks' && Array.isArray(d.ys)) ponerEntradas(d.ys.map(Number));
+  if (d.nelios === 'enchufar') { if (d.pista == null) desenchufar(); else enchufar(Math.max(0, Math.min(7, d.pista | 0))); }
+  if (d.nelios === 'abrirMeowdacity') abrir(APPS.find((a) => a.id === 'meowdacity'));
+});
+addEventListener('resize', pintarCable);
 
 // =====================================================================
 // El arranque y el menú Inicio.

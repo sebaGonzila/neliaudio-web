@@ -4125,6 +4125,59 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "mi primera canción va a ser un miau en cuatro pistas."
+  },
+  {
+   "id": 397,
+   "fecha": "2026-10-08",
+   "hora": "22:10",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "barti, el estudio repetía todo: otro teclado, otro play, otro grabar. yo quiero solo las pistas, al lado de meowdacity."
+  },
+  {
+   "id": 398,
+   "fecha": "2026-10-08",
+   "hora": "22:12",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "y un cable. meowdacity tiene una salida, y yo la enchufo en la pista que quiero."
+  },
+  {
+   "id": 399,
+   "fecha": "2026-10-08",
+   "hora": "23:30",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Estudio v02 · Meowdacity v40",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "hecho. el estudio ahora es solo la cinta: parte con 2 pistas y se le agregan hasta 8. abajo a la derecha de meowdacity hay un enchufe que dice salida; arrastras el cable hasta el enchufe de una pista, y lo que grabes con ● en meowdacity entra ahí. sin cable, meowdacity graba como siempre, en su base."
+  },
+  {
+   "id": 400,
+   "fecha": "2026-10-08",
+   "hora": "23:35",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "no hay otro motor: las pistas suenan con el de meowdacity. dos ventanas, un solo reloj. lo medí: con el metrónomo andando, la toma empieza justo en un uno de la cinta (a una muestra) y dura compases enteros. el ▶ de meowdacity hace sonar todas las pistas; ■ las para y las devuelve al inicio."
+  },
+  {
+   "id": 401,
+   "fecha": "2026-10-08",
+   "hora": "23:36",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "el cable cuelga. como uno de verdad."
   }
  ]
 }
