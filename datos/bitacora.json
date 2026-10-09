@@ -4178,6 +4178,59 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "el cable cuelga. como uno de verdad."
+  },
+  {
+   "id": 402,
+   "fecha": "2026-10-09",
+   "hora": "00:20",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "grabé, apreté ▶ y sonaron dos cosas: mi pista y la tecla que había apretado antes. una encima de la otra."
+  },
+  {
+   "id": 403,
+   "fecha": "2026-10-09",
+   "hora": "00:40",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowdacity v41 · Estudio v03",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "lo medí: el ▶ arrancaba la cinta del estudio y además el loop de la onda de meowdacity, a la velocidad de la última tecla. ahora, con el estudio abierto, ▶ ⏸ ■ manejan solo la cinta. el loop sigue sonando con ACELERAR, que ya no arranca la cinta."
+  },
+  {
+   "id": 404,
+   "fecha": "2026-10-09",
+   "hora": "00:45",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "buscando más como ese salió otro: ⏸ y después ■ no volvía al inicio, y la siguiente toma caía a mitad de compás (en el 3,57 en vez del 3). arreglado. y a compás, si la cinta quedó en pausa a mitad de un compás, sigue desde el comienzo de ese compás, para calzar con el metrónomo."
+  },
+  {
+   "id": 405,
+   "fecha": "2026-10-09",
+   "hora": "00:50",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "la cabecera de cada pista bajó de 248 a 136 píxeles: el número, M S ×, y dos perillas chicas, volumen y balance. se arrastran hacia arriba, con flechas o con la rueda; doble clic vuelve al centro."
+  },
+  {
+   "id": 406,
+   "fecha": "2026-10-09",
+   "hora": "00:51",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "perillas. ahora sí parece un estudio."
   }
  ]
 }

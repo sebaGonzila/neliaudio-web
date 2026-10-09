@@ -95,10 +95,10 @@ body[data-piel="neli"] input[type=range]::-moz-range-thumb { width: 10px; height
 
 /* ---------- las pistas ---------- */
 .pistas { display: grid; grid-template-rows: 24px; grid-auto-rows: minmax(64px, 120px); align-content: start; min-height: 0; overflow-y: auto; overflow-x: hidden; position: relative; }
-.fila { display: grid; grid-template-columns: var(--cab, 248px) minmax(0, 1fr); min-height: 0; border-top: var(--borde) solid var(--linea-suave); }
+.fila { display: grid; grid-template-columns: var(--cab, 136px) minmax(0, 1fr); min-height: 0; border-top: var(--borde) solid var(--linea-suave); }
 .fila.regla { border-top: 0; }
 .fila.regla .cabp { display: flex; align-items: center; padding: 0 12px; }
-.cabp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-content: center; gap: 3px 8px; padding: 4px 10px; border-right: var(--borde) solid var(--linea-suave); cursor: pointer; min-width: 0; }
+.cabp { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: center; gap: 4px 6px; padding: 4px 8px; border-right: var(--borde) solid var(--linea-suave); cursor: pointer; min-width: 0; }
 .fila.elegida .cabp { background: var(--neon-suave); }
 .fila.elegida .cabp .nom { color: var(--tinta); }
 .punto { width: 12px; height: 12px; border-radius: 50%; background: var(--c); align-self: center; box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 30%, transparent); }
@@ -107,18 +107,29 @@ body[data-piel="terminal"] .punto { border-radius: 0; }
 button.nom { background: none; border: 0; padding: 0; text-align: left; min-width: 0; }
 .nom .fuente { margin-left: 6px; font-family: var(--f-texto); letter-spacing: 0; text-transform: none; font-weight: 400; }
 .fuente { font-size: 11px; color: var(--tenue); }
-.botones { display: flex; gap: 4px; grid-column: 3; align-self: center; }
-.mini { width: 26px; height: 22px; padding: 0; display: grid; place-items: center; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: calc(var(--radio-btn) - 2px); font-family: var(--f-etiqueta); font-size: 11px; font-weight: 700; color: var(--tenue); }
+.botones { display: flex; gap: 3px; justify-content: flex-end; align-self: center; }
+.mini { width: 22px; height: 20px; padding: 0; display: grid; place-items: center; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: calc(var(--radio-btn) - 2px); font-family: var(--f-etiqueta); font-size: 11px; font-weight: 700; color: var(--tenue); }
 .mini:hover { border-color: var(--tenue); color: var(--tinta); }
 .mini.m[aria-pressed="true"] { background: var(--ambar); border-color: var(--ambar); color: #000; }
 .mini.s[aria-pressed="true"] { background: var(--nota); border-color: var(--nota); color: #fff; }
 body[data-piel="terminal"] .mini.s[aria-pressed="true"] { color: #000; }
-.mezcla { grid-column: 1 / 4; display: grid; grid-template-columns: minmax(0, 1fr) 54px 56px; align-items: center; gap: 6px; }
-.mezcla input { width: 100%; }
-.mezcla .db { font-family: var(--f-numero); font-size: calc(15px * var(--k-num)); color: var(--tenue); text-align: right; white-space: nowrap; }
-.medidor { height: 4px; background: var(--rejilla); border-radius: 3px; overflow: hidden; grid-column: 1 / 4; }
+.cabp > .num { min-width: 20px; height: 20px; padding: 0 4px; display: grid; place-items: center; border-radius: 5px; background: var(--c); color: #fff; font-size: calc(14px * var(--k-num)); font-weight: 700; align-self: center; }
+body[data-piel="terminal"] .cabp > .num { border-radius: 0; color: #000; }
+.perillas { grid-column: 1 / 3; display: flex; align-items: center; gap: 4px; }
+.perilla { display: inline-flex; align-items: center; gap: 1px; outline: none; touch-action: none; cursor: ns-resize; border-radius: 6px; }
+.perilla svg { width: 28px; height: 28px; display: block; }
+.perilla small { font-family: var(--f-etiqueta); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--tenue); order: -1; writing-mode: vertical-rl; transform: rotate(180deg); }
+.perilla .riel { fill: none; stroke: var(--rejilla); stroke-width: 3; stroke-linecap: round; }
+.perilla .arco { fill: none; stroke: var(--c); stroke-width: 3; stroke-linecap: round; }
+.perilla .cuerpo { fill: var(--boton); stroke: var(--linea); stroke-width: 1.5; }
+.perilla .raya { stroke: var(--tinta); stroke-width: 2; stroke-linecap: round; }
+.perilla:hover .cuerpo { stroke: var(--tenue); }
+.perilla:focus-visible { box-shadow: 0 0 0 2px var(--neon-borde); }
+body[data-piel="terminal"] .perilla .riel, body[data-piel="terminal"] .perilla .arco, body[data-piel="terminal"] .perilla .raya { stroke-linecap: butt; }
+.medidor { width: 5px; height: 26px; margin-left: auto; background: var(--rejilla); border-radius: 3px; overflow: hidden; display: flex; align-items: flex-end; }
 body[data-piel="terminal"] .medidor { border-radius: 0; }
-.medidor i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--c) 70%, var(--ambar) 88%, var(--umbral)); }
+.medidor i { display: block; width: 100%; height: 0; background: linear-gradient(0deg, var(--c) 70%, var(--ambar) 88%, var(--umbral)); }
+.carril .dur { position: absolute; right: 6px; top: 3px; font-family: var(--f-numero); font-size: calc(13px * var(--k-num)); color: var(--tenue); pointer-events: none; }
 .carril { position: relative; min-width: 0; background: var(--lienzo); cursor: text; touch-action: none; }
 .carril canvas, #regla { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .carril .vacio { position: absolute; inset: 0; display: flex; align-items: center; padding: 0 14px; color: var(--tenue); font-size: 12px; pointer-events: none; opacity: .8; }
@@ -146,16 +157,18 @@ body.cel .cabp { border-right: 0; border-bottom: var(--borde) solid var(--linea-
 body.cel #cabezal, body.cel #inicioMarca { display: none; }
 body.cel .chip, body.cel .mini { min-height: 40px; }
 body.cel .mini { width: 40px; }
+body.cel .perilla svg { width: 40px; height: 40px; }
+body.cel .medidor { height: 38px; width: 7px; }
 body.cel .mini.enchufe { display: inline-grid; width: auto; }
 body.cel .acciones { width: 100%; }
 /* ventana angosta (al lado de Meowdacity): la cabecera se achica */
-@media (max-width: 760px) { body:not(.cel) .fila.conectada .graba { display: none; } body:not(.cel) .fila { --cab: 196px; } body:not(.cel) .mezcla { grid-template-columns: minmax(0, 1fr) 50px 44px; } }
+
 
 
 /* ---------- v02: solo pistas ---------- */
 .mini.x { font-size: 13px; }
 .mini.x:hover { background: var(--umbral); border-color: var(--umbral); color: #fff; }
-.mini.enchufe { display: none; width: auto; padding: 0 8px; font-size: 10px; letter-spacing: .04em; }
+.mini.enchufe { display: none; grid-column: 1 / 3; width: auto; padding: 0 8px; font-size: 10px; letter-spacing: .04em; }
 .mini.enchufe[aria-pressed="true"] { background: var(--neon); border-color: var(--neon-borde); color: var(--sobre-neon); }
 .graba { display: none; margin-left: 6px; padding: 1px 6px; border-radius: 99px; background: #E5484D; color: #fff; font-family: var(--f-etiqueta); font-size: 9px; letter-spacing: .08em; vertical-align: 1px; }
 .fila.conectada .graba { display: inline-block; }
@@ -282,6 +295,8 @@ body.en-ventana { --fondo-img: none; }
     const m = armarMotor(); if (!m || corre) return;
     // Ts es el instante de la cinta en p0, aunque ya haya pasado (recién encendido el audio, el reloj parte en 0):
     // así la toma y las pistas usan la misma referencia. Lo que suena parte desde ahora, en el punto que corresponde.
+    // a compás, la cinta tiene que calzar con los unos del metrónomo: si quedó en pausa a mitad de un compás, sigue desde el comienzo de ese compás
+    if (md && md.ritmo().on && pos !== P.inicio) { const c = compas(), k = Math.floor(pos / c + 1e-6) * c; if (pos - k > 1e-6) { pos = k; decir('Sigue desde el comienzo del <strong>compás ' + Math.round(k / c + 1) + '</strong>: así la cinta calza con el metrónomo.'); } }
     p0 = pos; Ts = t; corre = true; pararLuego = false;
     const cuando = Math.max(Ts, m.ctx.currentTime + .005), desde = p0 + (cuando - Ts);
     fuentes = [];
@@ -295,7 +310,7 @@ body.en-ventana { --fondo-img: none; }
     pintarPistas();
   }
   function pararCinta(modo) {
-    if (!corre) return;
+    if (!corre) { if (modo === 'stop' && pos !== P.inicio) { pos = P.inicio; pintarPistas(); } return; }   // ⏸ y después ■: igual vuelve al inicio
     const s = tiempo();
     if (motor) {
       const t = motor.ctx.currentTime;
@@ -412,14 +427,14 @@ body.en-ventana { --fondo-img: none; }
     const cont = $('pistas'), ref = $('cabezal');
     pistas.forEach((p, i) => {
       const f = document.createElement('div'); f.className = 'fila'; f.dataset.i = i;
-      f.innerHTML = '<div class="cabp"><i class="punto"></i><span class="nom">' + p.nombre + '<span class="fuente"></span><span class="graba">graba aquí</span></span>' +
-        '<div class="botones"><button type="button" class="mini enchufe" aria-pressed="false" title="Grabar aquí lo de Meowdacity">grabar aquí</button>' +
-        '<button type="button" class="mini m" aria-pressed="false" aria-label="Silenciar pista ' + (i + 1) + '" title="Silenciar">M</button>' +
+      f.innerHTML = '<div class="cabp">' +
+        '<span class="num" title="' + p.nombre + '">' + (i + 1) + '</span>' +
+        '<div class="botones"><button type="button" class="mini m" aria-pressed="false" aria-label="Silenciar pista ' + (i + 1) + '" title="Silenciar">M</button>' +
         '<button type="button" class="mini s" aria-pressed="false" aria-label="Solo pista ' + (i + 1) + '" title="Solo esta">S</button>' +
         '<button type="button" class="mini x" aria-label="Borrar pista ' + (i + 1) + '" title="Borrar lo grabado">×</button></div>' +
-        '<div class="mezcla"><input type="range" class="vol" min="-60" max="6" step="0.5" aria-label="Volumen de la pista ' + (i + 1) + '"><span class="db"></span><input type="range" class="pan" min="-100" max="100" step="5" aria-label="Balance de la pista ' + (i + 1) + '" title="Balance"></div>' +
-        '<div class="medidor"><i></i></div></div>' +
-        '<div class="carril"><canvas></canvas><div class="vacio"></div></div>';
+        '<div class="perillas"><span class="perilla vol"></span><span class="perilla pan"></span><div class="medidor" aria-hidden="true"><i></i></div></div>' +
+        '<button type="button" class="mini enchufe" aria-pressed="false" title="Grabar aquí lo de Meowdacity">grabar aquí</button></div>' +
+        '<div class="carril"><canvas></canvas><div class="vacio"></div><span class="dur"></span></div>';
       cont.insertBefore(f, ref);
       p.fila = f; p.lienzo = f.querySelector('canvas');
       f.querySelector('.m').addEventListener('click', () => { p.m = !p.m; aplicarMezcla(); pintarCabeceras(); guardar(); });
@@ -432,13 +447,13 @@ body.en-ventana { --fondo-img: none; }
         foto(i); p.data = null; p.largo = 0; p.sucio = true; listo = 0; guardarPista(i); pintarPistas();
         decir('La pista ' + (i + 1) + ' quedó vacía (se puede deshacer).');
       });
-      const vol = f.querySelector('.vol'), pan = f.querySelector('.pan'); vol.value = p.vol; pan.value = p.pan;
-      vol.addEventListener('input', () => { p.vol = +vol.value; aplicarMezcla(); pintarCabeceras(); decir('<strong>Pista ' + (i + 1) + '</strong>: ' + txtDb(p.vol) + ' = cada número × <strong>' + dec(lin(p.vol), 2) + '</strong>. −6 dB es la mitad; +6 dB, el doble.'); });
-      vol.addEventListener('change', guardar); vol.addEventListener('dblclick', () => { vol.value = 0; vol.dispatchEvent(new Event('input')); guardar(); });
-      pan.addEventListener('input', () => { p.pan = +pan.value; aplicarMezcla(); pintarCabeceras();
-        const iz = Math.cos((p.pan / 100 + 1) * Math.PI / 4), de = Math.sin((p.pan / 100 + 1) * Math.PI / 4);
-        decir('<strong>Pista ' + (i + 1) + '</strong> ' + (p.pan === 0 ? 'al centro' : (p.pan < 0 ? 'a la izquierda ' : 'a la derecha ') + Math.abs(p.pan) + ' %') + ': izquierdo × <strong>' + dec(iz, 2) + '</strong>, derecho × <strong>' + dec(de, 2) + '</strong>.'); });
-      pan.addEventListener('change', guardar); pan.addEventListener('dblclick', () => { pan.value = 0; pan.dispatchEvent(new Event('input')); guardar(); });
+      p.pVol = perilla(f.querySelector('.perilla.vol'), { nombre: 'volumen de la pista ' + (i + 1), etiqueta: 'vol', min: -60, max: 6, paso: .5, cero: 0, desde: -60, valor: () => p.vol,
+        texto: txtDb, poner: v => { p.vol = v; aplicarMezcla(); pintarCabeceras();
+          decir('<strong>Pista ' + (i + 1) + '</strong>: ' + txtDb(p.vol) + ' = cada número × <strong>' + dec(lin(p.vol), 2) + '</strong>. −6 dB es la mitad; +6 dB, el doble.'); } });
+      p.pPan = perilla(f.querySelector('.perilla.pan'), { nombre: 'balance de la pista ' + (i + 1), etiqueta: 'bal', min: -100, max: 100, paso: 5, cero: 0, desde: 0, valor: () => p.pan,
+        texto: v => v === 0 ? 'centro' : (v < 0 ? 'izq ' : 'der ') + Math.abs(v) + ' %', poner: v => { p.pan = v; aplicarMezcla(); pintarCabeceras();
+          const iz = Math.cos((p.pan / 100 + 1) * Math.PI / 4), de = Math.sin((p.pan / 100 + 1) * Math.PI / 4);
+          decir('<strong>Pista ' + (i + 1) + '</strong> ' + (p.pan === 0 ? 'al centro' : (p.pan < 0 ? 'a la izquierda ' : 'a la derecha ') + Math.abs(p.pan) + ' %') + ': izquierdo × <strong>' + dec(iz, 2) + '</strong>, derecho × <strong>' + dec(de, 2) + '</strong>.'); } });
       const carril = f.querySelector('.carril');
       carril.addEventListener('pointerdown', e => moverInicio(e, carril));
       ['dragenter', 'dragover'].forEach(ev => carril.addEventListener(ev, e => { e.preventDefault(); f.classList.add('soltando'); }));
@@ -446,6 +461,38 @@ body.en-ventana { --fondo-img: none; }
       carril.addEventListener('drop', async e => { e.preventDefault(); f.classList.remove('soltando'); const a = e.dataTransfer.files[0]; if (a) traerAudio(await a.arrayBuffer(), a.name, i); });
     });
     $('reglaCarril').addEventListener('pointerdown', e => moverInicio(e, $('reglaCarril')));
+  }
+  // una perilla chica (como las de la mezcla de Meowdacity): arrastrar hacia arriba sube, flechas, rueda, doble clic al valor de partida
+  function perilla(el, o) {
+    el.setAttribute('role', 'slider'); el.tabIndex = 0; el.setAttribute('aria-label', o.nombre);
+    el.setAttribute('aria-valuemin', o.min); el.setAttribute('aria-valuemax', o.max);
+    el.innerHTML = '<svg viewBox="0 0 28 28" aria-hidden="true"><path class="riel"/><path class="arco"/><circle class="cuerpo" cx="14" cy="14" r="8.5"/><line class="raya" x1="14" y1="14" x2="14" y2="7.5"/></svg><small>' + o.etiqueta + '</small>';
+    const ang = v => -135 + (v - o.min) / (o.max - o.min) * 270;
+    const punto = a => { const r = 12, t = (a - 90) * Math.PI / 180; return (14 + r * Math.cos(t)).toFixed(2) + ' ' + (14 + r * Math.sin(t)).toFixed(2); };
+    const arco = (a, b) => a === b ? '' : 'M' + punto(Math.min(a, b)) + ' A12 12 0 ' + (Math.abs(b - a) > 180 ? 1 : 0) + ' 1 ' + punto(Math.max(a, b));
+    el.querySelector('.riel').setAttribute('d', arco(-135, 135));
+    const pintar = () => {
+      const v = o.valor(), a = ang(v);
+      el.querySelector('.arco').setAttribute('d', arco(ang(o.desde), a));
+      el.querySelector('.raya').setAttribute('transform', 'rotate(' + a + ' 14 14)');
+      el.setAttribute('aria-valuenow', v); el.setAttribute('aria-valuetext', o.texto(v)); el.title = o.texto(v);
+    };
+    const poner = v => { v = clamp(Math.round(v / o.paso) * o.paso, o.min, o.max); if (v !== o.valor()) { o.poner(v); pintar(); } };
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault(); el.focus(); el.setPointerCapture(e.pointerId);
+      const y0 = e.clientY, v0 = o.valor(), rango = o.max - o.min;
+      const mover = ev => poner(v0 + (y0 - ev.clientY) / (ev.shiftKey ? 600 : 150) * rango);
+      el.addEventListener('pointermove', mover);
+      el.addEventListener('pointerup', () => { el.removeEventListener('pointermove', mover); guardar(); }, { once: true });
+    });
+    el.addEventListener('keydown', e => {
+      const d = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 4, PageDown: -4 }[e.key];
+      if (d) { e.preventDefault(); poner(o.valor() + d * o.paso * (e.shiftKey ? 1 : 2)); guardar(); }
+      else if (e.key === 'Home') { e.preventDefault(); poner(o.cero); guardar(); }
+    });
+    el.addEventListener('wheel', e => { e.preventDefault(); poner(o.valor() - Math.sign(e.deltaY) * o.paso * 2); guardar(); }, { passive: false });
+    el.addEventListener('dblclick', () => { poner(o.cero); guardar(); });
+    pintar(); return { pintar };
   }
   function moverInicio(e, el) {
     if (corre) { decir('La cinta está corriendo: detenla en Meowdacity (■) para mover dónde parte.'); return; }
@@ -464,8 +511,8 @@ body.en-ventana { --fondo-img: none; }
       f.querySelector('.enchufe').setAttribute('aria-pressed', cable === i ? 'true' : 'false');
       f.querySelector('.m').setAttribute('aria-pressed', p.m ? 'true' : 'false');
       f.querySelector('.s').setAttribute('aria-pressed', p.s ? 'true' : 'false');
-      f.querySelector('.db').textContent = txtDb(p.vol);
-      f.querySelector('.fuente').textContent = p.largo ? dec(p.largo / P.sr, 1) + ' s' : 'vacía';
+      if (p.pVol) { p.pVol.pintar(); p.pPan.pintar(); }
+      f.querySelector('.dur').textContent = p.largo ? dec(p.largo / P.sr, 1) + ' s' : '';
       f.querySelector('.vacio').textContent = p.largo ? '' : (cable === i ? 'aquí entra lo que grabes con ● en Meowdacity' : 'vacía');
       f.style.opacity = suena(p) ? 1 : .55;
     });
@@ -477,13 +524,13 @@ body.en-ventana { --fondo-img: none; }
     if (!md) decir('Abre <strong>Meowdacity</strong> y ponla al lado: el Estudio suena y graba con ella.');
     else if (cable == null) decir(celular() ? 'Toca <strong>grabar aquí</strong> en una pista: lo que grabes con ● en Meowdacity entra en ella.' : 'Arrastra el cable desde la <strong>salida</strong> de Meowdacity (abajo a la derecha) hasta el enchufe de una pista. Lo que grabes con ● entra ahí. El ▶ de Meowdacity hace sonar todas las pistas.');
     else decir('El cable va a la <strong>pista ' + (cable + 1) + '</strong>: lo que grabes con ● en Meowdacity entra ahí' + (md.ritmo().on ? ', a compás.' : '.'));
-    $('ritmoTxt').textContent = P.bpm + ' bpm · ' + P.pulsos + ' pulsos';
+    $('ritmoTxt').textContent = P.bpm + ' bpm'; $('ritmoTxt').title = P.bpm + ' pulsos por minuto, ' + P.pulsos + ' pulsos por compás';
   }
   // NeliOS dibuja los enchufes en el borde de la ventana: hay que decirle a qué altura está cada pista
   let ultimosYs = '';
   function avisarEnchufes() {
     const top = $('pistas').getBoundingClientRect().top + 24, bot = $('pistas').getBoundingClientRect().bottom;
-    const ys = pistas.slice(0, P.n).map(p => { const r = p.fila.getBoundingClientRect(); const y = Math.round(r.top + Math.min(r.height, 44) / 2); return y < top || y > bot ? -100 : y; });
+    const ys = pistas.slice(0, P.n).map(p => { const r = p.fila.getBoundingClientRect(); const y = Math.round(r.top + 15); return y < top || y > bot ? -100 : y; });
     const k = ys.join(','); if (k === ultimosYs) return; ultimosYs = k;
     try { parent.postMessage({ nelios: 'jacks', ys }, '*'); } catch (e) {}
   }
@@ -525,7 +572,7 @@ body.en-ventana { --fondo-img: none; }
     const buf = new Float32Array(1024);
     pistas.slice(0, P.n).forEach((p, i) => {
       let pk = 0; if (motor && corre) { motor.canales[i].ana.getFloatTimeDomainData(buf); for (const v of buf) pk = Math.max(pk, Math.abs(v)); }
-      p.fila.querySelector('.medidor i').style.width = (pk > 0 ? clamp((20 * Math.log10(pk) + 48) / 48, 0, 1) * 100 : 0) + '%';
+      p.fila.querySelector('.medidor i').style.height = (pk > 0 ? clamp((20 * Math.log10(pk) + 48) / 48, 0, 1) * 100 : 0) + '%';
     });
     if (Math.abs(L - ultVista) > 1e-3) { ultVista = L; pintarPistas(); }        // la vista se estira mientras la cinta avanza
     avisarEnchufes();
