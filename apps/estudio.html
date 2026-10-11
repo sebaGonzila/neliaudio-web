@@ -71,7 +71,18 @@ svg.g { display: block; fill: none; stroke: currentColor; stroke-width: 1.6; str
 ::-webkit-scrollbar-track { background: transparent; }
 
 /* ---------- el armado: arriba el transporte, al medio las pistas, abajo lo que suena en la pista elegida ---------- */
-.est { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 8px; padding: 10px; }
+.est { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 8px; padding: 10px; }
+/* la cinta: ▶ ⏸ ■, el tempo, el compás, el metrónomo y dónde va */
+.transporte { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; }
+.tb { width: 34px; height: 32px; display: grid; place-items: center; padding: 0; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tenue); }
+.tb svg { width: 12px; height: 12px; fill: currentColor; }
+.tb:hover { color: var(--tinta); border-color: var(--tenue); }
+.tb[aria-pressed="true"] { background: var(--neon); border-color: var(--neon-borde); color: var(--sobre-neon); }
+.sep { width: 1px; height: 22px; background: var(--linea-suave); margin: 0 4px; }
+.transporte input[type=number] { width: 58px; height: 32px; padding: 0 6px; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tinta); font-family: var(--f-numero); font-size: calc(18px * var(--k-num)); }
+.transporte select { height: 32px; padding: 0 6px; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tinta); }
+#reloj { margin-left: auto; font-size: calc(20px * var(--k-num)); color: var(--tinta); white-space: nowrap; }
+#reloj small { color: var(--tenue); font-size: .7em; margin-left: 6px; }
 .panel { background: var(--panel); border: var(--borde) solid var(--linea); border-radius: var(--radio); box-shadow: var(--sombra-panel); }
 body[data-piel="neli"] .panel { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 
@@ -175,7 +186,6 @@ body.cel .acciones { width: 100%; }
 .fila.conectada .cabp { box-shadow: inset 3px 0 0 #E5484D; }
 .fila.grabando .carril { box-shadow: inset 0 0 0 2px #E5484D; }
 #inicioMarca { position: absolute; top: 0; height: 24px; width: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid var(--neon-borde); margin-left: -7px; pointer-events: none; }
-.sin-md .carril { opacity: .75; }
 
 /* ---------- dentro de NeliOS ---------- */
 body.patita, body.patita button, body.patita select, body.patita .tecla, body.patita .negra, body.patita .cabp { cursor: var(--patita), auto; }
@@ -186,6 +196,16 @@ body.en-ventana { --fondo-img: none; }
 <body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
 <main class="est" role="main">
   <h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Estudio</h1>
+  <section class="transporte panel" aria-label="La cinta">
+    <button type="button" class="tb" id="bPlay" aria-pressed="false" aria-label="Tocar las pistas" title="Tocar (barra espaciadora)"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1.5 1L7 4L1.5 7Z"/></svg></button>
+    <button type="button" class="tb" id="bPausa" aria-pressed="false" aria-label="Pausa" title="Pausa"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1.5" y="1" width="2" height="6"/><rect x="4.5" y="1" width="2" height="6"/></svg></button>
+    <button type="button" class="tb" id="bStop" aria-label="Detener y volver a donde parte" title="Detener"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1.5" y="1.5" width="5" height="5"/></svg></button>
+    <span class="sep" aria-hidden="true"></span>
+    <input type="number" id="iBpm" min="40" max="240" step="1" value="100" aria-label="Tempo, en pulsos por minuto" title="Pulsos por minuto"><span class="etq">bpm</span>
+    <select id="sCompas" aria-label="Compás"><option>2/4</option><option>3/4</option><option selected>4/4</option><option>5/4</option><option>6/8</option><option>7/8</option></select>
+    <button type="button" class="chip" id="bMetro" aria-pressed="false" title="Metrónomo: suena con la cinta y da un compás de cuenta antes de grabar">metrónomo</button>
+    <span id="reloj" class="num" aria-live="off">1.1<small>0:00,0</small></span>
+  </section>
   <section class="pistas panel" id="pistas" aria-label="Pistas">
     <div class="fila regla"><div class="cabp"><span class="etq" id="ritmoTxt">compases</span></div><div class="carril" id="reglaCarril" title="Toca para elegir desde dónde parte la cinta"><canvas id="regla"></canvas></div></div>
     <div id="cabezal"></div><div id="inicioMarca"></div>
@@ -193,7 +213,7 @@ body.en-ventana { --fondo-img: none; }
   <footer class="pie panel">
     <div class="dice" id="dice" role="status"></div>
     <div class="acciones">
-      <button class="chip" id="bAbrirMd" type="button" hidden>abrir Meowdacity</button>
+      <button class="chip" id="bAbrirGrab" type="button" hidden>abrir Grabadora</button>
       <button class="chip" id="bMas" type="button" title="Agregar una pista (hasta 8)">+ pista</button>
       <button class="chip" id="bMenos" type="button" title="Quitar la última pista (si está vacía)">− pista</button>
       <button class="chip" id="bDeshacer" type="button" disabled>deshacer</button>
@@ -204,7 +224,8 @@ body.en-ventana { --fondo-img: none; }
 <script>
 (() => {
   'use strict';
-  /* El Estudio v04: solo las pistas, y cada toma es un bloque que se mueve, se recorta, se corta y se borra. Todo lo que se toca está en Meowdacity (teclado, ▶, ●, metrónomo, micrófono).
+  /* El Estudio v05: las pistas, con su propia cinta (▶ ⏸ ■, tempo, metrónomo). Cada toma es un bloque que se mueve, se recorta, se corta y se borra.
+     Graba la Grabadora: su salida, enchufada a una pista, deja la toma ahí, a tiempo con la cinta. Todo suena con el motor de audio de NeliOS. Todo lo que se toca está en Meowdacity (teclado, ▶, ●, metrónomo, micrófono).
      Las pistas suenan con el motor de audio de Meowdacity (otra ventana del mismo sitio): un solo reloj,
      así lo grabado y lo que suena quedan a tiempo. El cable de NeliOS dice a qué pista va la toma. */
   const $ = id => document.getElementById(id);
@@ -223,11 +244,11 @@ body.en-ventana { --fondo-img: none; }
   addEventListener('resize', marcarCel); marcarCel();
 
   // ---------- el proyecto ----------
-  const P = Object.assign({ n: 2, inicio: 0, bpm: 100, pulsos: 4, sr: 48000 }, leerLS('estudio2.proyecto', {}));
+  const P = Object.assign({ n: 2, inicio: 0, bpm: 100, pulsos: 4, metro: false, sr: 48000 }, leerLS('estudio2.proyecto', {}));
   const guardadas = leerLS('estudio2.pistas', []);
   const pistas = Array.from({ length: MAXP }, (_, i) => Object.assign({ vol: 0, pan: 0, m: false, s: false }, guardadas[i] || {}, { nombre: 'pista ' + (i + 1), data: null, largo: 0, sucio: true, clips: [] }));
   const guardar = () => { guardarLS('estudio2.proyecto', P); guardarLS('estudio2.pistas', pistas.map(p => ({ vol: p.vol, pan: p.pan, m: p.m, s: p.s }))); };
-  let cable = null;                                             // la pista donde entra el cable (lo dice NeliOS)
+  let cable = null, hayGrabadora = false;                       // la pista donde entra el cable de la Grabadora (lo dice NeliOS)
   let sel = null, arrastrando = false;                          // el bloque elegido: { i, c }
 
   // ---------- los números de cada pista, en el navegador ----------
@@ -275,28 +296,22 @@ body.en-ventana { --fondo-img: none; }
   }
   function nuevoClip(i, d, a, n, x) { const c = { id: ++nClip, d, a, n, x }; pistas[i].clips.push(c); aplanar(i); return c; }
 
-  // ---------- Meowdacity: la otra ventana. Se busca en el escritorio; si no está, el Estudio muestra pero no suena ----------
-  let md = null, quitarOyente = null, motor = null;
-  function buscarMd() {
-    let w = null;
-    try { const f = [...parent.document.querySelectorAll('iframe')].find(x => { try { return x.contentWindow && x.contentWindow.__mdacity; } catch (e) { return false; } }); w = f && f.contentWindow; } catch (e) {}
-    const api = (w && w.__mdacity) || null;
-    if (api === md) { if (md) { const r = md.ritmo(); if (r.bpm !== P.bpm || r.pulsos !== P.pulsos) { P.bpm = r.bpm; P.pulsos = r.pulsos; guardar(); pintarPistas(); pintarEstado(); } } return md; }
-    if (quitarOyente) { try { quitarOyente(); } catch (e) {} quitarOyente = null; }
-    if (corre) { corre = false; fuentes = []; }
-    md = api; motor = null;
-    if (md) { quitarOyente = md.suscribir(alMd); md.recibirTomas(recibirToma); const r = md.ritmo(); P.bpm = r.bpm; P.pulsos = r.pulsos; guardar(); }
-    pintarEstado(); pintarPistas();
-    return md;
+  // ---------- el motor: el de NeliOS (un solo reloj con la Grabadora y Meowdacity); solo, uno propio ----------
+  const compartido = (() => { try { return window.parent !== window && window.parent.neliAudio ? window.parent.neliAudio : null; } catch (e) { return null; } })();
+  let ctx = null, motor = null;
+  function encender() {
+    if (!ctx) ctx = compartido ? compartido.ctx() : new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    if (ctx.state === 'suspended') ctx.resume();
+    return armarMotor();
   }
-  setInterval(buscarMd, 800);
-  addEventListener('pagehide', () => { if (md) { try { md.recibirTomas(null); } catch (e) {} } if (quitarOyente) try { quitarOyente(); } catch (e) {} });
-
-  // ---------- el motor: los nodos de las pistas viven en el AudioContext de Meowdacity ----------
   function armarMotor() {
-    const c = md && md.ctx(); if (!c) return null;
+    const c = ctx; if (!c) return null;
     if (motor && motor.ctx === c) return motor;
-    const bus = c.createGain(); bus.connect(md.salida());        // después de la mezcla de Meowdacity: pasa por su volumen y su limitador
+    // el bus de las pistas → un limitador (a −1 dB: ocho pistas sumadas pasan de 1 fácil) → la salida
+    const bus = c.createGain(), lim = c.createDynamicsCompressor();
+    lim.threshold.value = -1; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = .002; lim.release.value = .15;
+    bus.connect(lim); lim.connect(c.destination);
+    const clic = c.createGain(); clic.gain.value = .5; clic.connect(c.destination);   // el metrónomo no pasa por las pistas
     const canales = pistas.map(p => {
       const puerta = c.createGain(); puerta.gain.value = 0;
       const vol = c.createGain(); vol.gain.value = ganancia(p);
@@ -305,7 +320,7 @@ body.en-ventana { --fondo-img: none; }
       puerta.connect(vol); vol.connect(pan); pan.connect(bus); vol.connect(ana);
       return { puerta, vol, pan, ana };
     });
-    motor = { ctx: c, bus, canales }; P.sr = c.sampleRate; pistas.forEach(p => { p.sucio = true; });
+    motor = { ctx: c, bus, lim, clic, canales }; P.sr = c.sampleRate; pistas.forEach(p => { p.sucio = true; });
     return motor;
   }
   const haySolo = () => pistas.slice(0, P.n).some(p => p.s);
@@ -318,15 +333,15 @@ body.en-ventana { --fondo-img: none; }
 
   // ---------- la cinta: corre cuando Meowdacity suena o graba ----------
   const pulso = () => 60 / P.bpm, compas = () => pulso() * P.pulsos;
-  let corre = false, Ts = 0, p0 = 0, pos = P.inicio, fuentes = [], toma = null, pararLuego = false;
+  let corre = false, Ts = 0, p0 = 0, pos = P.inicio, fuentes = [], toma = null, ultimoPulso = -1;
   const tiempo = () => corre && motor ? p0 + (motor.ctx.currentTime - Ts) : pos;
   function arrancarCinta(t) {
     const m = armarMotor(); if (!m || corre) return;
     // Ts es el instante de la cinta en p0, aunque ya haya pasado (recién encendido el audio, el reloj parte en 0):
     // así la toma y las pistas usan la misma referencia. Lo que suena parte desde ahora, en el punto que corresponde.
     // a compás, la cinta tiene que calzar con los unos del metrónomo: si quedó en pausa a mitad de un compás, sigue desde el comienzo de ese compás
-    if (md && md.ritmo().on && pos !== P.inicio) { const c = compas(), k = Math.floor(pos / c + 1e-6) * c; if (pos - k > 1e-6) { pos = k; decir('Sigue desde el comienzo del <strong>compás ' + Math.round(k / c + 1) + '</strong>: así la cinta calza con el metrónomo.'); } }
-    p0 = pos; Ts = t; corre = true; pararLuego = false;
+    if (P.metro && pos !== P.inicio) { const c = compas(), k = Math.floor(pos / c + 1e-6) * c; if (pos - k > 1e-6) { pos = k; decir('Sigue desde el comienzo del <strong>compás ' + Math.round(k / c + 1) + '</strong>: así la cinta calza con el metrónomo.'); } }
+    p0 = pos; Ts = t; corre = true; ultimoPulso = -1;
     const cuando = Math.max(Ts, m.ctx.currentTime + .005), desde = p0 + (cuando - Ts);
     fuentes = [];
     pistas.slice(0, P.n).forEach((p, i) => {
@@ -366,31 +381,55 @@ body.en-ventana { --fondo-img: none; }
     b.copyToChannel(p.data.subarray(0, p.largo), 0);
     p.buf = b; p.sucio = false; return b;
   }
-  // lo que avisa Meowdacity
-  function alMd(ev) {
-    if (!ev) return;
-    if (ev.tipo === 'corre') arrancarCinta(ev.t);
-    else if (ev.tipo === 'para') { if (md && md.grabando()) pararLuego = ev.modo; else pararCinta(ev.modo); }
-    else if (ev.tipo === 'graba') {
-      if (cable == null) return;
-      toma = { pista: cable };
-      if (!corre) arrancarCinta(ev.t);                            // la cinta parte con la toma (a compás: en el mismo uno)
-      else if (motor) motor.canales[cable].puerta.gain.setTargetAtTime(0, Math.max(ev.t, motor.ctx.currentTime), .006);
-      toma.Ts = Ts; toma.p0 = p0;
-      pintarCabeceras();
-    }
-    else if (ev.tipo === 'grabaFin') {
-      const t = toma; toma = null;
-      if (t && corre && motor) motor.canales[t.pista].puerta.gain.setTargetAtTime(1, motor.ctx.currentTime, .006);
-      if (corre && (pararLuego || (md && !md.corriendo()))) pararCinta(pararLuego || 'stop');
-      pararLuego = false;
-      pintarCabeceras();
-    }
+  // ---------- la cinta: ▶ ⏸ ■ propios ----------
+  function tocar() { const m = encender(); if (!m || corre) return; arrancarCinta(ctx.currentTime + .05); pintarTransporte(); }
+  function pausa() { pararCinta('pausa'); pintarTransporte(); }
+  function parar() { pararCinta('stop'); pintarTransporte(); }
+  // el metrónomo: mira 120 ms hacia adelante y programa los pulsos que caen ahí (en el tiempo de la cinta: el compás 1 empieza en 0)
+  function clic(t, fuerte) {
+    const m = motor; if (!m) return;
+    const o = m.ctx.createOscillator(), g = m.ctx.createGain();
+    o.frequency.value = fuerte ? 1760 : 1320; o.connect(g); g.connect(m.clic);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(fuerte ? .5 : .32, t + .001); g.gain.exponentialRampToValueAtTime(.0005, t + .04);
+    o.start(t); o.stop(t + .05);
   }
-  // la toma que manda Meowdacity: sus números y el instante (del reloj de audio) donde cae el primero
+  setInterval(() => {
+    if (!corre || !P.metro || !motor) return;
+    const ahora = motor.ctx.currentTime, b = pulso(), hasta = p0 + (ahora + .12 - Ts);
+    let k = Math.max(ultimoPulso + 1, Math.ceil((p0 + Math.max(0, ahora - Ts)) / b - 1e-6));
+    for (; k * b < hasta; k++) { const t = Ts + (k * b - p0); if (t >= ahora - .005) clic(t, k % P.pulsos === 0); ultimoPulso = k; }
+  }, 25);
+
+  // ---------- lo que pide la Grabadora ----------
+  // ● en la Grabadora con su salida en una pista: la cinta parte (con un compás de cuenta si hay metrónomo) y la toma cae a tiempo
+  function prepararToma(i) {
+    const m = encender(); if (!m) return null;
+    if (i >= P.n) { P.n = i + 1; guardar(); pintarPistas(); }
+    const ahora = m.ctx.currentTime; let t, empezo = false;
+    if (!corre) {
+      if (P.metro) {
+        const c = compas(); if (pos !== P.inicio) pos = Math.floor(pos / c + 1e-6) * c;   // a compás, parte en un uno
+        t = ahora + .1 + c;
+        for (let k = 0; k < P.pulsos; k++) clic(t - c + k * pulso(), k === 0);              // la cuenta: un compás antes
+      } else t = ahora + .05;
+      arrancarCinta(t); empezo = true;
+    } else if (P.metro) { const c = compas(), s = tiempo(), b = Math.ceil((s + .08) / c - 1e-6) * c; t = Ts + (b - p0); }
+    else t = ahora + .03;
+    toma = { pista: i, Ts, p0, empezo };
+    m.canales[i].puerta.gain.setTargetAtTime(0, Math.max(t, ahora), .006);    // la pista que se graba no suena: se escribe encima
+    pintarCabeceras(); pintarTransporte();
+    return { t, pista: i, compas: Math.round((p0 + (t - Ts)) / compas()) + 1, pulso: pulso() };
+  }
+  function terminarToma() {
+    const t = toma; toma = null; if (!t) return;
+    if (corre && motor) motor.canales[t.pista].puerta.gain.setTargetAtTime(1, motor.ctx.currentTime, .006);
+    if (t.empezo && corre) pararCinta('stop');                   // si la cinta partió con la toma, para con ella
+    pintarCabeceras(); pintarTransporte();
+  }
+  // la toma que manda la Grabadora: sus números y el instante (del reloj de audio) donde cae el primero
   function recibirToma(t) {
-    if (cable == null || !t || !t.datos || !t.datos.length) return null;
-    const i = cable, p = pistas[i], sr = t.sr;
+    if (!t || !t.datos || !t.datos.length || t.pista == null) return null;
+    const i = t.pista, sr = t.sr;
     const map = toma && toma.Ts != null ? toma : { Ts, p0 };
     const ini = Math.round((map.p0 + (t.t0 - map.Ts)) * sr);
     const n = Math.min(t.datos.length, MAXSEG * sr - Math.max(0, ini)); if (n <= 0) return null;
@@ -398,9 +437,10 @@ body.en-ventana { --fondo-img: none; }
     const k0 = Math.max(0, punch - ini); if (n - k0 <= 0) return null;
     foto(i); P.sr = sr;
     sel = { i, c: nuevoClip(i, t.datos.slice(0, n), k0, n - k0, ini + k0) };   // la toma es un bloque nuevo, encima de lo que había
+    rehacerFuente(i);
     guardarPista(i); guardar(); pintarPistas(); ultima = { ini, n, t0: t.t0, Ts: map.Ts, p0: map.p0, pista: i };
     const c = Math.floor((Math.max(0, ini) / sr) / compas() + 1e-6) + 1;
-    const txt = 'La toma entró en la <strong>pista ' + (i + 1) + '</strong> del Estudio: <strong>' + dec(n / sr, 2) + ' s</strong> = ' + miles(n) + ' números, desde el compás ' + c + '.';
+    const txt = 'Entró en la <strong>pista ' + (i + 1) + '</strong> del Estudio: <strong>' + dec(n / sr, 2) + ' s</strong> = ' + miles(n) + ' números, desde el compás ' + c + '.';
     decir(txt); return txt;
   }
 
@@ -427,6 +467,17 @@ body.en-ventana { --fondo-img: none; }
     sel = { i, c: nuevoClip(i, mono, 0, n, ini) };
     guardarPista(i); rehacerFuente(i); pintarPistas();
     decir('<strong>' + esc(nombre) + '</strong> entró en la <strong>pista ' + (i + 1) + '</strong>: ' + dec(n / sr, 2) + ' s' + (a.numberOfChannels > 1 ? ' (los ' + a.numberOfChannels + ' canales sumados: cada pista es mono; el balance la ubica)' : '') + '.');
+  }
+
+  function ponerAudio(i, datos, sr, nombre) {
+    if (i == null) { i = pistas.slice(0, P.n).findIndex(p => !p.clips.length); if (i < 0) { if (P.n < MAXP) i = P.n; else i = 0; } }
+    if (i >= P.n) P.n = i + 1;
+    const ini = Math.round(P.inicio * sr), n = Math.min(datos.length, MAXSEG * sr - ini); if (n <= 0) return 'No cabe más en la cinta.';
+    foto(i); P.sr = sr;
+    sel = { i, c: nuevoClip(i, datos, 0, n, ini) };
+    guardarPista(i); guardar(); rehacerFuente(i); pintarPistas();
+    const txt = '<strong>' + esc(nombre) + '</strong> entró en la <strong>pista ' + (i + 1) + '</strong> del Estudio, en el compás ' + enCompas(ini) + ': ' + dec(n / sr, 2) + ' s.';
+    decir(txt); return txt;
   }
 
   // ---------- guardar .wav ----------
@@ -598,8 +649,8 @@ body.en-ventana { --fondo-img: none; }
     decir('Bloque borrado de la pista ' + (i + 1) + ' (se puede deshacer con Ctrl+Z).');
   }
   function moverInicio(e, el) {
-    if (corre) { decir('La cinta está corriendo: detenla en Meowdacity (■) para mover dónde parte.'); return; }
-    const r = el.getBoundingClientRect(), aCompas = md && md.ritmo().on, paso = aCompas ? compas() : pulso();
+    if (corre) { decir('La cinta está corriendo: detenla (■) para mover dónde parte.'); return; }
+    const r = el.getBoundingClientRect(), aCompas = P.metro, paso = aCompas ? compas() : pulso();
     const x = clamp((e.clientX - r.left) / r.width, 0, 1) * vista();
     P.inicio = pos = e.altKey ? x : Math.max(0, Math.round(x / paso) * paso); guardar(); pintarPistas();
     decir('La cinta parte en el <strong>compás ' + dec(P.inicio / compas() + 1, 2).replace(/,00$/, '') + '</strong> (' + dec(P.inicio, 2) + ' s). Se pega al ' + (aCompas ? 'compás' : 'pulso') + '; con Alt, libre.');
@@ -616,18 +667,31 @@ body.en-ventana { --fondo-img: none; }
       f.querySelector('.s').setAttribute('aria-pressed', p.s ? 'true' : 'false');
       if (p.pVol) { p.pVol.pintar(); p.pPan.pintar(); }
       f.querySelector('.dur').textContent = p.largo ? dec(p.largo / P.sr, 1) + ' s' : '';
-      f.querySelector('.vacio').textContent = p.largo ? '' : (cable === i ? 'aquí entra lo que grabes con ● en Meowdacity' : 'vacía');
+      f.querySelector('.vacio').textContent = p.largo ? '' : (cable === i ? 'aquí entra lo que grabes con ● en la Grabadora' : 'vacía');
       f.style.opacity = suena(p) ? 1 : .55;
     });
     $('bMas').disabled = P.n >= MAXP; $('bMenos').disabled = P.n <= 1 || pistas[P.n - 1].largo > 0 || cable === P.n - 1;
     avisarEnchufes();
   }
   function pintarEstado() {
-    document.body.classList.toggle('sin-md', !md); $('bAbrirMd').hidden = !!md;
-    if (!md) decir('Abre <strong>Meowdacity</strong> y ponla al lado: el Estudio suena y graba con ella.');
-    else if (cable == null) decir(celular() ? 'Toca <strong>grabar aquí</strong> en una pista: lo que grabes con ● en Meowdacity entra en ella.' : 'Arrastra el cable desde la <strong>salida</strong> de Meowdacity (abajo a la derecha) hasta el enchufe de una pista. Lo que grabes con ● entra ahí. El ▶ de Meowdacity hace sonar todas las pistas.');
-    else decir('El cable va a la <strong>pista ' + (cable + 1) + '</strong>: lo que grabes con ● en Meowdacity entra ahí' + (md.ritmo().on ? ', a compás.' : '.'));
-    $('ritmoTxt').textContent = P.bpm + ' bpm'; $('ritmoTxt').title = P.bpm + ' pulsos por minuto, ' + P.pulsos + ' pulsos por compás';
+    $('bAbrirGrab').hidden = hayGrabadora || !compartido;
+    if (cable == null) decir(!compartido ? 'Suelta un audio encima de una pista, y tócalo con ▶.' : celular() ? 'Toca <strong>grabar aquí</strong> en una pista: lo que grabes con ● en la Grabadora entra en ella.' : 'Para grabar en una pista, arrastra el cable desde la <strong>salida</strong> de la Grabadora hasta el enchufe de esa pista. ▶ toca todas las pistas.');
+    else decir('El cable de la Grabadora va a la <strong>pista ' + (cable + 1) + '</strong>: lo que grabes con ● allá entra aquí' + (P.metro ? ', a compás, después de un compás de cuenta.' : '.'));
+  }
+  // el transporte y el ritmo de la cinta
+  const COMPASES = { '2/4': 2, '3/4': 3, '4/4': 4, '5/4': 5, '6/8': 6, '7/8': 7 };
+  function pintarTransporte() {
+    $('bPlay').setAttribute('aria-pressed', corre ? 'true' : 'false');
+    $('bPausa').setAttribute('aria-pressed', !corre && pos !== P.inicio ? 'true' : 'false');
+    $('bMetro').setAttribute('aria-pressed', P.metro ? 'true' : 'false');
+    if (document.activeElement !== $('iBpm')) $('iBpm').value = P.bpm;
+    $('sCompas').value = Object.keys(COMPASES).find(k => COMPASES[k] === P.pulsos) || '4/4';
+    $('ritmoTxt').textContent = 'compás';
+  }
+  function cambiarRitmo(bpm, pulsos) {
+    if (corre) { decir('Detén la cinta (■) para cambiar el tempo.'); pintarTransporte(); return; }
+    P.bpm = clamp(Math.round(+bpm || P.bpm), 40, 240); P.pulsos = pulsos; guardar(); pintarPistas(); pintarTransporte();
+    decir('<strong>' + P.bpm + ' pulsos por minuto</strong>: cada pulso dura 60 / ' + P.bpm + ' = <strong>' + dec(pulso(), 3) + ' s</strong>; un compás de ' + P.pulsos + ' pulsos, ' + dec(compas(), 3) + ' s = ' + miles(compas() * P.sr) + ' números.');
   }
   // NeliOS dibuja los enchufes en el borde de la ventana: hay que decirle a qué altura está cada pista
   let ultimosYs = '';
@@ -684,6 +748,8 @@ body.en-ventana { --fondo-img: none; }
     if (document.hidden || t - ult < 33) return; ult = t;
     const s = tiempo(), car = pistas[0].fila.querySelector('.carril'), r = car.getBoundingClientRect(), r0 = $('pistas').getBoundingClientRect(), L = vista();
     $('cabezal').style.left = (r.left - r0.left + clamp(s / L, 0, 1) * r.width) + 'px';
+    const b = pulso(), k = Math.floor(Math.max(0, s) / b + 1e-6);
+    $('reloj').innerHTML = (Math.floor(k / P.pulsos) + 1) + '.' + (k % P.pulsos + 1) + '<small>' + Math.floor(s / 60) + ':' + dec(s % 60, 1).padStart(4, '0') + '</small>';
     $('inicioMarca').style.left = (r.left - r0.left + clamp(P.inicio / L, 0, 1) * r.width) + 'px';
     const buf = new Float32Array(1024);
     pistas.slice(0, P.n).forEach((p, i) => {
@@ -699,9 +765,16 @@ body.en-ventana { --fondo-img: none; }
   $('bMenos').addEventListener('click', () => { if (P.n > 1 && !pistas[P.n - 1].largo && cable !== P.n - 1) { P.n--; guardar(); pintarPistas(); } });
   $('bDeshacer').addEventListener('click', deshacer);
   $('bExportar').addEventListener('click', exportar);
-  $('bAbrirMd').addEventListener('click', () => parent.postMessage({ nelios: 'abrirMeowdacity' }, '*'));
+  $('bPlay').addEventListener('click', () => corre ? null : tocar());
+  $('bPausa').addEventListener('click', pausa);
+  $('bStop').addEventListener('click', parar);
+  $('bMetro').addEventListener('click', () => { P.metro = !P.metro; guardar(); pintarTransporte(); pintarEstado(); if (P.metro && !corre) decir('Metrónomo encendido: suena con la cinta, y antes de grabar da un compás de cuenta.'); });
+  $('iBpm').addEventListener('change', e => cambiarRitmo(e.target.value, P.pulsos));
+  $('sCompas').addEventListener('change', e => cambiarRitmo(P.bpm, COMPASES[e.target.value]));
+  $('bAbrirGrab').addEventListener('click', () => parent.postMessage({ nelios: 'abrir', app: 'grabadora' }, '*'));
   window.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); deshacer(); }
+    if (e.code === 'Space' && !(e.target && e.target.closest && e.target.closest('input, select, textarea'))) { e.preventDefault(); corre ? parar() : tocar(); }
+    else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); deshacer(); }
     else if ((e.key === 'Delete' || e.key === 'Backspace') && sel && !(e.target && e.target.closest && e.target.closest('input, select, textarea'))) { e.preventDefault(); borrarSel(); }
     else if (e.key === 'Escape' && sel) { const i = sel.i; sel = null; pintarPista(i); }
   });
@@ -714,21 +787,24 @@ body.en-ventana { --fondo-img: none; }
       if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
       else document.body.classList.remove('patita');
     }
-    if (d.nelios === 'cable') { cable = typeof d.pista === 'number' ? d.pista : null; if (cable != null && cable >= P.n) { P.n = cable + 1; guardar(); } buscarMd(); pintarEstado(); pintarPistas(); }
+    if (d.nelios === 'cable') { cable = typeof d.pista === 'number' ? d.pista : null; hayGrabadora = !!d.grabadora; if (cable != null && cable >= P.n) { P.n = cable + 1; guardar(); } pintarEstado(); pintarPistas(); }
   });
   // la piel es la de Meowdacity (si la cambias allá, cambia aquí)
   const ponerPiel = () => { let v = 'neli'; try { v = localStorage.getItem('meowdacity.piel') || 'neli'; } catch (e) {} document.body.dataset.piel = v === 'terminal' ? 'terminal' : 'neli'; pintarPistas(); };
   addEventListener('storage', e => { if (e.key === 'meowdacity.piel') ponerPiel(); });
 
   // ---------- partir ----------
-  armarFilas(); ponerPiel(); pintarEstado();
+  // al cerrar la ventana se suelta lo propio (el motor del escritorio sigue vivo)
+  function apagar() { try { if (corre) pararCinta('stop'); if (motor) { motor.lim.disconnect(); motor.clic.disconnect(); } } catch (e) {} }
+  addEventListener('pagehide', apagar);
+  if (compartido) compartido.registrar('estudio', { prepararToma, recibirToma, terminarToma, ponerAudio, pistas: () => P.n, apagar });
+  armarFilas(); ponerPiel(); pintarEstado(); pintarTransporte();
   abrirDB().then(cargarPistas).then(() => { pintarPistas(); });
-  buscarMd();
   addEventListener('resize', pintarPistas);
   if (window.ResizeObserver) new ResizeObserver(() => pintarPistas()).observe($('pistas'));
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(pintarPistas);
   requestAnimationFrame(cuadro);
-  window.__estudio = { P, pistas, sel: () => sel, aplanar, md: () => md, motor: () => motor, cable: () => cable, corre: () => corre, Ts: () => Ts, p0: () => p0, tiempo, toma: () => toma, ultima: () => ultima };
+  window.__estudio = { P, pistas, sel: () => sel, aplanar, tocar, parar, pausa, prepararToma, ctx: () => ctx, motor: () => motor, cable: () => cable, corre: () => corre, Ts: () => Ts, p0: () => p0, tiempo, toma: () => toma, ultima: () => ultima };
 })();
 
 </script>

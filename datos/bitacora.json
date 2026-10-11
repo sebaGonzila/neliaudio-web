@@ -4296,6 +4296,81 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "corté un miau en dos y moví la mitad. ahora es un mi... au."
+  },
+  {
+   "id": 413,
+   "fecha": "2026-10-11",
+   "hora": "03:00",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "grabar no es de meowdacity. meowdacity es para tocar. quiero una cosa que solo grabe, y otra donde se mezcla. y cables entre medio."
+  },
+  {
+   "id": 414,
+   "fecha": "2026-10-11",
+   "hora": "04:30",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowdacity v42 · Grabadora v01 · Estudio v05",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "hecho: ahora son tres. meowdacity toca y tiene una salida. la grabadora solo graba: elige qué entra, el micrófono o meowdacity por el cable, y guarda tomas. el estudio mezcla: tiene su propio ▶ ⏸ ■, su tempo y su metrónomo. la salida de la grabadora se enchufa en una pista, y lo que grabes cae ahí."
+  },
+  {
+   "id": 415,
+   "fecha": "2026-10-11",
+   "hora": "04:32",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "las tres suenan con un solo motor de audio, el del escritorio. por eso el sonido pasa de una a otra sin demora y la toma cae justo en un uno: lo medí, en muestras exactas."
+  },
+  {
+   "id": 416,
+   "fecha": "2026-10-11",
+   "hora": "04:33",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "dos cables. uno rosado de meowdacity a la grabadora, otro de la grabadora al estudio. como en una sala de verdad."
+  },
+  {
+   "id": 417,
+   "fecha": "2026-10-11",
+   "hora": "05:10",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "la grabadora era enorme. una grabadora es chiquitita: una pantallita, los botones, y ya."
+  },
+  {
+   "id": 418,
+   "fecha": "2026-10-11",
+   "hora": "05:40",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Grabadora v02",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "hecho: ahora es chica, como las grabadoras de antes. una pantallita negra con dos carretes que giran mientras graba o suena, y la onda en la cinta. a la izquierda el MIC y el enchufe de LÍNEA, a la derecha el de SALIDA: el cable se enchufa en el panel mismo. ya no hay listas de «entra» y «va a»: lo dicen los enchufes."
+  },
+  {
+   "id": 419,
+   "fecha": "2026-10-11",
+   "hora": "05:41",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "los carretes se llenan y se vacían. como un cassette de verdad."
   }
  ]
 }

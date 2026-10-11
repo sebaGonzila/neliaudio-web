@@ -545,7 +545,10 @@ body.patita .jack { cursor: var(--patita-mover), grab; }
 #cables .cable-borde { fill: none; stroke: #2A2D52; stroke-width: 8; stroke-linecap: round; }
 #cables .cable { fill: none; stroke: #F27FA3; stroke-width: 4; stroke-linecap: round; }
 #cables .punta { fill: #2A2D52; stroke: #F27FA3; stroke-width: 2; }
-@media (max-width: 719px) { .regleta { display: none !important; } #cables { display: none; } }
+.enchufes-cara { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.enchufes-cara .jack { position: absolute; pointer-events: auto; }
+body.arrastrando .enchufes-cara .jack { pointer-events: auto; }
+@media (max-width: 719px) { .regleta, .enchufes-cara { display: none !important; } #cables { display: none; } }
 </style>
 </head>
 <body>
@@ -580,9 +583,11 @@ const IMG = {"cursor": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAaCA
 const APPS = [
   { id: 'meowsenger', nombre: 'Meowsenger', icono: '/img/iconos/meowsenger.png', w: 900, h: 640, pista: 'Aquí está todo lo que Barti y yo hemos hablado. Empieza por el principio.',
     contenido: (m) => { m.src = '/apps/meowsenger.html'; } },
-  { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.', enchufes: 'salida',
+  { id: 'meowdacity', nombre: 'Meowdacity', icono: '/img/iconos/meowdacity.svg', w: 1100, h: 700, pista: '¿Probaste Acelerar? Mira lo que pasa cuando los números corren más rápido.', enchufes: { salida: true },
     contenido: (m) => { m.src = '/apps/meowdacity.html?ventana'; } },
-  { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 860, h: 520, pista: 'Ponme al lado de Meowdacity y conecta el cable: lo que grabes allá queda en mis pistas.', enchufes: 'entradas', cerca: 'meowdacity',
+  { id: 'grabadora',  nombre: 'Grabadora',  icono: '/img/iconos/grabadora.svg', w: 400, h: 216, fijo: true, pista: 'Enchufa algo en la línea, o toca el mic, y aprieta el botón rojo.', enchufes: { cara: true }, cerca: 'meowdacity',
+    contenido: (m) => { m.src = '/apps/grabadora.html?ventana'; } },
+  { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 860, h: 560, pista: 'Aquí se mezcla. Enchufa la salida de la Grabadora en una pista y lo que grabes cae ahí.', enchufes: { entrada: 'pistas' }, cerca: 'grabadora',
     contenido: (m) => { m.src = '/apps/estudio.html?ventana'; } },
   { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
@@ -761,10 +766,11 @@ function elegirActiva() {
 function cerrar(id) {
   // si una app tiene módulos sueltos (la lista de Meowamp, su mixer...), se cierran con ella
   for (const otro of Object.keys(abiertas)) if (otro.startsWith(id + '~')) cerrar(otro);
+  try { const a = window.neliAudio && window.neliAudio.app(id); if (a && a.apagar) a.apagar(); window.neliAudio.quitar(id); } catch (e) {}   // con el motor compartido, la app desconecta lo suyo antes de irse
   abiertas[id].remove();     // la saca de la página (y con ella el iframe: la app deja de sonar)
   if (location.hash === '#' + id) history.replaceState(null, '', location.pathname + location.search);
   delete abiertas[id];       // y la borra del diccionario
-  if (cable && (id === 'meowdacity' || id === 'estudio')) desenchufar();   // sin una de las dos puntas, no hay cable
+  if (['meowdacity', 'grabadora', 'estudio'].includes(id)) { avisarCable(); pintarCable(); }   // sin una punta el cable no lleva nada (queda anotado para cuando se abra de nuevo)
   elegirActiva();
   pintarCable();
 }
@@ -896,7 +902,7 @@ function abrir(app, desde) {
 
   // donde la dejaron la última vez (y del tamaño que la dejaron), o un lugar libre si es la primera
   const guardada = leerPosiciones()[app.id];
-  if (guardada && guardada.w) {
+  if (guardada && guardada.w && !app.fijo) {                 // (una app de tamaño fijo, como la Grabadora, abre siempre de su tamaño)
     ventana.dataset.estirada = '1';                  // el tamaño lo eligió la persona: la app no lo cambia sola
     ventana.style.width  = Math.min(guardada.w, escritorio.clientWidth - 24) + 'px';
     ventana.style.height = Math.min(guardada.h, escritorio.clientHeight - 24) + 'px';
@@ -924,7 +930,7 @@ function abrir(app, desde) {
   ventana.addEventListener('pointerdown', () => alFrente(ventana));
   alFrente(ventana);
   saludar(app);
-  if ((app.id === 'estudio' && abiertas.meowdacity) || (app.id === 'meowdacity' && abiertas.estudio)) juntarSiSeTapan();
+  if (['meowdacity', 'grabadora', 'estudio'].includes(app.id)) juntarSiSeTapan();
 }
 
 const contenedor = document.getElementById('iconos');
@@ -1141,30 +1147,87 @@ aplicarAjustes();
 // (el final está en arranque.js: la primera vez arranca y después abre #id)
 
 // =====================================================================
-// Los cables: la salida de Meowdacity se enchufa a una pista del Estudio.
-// Cada app vive en su propio documento, así que el cable lo dibuja el escritorio, por encima de las ventanas.
-// El sonido no viaja por aquí: el Estudio suena con el motor de Meowdacity. El cable solo dice adónde va la toma.
+// El motor de audio del escritorio: un solo AudioContext para todas las apps.
+// Meowdacity, la Grabadora y el Estudio viven en documentos distintos, pero suenan con el mismo reloj:
+// así una toma cae justo donde corresponde y el sonido puede ir de una app a otra sin demora.
+// Cada app lo pide con parent.neliAudio; si se abre sola (fuera de NeliOS), crea el suyo.
 // =====================================================================
-let cable = mem.leer('cable', null);        // { pista: 0..7 } o null
-let arrastreCable = null;                   // mientras se arrastra: { x, y }
+window.neliAudio = (() => {
+  let ctx = null; const modulos = new Map(), apps = new Map();
+  return {
+    ctx() { if (!ctx) { const C = window.AudioContext || window.webkitAudioContext; ctx = new C({ latencyHint: 'interactive' }); } return ctx; },
+    // un procesador (AudioWorklet) se registra una sola vez por contexto: si la app se cierra y se abre de nuevo, ya está
+    modulo(nombre, urls) {
+      if (modulos.has(nombre)) return modulos.get(nombre);
+      const p = (async () => { for (const u of urls) { try { await ctx.audioWorklet.addModule(u); return true; } catch (e) {} } throw new Error('no cargó ' + nombre); })();
+      modulos.set(nombre, p); p.catch(() => modulos.delete(nombre)); return p;
+    },
+    // cada app deja aquí lo que las otras pueden usar (Meowdacity su salida, el Estudio sus pistas…)
+    registrar(id, api) { apps.set(id, api); return () => { if (apps.get(id) === api) apps.delete(id); }; },
+    app(id) { return apps.get(id) || null; },
+    quitar(id) { apps.delete(id); }
+  };
+})();
+
+// =====================================================================
+// Los cables. Dos tramos posibles:
+//   Meowdacity (salida) → Grabadora (entrada): la Grabadora graba lo que suena en Meowdacity.
+//   Grabadora (salida) → una pista del Estudio: lo que se graba cae en esa pista, a tiempo con la cinta.
+// El escritorio dibuja los cables por encima de las ventanas y le avisa a cada app cómo quedó.
+// =====================================================================
+let cables = Object.assign({ md: false, pista: null }, mem.leer('cables', {}));   // md: Meowdacity→Grabadora · pista: Grabadora→pista del Estudio
+let arrastreCable = null;                   // mientras se arrastra: { de, x, y }
 const capaCables = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 capaCables.id = 'cables'; capaCables.setAttribute('aria-hidden', 'true');
 escritorio.append(capaCables);
+const appDe = (id) => APPS.find((a) => a.id === id);
 function ponerEnchufes(app, ventana, cuerpo) {
-  if (app.enchufes === 'salida') {
+  const e = app.enchufes;
+  if (e.cara) {                                                   // la Grabadora dibuja sus enchufes en su panel: los de verdad van justo encima
+    const capa = document.createElement('div'); capa.className = 'enchufes-cara';
+    capa.innerHTML = '<button type="button" class="jack entrada" data-a="' + app.id + '" hidden aria-label="Entrada de línea de la Grabadora: conectar la salida de Meowdacity" title="Línea: aquí entra el cable de Meowdacity"></button>' +
+      '<button type="button" class="jack salida" data-de="' + app.id + '" hidden aria-label="Salida de la Grabadora: arrástrala hasta una pista del Estudio" title="Salida: arrástrala hasta una pista del Estudio"></button>';
+    ventana.append(capa);
+    const je = capa.querySelector('.entrada'), js = capa.querySelector('.salida');
+    je.addEventListener('pointerdown', (ev) => { if (cables.md) tomarCable(ev, je, 'meowdacity'); });
+    je.addEventListener('click', () => { if (je._movio) return; conectar({ md: !cables.md }); });
+    js.addEventListener('pointerdown', (ev) => tomarCable(ev, js, app.id));
+    js.addEventListener('click', () => {
+      if (js._movio) return;
+      if (cables.pista != null) { conectar({ pista: null }); return; }
+      if (!abiertas.estudio) { abrir(appDe('estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de la Grabadora hasta una pista.'); }
+    });
+    return;
+  }
+  if (e.salida) {
     const r = document.createElement('div'); r.className = 'regleta abajo';
-    r.innerHTML = '<span>salida</span><button type="button" class="jack salida" aria-label="Salida de Meowdacity: arrástrala hasta una pista del Estudio" title="Salida: arrástrala hasta una pista del Estudio"></button>';
+    const a = app.id === 'meowdacity' ? 'hasta la entrada de la Grabadora' : 'hasta una pista del Estudio';
+    r.innerHTML = '<span>salida</span><button type="button" class="jack salida" data-de="' + app.id + '" aria-label="Salida de ' + app.nombre + ': arrástrala ' + a + '" title="Salida: arrástrala ' + a + '"></button>';
     ventana.append(r);
     const j = r.querySelector('.jack');
-    j.addEventListener('pointerdown', (e) => tomarCable(e, j));
+    j.addEventListener('pointerdown', (ev) => tomarCable(ev, j, app.id));
     j.addEventListener('click', () => {
       if (j._movio) return;
-      if (cable) { desenchufar(); return; }
-      if (!abiertas.estudio) { abrir(APPS.find((a) => a.id === 'estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de Meowdacity hasta una pista.'); }
+      if (app.id === 'meowdacity') {
+        if (cables.md) { conectar({ md: false }); return; }
+        if (!abiertas.grabadora) { abrir(appDe('grabadora')); hablar('Esta es la Grabadora. Arrastra el cable desde la salida de Meowdacity hasta su entrada.'); }
+        else conectar({ md: true });
+      } else {
+        if (cables.pista != null) { conectar({ pista: null }); return; }
+        if (!abiertas.estudio) { abrir(appDe('estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de la Grabadora hasta una pista.'); }
+      }
     });
-  } else if (app.enchufes === 'entradas') {
+  }
+  if (e.entrada) {
     const r = document.createElement('div'); r.className = 'regleta izq';
     cuerpo.prepend(r);
+    if (e.entrada === 'una') {                                    // la Grabadora: una sola entrada, arriba
+      const j = document.createElement('button'); j.type = 'button'; j.className = 'jack entrada'; j.dataset.a = app.id;
+      j.style.top = 'auto'; j.style.bottom = '6px'; j.setAttribute('aria-label', 'Entrada de la Grabadora: conectar la salida de Meowdacity'); j.title = 'Entrada: aquí entra el cable de Meowdacity';
+      j.addEventListener('pointerdown', (ev) => { if (cables.md) tomarCable(ev, j, 'meowdacity'); });
+      j.addEventListener('click', () => { if (j._movio) return; conectar({ md: !cables.md }); });
+      r.append(j);
+    }
   }
 }
 // el Estudio dice a qué altura está cada pista; aquí se ponen sus enchufes
@@ -1172,53 +1235,65 @@ function ponerEntradas(ys) {
   const v = abiertas.estudio, r = v && v.querySelector('.regleta.izq'); if (!r) return;
   r.replaceChildren();
   ys.slice(0, 8).forEach((y, i) => {
-    const j = document.createElement('button'); j.type = 'button'; j.className = 'jack entrada'; j.dataset.pista = i;
+    const j = document.createElement('button'); j.type = 'button'; j.className = 'jack entrada'; j.dataset.a = 'estudio'; j.dataset.pista = i;
     j.style.top = Math.round(y) + 'px';
-    j.setAttribute('aria-label', 'Entrada de la pista ' + (i + 1) + ': conectar la salida de Meowdacity');
-    j.title = 'Pista ' + (i + 1) + ': aquí entra el cable';
-    j.addEventListener('pointerdown', (e) => { if (cable && cable.pista === i) tomarCable(e, j); });
-    j.addEventListener('click', () => { if (j._movio) return; if (cable && cable.pista === i) desenchufar(); else enchufar(i); });
+    j.setAttribute('aria-label', 'Entrada de la pista ' + (i + 1) + ': conectar la salida de la Grabadora');
+    j.title = 'Pista ' + (i + 1) + ': aquí entra el cable de la Grabadora';
+    j.addEventListener('pointerdown', (ev) => { if (cables.pista === i) tomarCable(ev, j, 'grabadora'); });
+    j.addEventListener('click', () => { if (j._movio) return; conectar({ pista: cables.pista === i ? null : i }); });
     r.append(j);
   });
   pintarCable();
 }
-// Meowdacity y el Estudio se usan juntos: si una tapa a la otra, se ponen lado a lado (Meowdacity a la izquierda)
+// Meowdacity, la Grabadora y el Estudio se usan juntos: si se tapan, se ponen lado a lado, en el orden en que pasa el sonido
 function juntarSiSeTapan() {
-  const vm = abiertas.meowdacity, ve = abiertas.estudio; if (!vm || !ve || innerWidth < 720) return;
+  if (innerWidth < 720) return;
+  const orden = ['meowdacity', 'grabadora', 'estudio'].filter((id) => abiertas[id]); if (orden.length < 2) return;
   const caja = (v) => ({ left: v.offsetLeft, top: v.offsetTop, right: v.offsetLeft + v.offsetWidth, bottom: v.offsetTop + v.offsetHeight });   // sin la animación de abrir
-  const a = caja(vm), b = caja(ve);
-  if (a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top) return;
-  const W = escritorio.clientWidth, H = escritorio.clientHeight, m = 10;
-  const wm = Math.round((W - 3 * m) * .6), we = W - 3 * m - wm, h = Math.min(H - 2 * m, 760);
-  [[vm, m, wm], [ve, 2 * m + wm, we]].forEach(([v, x, w]) => {
-    v.classList.remove('agrandada'); v.hidden = false; v.dataset.estirada = '1';
-    v.style.width = w + 'px'; v.style.height = h + 'px'; ubicar(v, x, m);
-  });
+  let tapan = false;
+  for (let a = 0; a < orden.length; a++) for (let b = a + 1; b < orden.length; b++) {
+    const A = caja(abiertas[orden[a]]), B = caja(abiertas[orden[b]]);
+    if (!(A.right <= B.left || B.right <= A.left || A.bottom <= B.top || B.bottom <= A.top)) tapan = true;
+  }
+  if (!tapan) return;
+  const W = escritorio.clientWidth, H = escritorio.clientHeight, m = 10, g = 34, libre = W - 2 * m - (orden.length - 1) * g;   // g: el hueco entre ventanas, para que el cable cuelgue ahí y no tape nada
+  const wg = orden.includes('grabadora') ? Math.min(appDe('grabadora').w, Math.round(libre * .3)) : 0, resto = libre - wg;
+  const ancho = { grabadora: wg };
+  const grandes = orden.filter((id) => id !== 'grabadora');
+  if (grandes.length === 2) { ancho.meowdacity = Math.round(resto * .58); ancho.estudio = resto - ancho.meowdacity; } else if (grandes.length === 1) ancho[grandes[0]] = Math.min(resto, appDe(grandes[0]).w);
+  const h = Math.min(H - 2 * m, 760); let x = m;
+  for (const id of orden) {
+    const v = abiertas[id]; v.classList.remove('agrandada'); v.hidden = false; v.dataset.estirada = '1';
+    v.style.width = ancho[id] + 'px'; v.style.height = (id === 'grabadora' ? Math.min(h, appDe(id).h) : h) + 'px'; ubicar(v, x, m); x += ancho[id] + g;
+  }
   pintarCable();
 }
-function enchufar(i) {
-  if (!abiertas.meowdacity) { hablar('Primero abre Meowdacity: el cable sale de ella.'); abrir(APPS.find((a) => a.id === 'meowdacity')); return; }
-  cable = { pista: i }; mem.guardar('cable', cable); avisarCable(); pintarCable();
+// cambiar los cables (desde los enchufes, desde las apps o desde sus listas)
+function conectar(c) {
+  if ('md' in c && c.md && !abiertas.meowdacity) { hablar('Primero abre Meowdacity: ese cable sale de ella.'); abrir(appDe('meowdacity')); }
+  if ('pista' in c && c.pista != null && !abiertas.estudio) abrir(appDe('estudio'));
+  Object.assign(cables, c); mem.guardar('cables', cables); avisarCable(); pintarCable();
 }
-function desenchufar() { cable = null; mem.guardar('cable', null); avisarCable(); pintarCable(); }
+const marcoDe = (id) => abiertas[id] && abiertas[id].querySelector('iframe');
 function avisarCable() {
-  const m = abiertas.meowdacity && abiertas.meowdacity.querySelector('iframe'), e = abiertas.estudio && abiertas.estudio.querySelector('iframe');
-  const ok = !!(cable && m && e);
-  try { if (m) m.contentWindow.postMessage({ nelios: 'cable', conectado: ok }, '*'); } catch (er) {}
-  try { if (e) e.contentWindow.postMessage({ nelios: 'cable', pista: ok ? cable.pista : null, meowdacity: !!m }, '*'); } catch (er) {}
+  const m = marcoDe('meowdacity'), g = marcoDe('grabadora'), e = marcoDe('estudio');
+  const md = !!(cables.md && m && g), pista = cables.pista != null && g && e ? cables.pista : null;
+  try { if (m) m.contentWindow.postMessage({ nelios: 'cable', conectado: md }, '*'); } catch (er) {}
+  try { if (g) g.contentWindow.postMessage({ nelios: 'cable', entrada: md ? 'meowdacity' : null, pista, meowdacity: !!m, estudio: !!e, cara: innerWidth >= 720 }, '*'); } catch (er) {}
+  try { if (e) e.contentWindow.postMessage({ nelios: 'cable', pista, grabadora: !!g }, '*'); } catch (er) {}
 }
-// arrastrar el cable: mientras tanto los iframes no se quedan con el puntero (body.arrastrando)
-function tomarCable(e, j) {
+// arrastrar un cable desde una salida: mientras tanto los iframes no se quedan con el puntero (body.arrastrando)
+function tomarCable(e, j, de) {
   if (e.button !== 0) return;
   e.preventDefault(); j._movio = false;
-  const x0 = e.clientX, y0 = e.clientY;
+  const x0 = e.clientX, y0 = e.clientY, destinos = de === 'meowdacity' ? '.jack.entrada[data-a="grabadora"]' : '.jack.entrada[data-a="estudio"]';
   document.body.classList.add('arrastrando', 'con-cable');
   const mover = (ev) => {
     if (!j._movio && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 6) return;
-    if (!j._movio) { j._movio = true; if (cable) { cable = null; avisarCable(); } }
+    if (!j._movio) { j._movio = true; Object.assign(cables, de === 'meowdacity' ? { md: false } : { pista: null }); avisarCable(); }
     const r = escritorio.getBoundingClientRect();
-    arrastreCable = { x: ev.clientX - r.left, y: ev.clientY - r.top };
-    document.querySelectorAll('.jack.entrada').forEach((k) => k.classList.toggle('cerca', k === document.elementFromPoint(ev.clientX, ev.clientY)));
+    arrastreCable = { de, x: ev.clientX - r.left, y: ev.clientY - r.top };
+    document.querySelectorAll('.jack.entrada').forEach((k) => k.classList.toggle('cerca', k.matches(destinos) && k === document.elementFromPoint(ev.clientX, ev.clientY)));
     pintarCable();
   };
   const soltar = (ev) => {
@@ -1226,46 +1301,75 @@ function tomarCable(e, j) {
     document.body.classList.remove('arrastrando', 'con-cable');
     document.querySelectorAll('.jack.cerca').forEach((k) => k.classList.remove('cerca'));
     if (j._movio) {
-      const destino = document.elementFromPoint(ev.clientX, ev.clientY);
-      if (destino && destino.classList.contains('entrada')) enchufar(+destino.dataset.pista);
-      else desenchufar();
+      const d = document.elementFromPoint(ev.clientX, ev.clientY);
+      if (d && d.matches && d.matches(destinos)) conectar(de === 'meowdacity' ? { md: true } : { pista: +d.dataset.pista });
+      else {
+        conectar(de === 'meowdacity' ? { md: false } : { pista: null });
+        if (d && d.matches && d.matches('.jack.entrada')) hablar(de === 'meowdacity' ? 'Lo de Meowdacity pasa primero por la Grabadora: enchúfalo en su entrada.' : 'La salida de la Grabadora va a una pista del Estudio.');
+      }
       setTimeout(() => { j._movio = false; }, 0);
     }
     arrastreCable = null; pintarCable();
   };
   document.addEventListener('pointermove', mover); document.addEventListener('pointerup', soltar);
 }
-// el dibujo: un cable que cuelga entre las dos puntas, con su enchufe en cada extremo
+// el dibujo: cada cable cuelga entre sus dos puntas, con su enchufe en cada extremo
 function centroDe(el) {
   const r = el.getBoundingClientRect(), e = escritorio.getBoundingClientRect();
   return { x: Math.round(r.left + r.width / 2 - e.left), y: Math.round(r.top + r.height / 2 - e.top) };
 }
+const visible = (id) => abiertas[id] && !abiertas[id].hidden;
 let relojCable = 0, rutaAnterior = '';
 function pintarCable() {
-  document.querySelectorAll('.jack.entrada').forEach((k) => k.setAttribute('aria-pressed', cable && +k.dataset.pista === cable.pista ? 'true' : 'false'));
-  const vm = abiertas.meowdacity, ve = abiertas.estudio, js = vm && !vm.hidden && vm.querySelector('.jack.salida');
-  if (vm) { const s = vm.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cable ? 'true' : 'false'); }
-  let b = arrastreCable;
-  if (!b && cable && ve && !ve.hidden) { const je = ve.querySelector('.jack.entrada[data-pista="' + cable.pista + '"]'); if (je) b = centroDe(je); }
-  if (!js || !b || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
-  const a = centroDe(js), d = Math.hypot(b.x - a.x, b.y - a.y), piso = escritorio.clientHeight - 12;
-  const cae = Math.max(0, Math.min(160, 30 + d * .3, piso - Math.max(a.y, b.y)));   // cuelga, pero sin salirse del escritorio
-  const ruta = `M${a.x},${a.y} C${a.x + 40},${a.y + cae} ${b.x - 40},${b.y + cae} ${b.x},${b.y}`;
-  if (ruta !== rutaAnterior) {                       // solo se redibuja si algo se movió
-    rutaAnterior = ruta;
-    capaCables.innerHTML = `<path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/>`;
+  document.querySelectorAll('.jack.entrada[data-a="estudio"]').forEach((k) => k.setAttribute('aria-pressed', cables.pista === +k.dataset.pista && abiertas.grabadora ? 'true' : 'false'));
+  document.querySelectorAll('.jack.entrada[data-a="grabadora"]').forEach((k) => k.setAttribute('aria-pressed', cables.md && abiertas.meowdacity ? 'true' : 'false'));
+  const sal = (id) => visible(id) && abiertas[id].querySelector('.jack.salida');
+  const sm = sal('meowdacity'), sg = sal('grabadora');
+  if (abiertas.meowdacity) { const s = abiertas.meowdacity.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cables.md && abiertas.grabadora ? 'true' : 'false'); }
+  if (abiertas.grabadora) { const s = abiertas.grabadora.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cables.pista != null && abiertas.estudio ? 'true' : 'false'); }
+  const tramos = [];
+  // Meowdacity → Grabadora
+  if (sm) {
+    let b = arrastreCable && arrastreCable.de === 'meowdacity' ? arrastreCable : null;
+    if (!b && cables.md && visible('grabadora')) { const k = abiertas.grabadora.querySelector('.jack.entrada'); if (k) b = centroDe(k); }
+    if (b) tramos.push([centroDe(sm), b]);
   }
+  // Grabadora → pista del Estudio
+  if (sg) {
+    let b = arrastreCable && arrastreCable.de === 'grabadora' ? arrastreCable : null;
+    if (!b && cables.pista != null && visible('estudio')) { const k = abiertas.estudio.querySelector('.jack.entrada[data-pista="' + cables.pista + '"]'); if (k) b = centroDe(k); }
+    if (b) tramos.push([centroDe(sg), b]);
+  }
+  if (!tramos.length || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
+  const piso = escritorio.clientHeight - 12;
+  const svg = tramos.map(([a, b]) => {
+    const d = Math.hypot(b.x - a.x, b.y - a.y), cae = Math.max(0, Math.min(160, 30 + d * .3, piso - Math.max(a.y, b.y)));   // cuelga, sin salirse del escritorio
+    // cuelga desde la salida y llega al enchufe casi de lado (así no cruza por encima de lo que hay al lado del enchufe)
+    const ruta = `M${a.x},${a.y} C${a.x + 50},${a.y + cae} ${b.x - 90},${b.y + Math.round(cae * .15)} ${b.x},${b.y}`;
+    return `<path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/>`;
+  }).join('');
+  if (svg !== rutaAnterior) { rutaAnterior = svg; capaCables.innerHTML = svg; }   // solo se redibuja si algo se movió
   // mientras haya cable, se mira cada cuadro si las ventanas se movieron: el cable las sigue
-  if (!relojCable) { const vigilar = () => { relojCable = 0; pintarCable(); }; relojCable = requestAnimationFrame(vigilar); }
-  else { cancelAnimationFrame(relojCable); relojCable = requestAnimationFrame(() => { relojCable = 0; pintarCable(); }); }
+  cancelAnimationFrame(relojCable); relojCable = requestAnimationFrame(() => { relojCable = 0; pintarCable(); });
 }
 window.addEventListener('message', (e) => {
   const d = e.data; if (!d || typeof d.nelios !== 'string') return;
-  const ve = abiertas.estudio, f = ve && ve.querySelector('iframe');
-  if (!f || e.source !== f.contentWindow) return;
-  if (d.nelios === 'jacks' && Array.isArray(d.ys)) ponerEntradas(d.ys.map(Number));
-  if (d.nelios === 'enchufar') { if (d.pista == null) desenchufar(); else enchufar(Math.max(0, Math.min(7, d.pista | 0))); }
-  if (d.nelios === 'abrirMeowdacity') abrir(APPS.find((a) => a.id === 'meowdacity'));
+  const de = ['estudio', 'grabadora'].find((id) => marcoDe(id) && e.source === marcoDe(id).contentWindow); if (!de) return;
+  if (de === 'estudio' && d.nelios === 'jacks' && Array.isArray(d.ys)) ponerEntradas(d.ys.map(Number));
+  if (de === 'grabadora' && d.nelios === 'enchufesCara') {          // la Grabadora dice dónde dibujó sus enchufes (en coordenadas de su ventana)
+    const v = abiertas.grabadora, f = marcoDe('grabadora'), capa = v && v.querySelector('.enchufes-cara'); if (!capa) return;
+    const rf = f.getBoundingClientRect(), rv = v.getBoundingClientRect(), k = v.offsetWidth / rv.width || 1;   // k: por si la ventana está animándose
+    [['entrada', d.entrada], ['salida', d.salida]].forEach(([c, p]) => {
+      const j = capa.querySelector('.jack.' + c); if (!j || !Array.isArray(p)) return;
+      j.style.left = Math.round((rf.left - rv.left) * k + p[0] - 10) + 'px'; j.style.top = Math.round((rf.top - rv.top) * k + p[1] - 10) + 'px'; j.hidden = false;
+    });
+    pintarCable();
+  }
+  if (d.nelios === 'enchufar') {                                   // desde una app: «grabar aquí» del Estudio, o las listas de la Grabadora
+    if ('pista' in d) conectar({ pista: d.pista == null ? null : Math.max(0, Math.min(7, d.pista | 0)) });
+    if ('md' in d) conectar({ md: !!d.md });
+  }
+  if (d.nelios === 'abrir' && ['meowdacity', 'grabadora', 'estudio'].includes(d.app)) abrir(appDe(d.app));
 });
 addEventListener('resize', pintarCable);
 

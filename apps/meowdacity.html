@@ -672,7 +672,7 @@ body.en-ventana { padding: 12px; }
           <svg viewBox="0 0 8 8" aria-hidden="true"><path d="M2 1L7 4L2 7Z"/></svg></button>
         <button class="tb" id="pausa" aria-pressed="false" aria-label="Pausa" title="Pausa">
           <svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1.5" y="1" width="2" height="6"/><rect x="4.5" y="1" width="2" height="6"/></svg></button>
-        <button class="tb rec" id="rec" aria-pressed="false" aria-label="Grabar lo que suena" title="Grabar lo que suena">
+        <button class="tb rec" id="rec" hidden aria-pressed="false" aria-label="Grabar lo que suena" title="Grabar lo que suena">
           <svg viewBox="0 0 8 8" aria-hidden="true"><circle cx="4" cy="4" r="2.6"/></svg><span id="tRec"></span></button>
         <button class="tb ancho" id="acelerar" aria-pressed="false" aria-label="Acelerar de 1 a 44.000 números por segundo" title="Acelerar">
           <svg viewBox="0 0 8 8" aria-hidden="true"><path d="M0 1L4 4L0 7ZM4 1L8 4L4 7Z"/></svg><span id="tAcelerar">ACELERAR</span></button>
@@ -878,13 +878,8 @@ registerProcessor('grabador', Grabador);`;
   const dbDe = p => p <= 0 ? -Infinity : p >= .8 ? 30 * (p - .8) : -60 * Math.pow(1 - p / .8, 1.6);
   const gananciaDe = p => { const d = dbDe(p); return d === -Infinity || d <= -59.9 ? 0 : Math.pow(10, d / 20); };
   const estudio = { oyentes: new Set(), cable: false, destino: null };
-  let cintaCorre = false;                                   // con el Estudio abierto, ▶ toca su cinta (no el loop)
-  function avisarEstudio(ev) {
-    for (const f of [...estudio.oyentes]) { try { f(ev); } catch (e) { estudio.oyentes.delete(f); } }   // una ventana cerrada deja de escuchar
-    if (!estudio.oyentes.size && cintaCorre) { cintaCorre = false; pintarTransporte(); }
-  }
-  const modoEstudio = () => estudio.oyentes.size > 0;
-  const corriendo = () => estado === 'play' || estadoA === 'play' || cintaCorre;
+  function avisarEstudio(ev) { for (const f of [...estudio.oyentes]) { try { f(ev); } catch (e) { estudio.oyentes.delete(f); } } }   // una ventana cerrada deja de escuchar
+  const corriendo = () => estado === 'play' || estadoA === 'play';
   let modo = 'onda', muestra = null, entradaTeclas = null, soltarTeclas = () => {}, mezclaSalida = null, regCompat = null;   // modo: 'onda' o 'audio'                     // las teclas apretadas, en orden: la última manda en la pantalla
   const suena = () => estado === 'play' || sostenidas.length > 0;
 
@@ -921,17 +916,22 @@ registerProcessor('grabador', Grabador);`;
     if (ctx.state === 'suspended') await ctx.resume();
     return ctx.state === 'running';
   }
+  const compartido = (() => { try { return window.parent !== window && window.parent.neliAudio ? window.parent.neliAudio : null; } catch (e) { return null; } })();
   async function crearAudio() {
     try {
-      ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+      // dentro de NeliOS se usa el motor del escritorio (un solo reloj para Meowdacity, la Grabadora y el Estudio); sola, el suyo
+      ctx = compartido ? compartido.ctx() : new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
       try {
         if (!ctx.audioWorklet) throw new Error('sin AudioWorklet');
         const fuentes = [];
         try { fuentes.push(URL.createObjectURL(new Blob([FUENTE], { type: 'application/javascript' }))); } catch (e) {}
         fuentes.push('data:application/javascript,' + encodeURIComponent(FUENTE));   // la blob no carga desde file://, la data sí
-        let ok = false;
-        for (const f of fuentes) { try { await ctx.audioWorklet.addModule(f); ok = true; break; } catch (e) {} }
-        if (!ok) throw new Error('no cargó el módulo');
+        if (compartido) await compartido.modulo('lector-meowdacity', fuentes);         // registrado una vez: si la ventana se reabre, ya está
+        else {
+          let ok = false;
+          for (const f of fuentes) { try { await ctx.audioWorklet.addModule(f); ok = true; break; } catch (e) {} }
+          if (!ok) throw new Error('no cargó el módulo');
+        }
         nodo = new AudioWorkletNode(ctx, 'lector', { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2], processorOptions: { n: N, voces: VOCES } });
       } catch (e) {
         nodo = nodoCompatible(); compatible = true;
@@ -1019,7 +1019,7 @@ registerProcessor('grabador', Grabador);`;
   /* ---------- transporte ---------- */
   function pintarTransporte() {
     if (typeof pintarBaseBtn === 'function' && $('baseBtn')) pintarBaseBtn();
-    const e = modoEstudio() ? (cintaCorre ? 'play' : estudio.pausada ? 'pausa' : 'stop') : modo === 'onda' ? estado : estadoA;
+    const e = modo === 'onda' ? estado : estadoA;
     $('play').setAttribute('aria-pressed', e === 'play' ? 'true' : 'false');
     $('pausa').setAttribute('aria-pressed', e === 'pausa' ? 'true' : 'false');
     $('stop').setAttribute('aria-pressed', e === 'stop' ? 'true' : 'false');
@@ -1037,7 +1037,7 @@ registerProcessor('grabador', Grabador);`;
     nodo.port.postMessage({ mover: true });
     salida.gain.setTargetAtTime(1, ctx.currentTime, .02);
     estado = 'play'; pintarTransporte();
-    if (!antes && !modoEstudio()) avisarEstudio({ tipo: 'corre', t: ctx.currentTime });
+    if (!antes) avisarEstudio({ tipo: 'corre', t: ctx.currentTime });
     return true;
   }
   // el cabezal se congela 80 ms después de bajar el volumen: detenerlo con sonido sería un chasquido
@@ -1058,7 +1058,7 @@ registerProcessor('grabador', Grabador);`;
     nodo.port.postMessage({ en });
     salida.gain.cancelScheduledValues(ctx.currentTime); salida.gain.setTargetAtTime(1, Math.max(ctx.currentTime, en - .03), .01);
     const nuevo = estado !== 'play';
-    if (nuevo && estadoA !== 'play' && !modoEstudio()) avisarEstudio({ tipo: 'corre', t: en });   // a compás: la cinta del Estudio parte en el mismo uno
+    if (nuevo && estadoA !== 'play') avisarEstudio({ tipo: 'corre', t: en });   // a compás: la cinta del Estudio parte en el mismo uno
     estado = 'play'; pintarTransporte();
     if (nuevo) decir('<strong>A compás:</strong> una vuelta = un compás de ' + metro.compas + ' a ' + metro.bpm + ' BPM = <strong>' + miles(Math.round(v * 100) / 100) + ' números/s</strong>. Parte en el próximo uno.');
     return true;
@@ -1076,19 +1076,9 @@ registerProcessor('grabador', Grabador);`;
     fase = 0; faseAnt = 0; vueltas = 0;                 // vuelve a la casilla 0
     estado = 'stop'; pintarTransporte();
   }
-  /* Con el Estudio abierto, ▶ ⏸ ■ manejan su cinta: suenan las pistas, no el loop (antes sonaban las dos cosas).
-     Con el metrónomo, la cinta parte en el próximo uno. Sin el Estudio, todo es como siempre. */
-  async function tocarCinta() {
-    if (!(await arrancar())) return;
-    if (estado !== 'stop') stop(); if (estadoA === 'play') stopA();
-    if (cintaCorre) return;
-    const t = metro.on ? proximaBarra(ctx.currentTime + .06) : ctx.currentTime + .03;
-    cintaCorre = true; estudio.pausada = false; avisarEstudio({ tipo: 'corre', t }); pintarTransporte();
-    decir('▶ toca las <strong>pistas del Estudio</strong>' + (metro.on ? ', desde el próximo uno' : '') + '. Con el Estudio abierto, el loop de la onda no suena con ▶ (sí con <strong>ACELERAR</strong>).');
-  }
-  $('play').addEventListener('click', () => modoEstudio() ? tocarCinta() : modo === 'onda' ? play() : playA());
-  $('pausa').addEventListener('click', () => { modo === 'onda' ? pausa() : pausaA(); if (modoEstudio()) { estudio.pausada = cintaCorre; cintaCorre = false; } avisarEstudio({ tipo: 'para', modo: 'pausa' }); pintarTransporte(); });
-  $('stop').addEventListener('click', () => { modo === 'onda' ? stop() : stopA(); cintaCorre = false; estudio.pausada = false; avisarEstudio({ tipo: 'para', modo: 'stop' }); pintarTransporte(); });
+  $('play').addEventListener('click', () => modo === 'onda' ? play() : playA());
+  $('pausa').addEventListener('click', () => { modo === 'onda' ? pausa() : pausaA(); avisarEstudio({ tipo: 'para', modo: 'pausa' }); });
+  $('stop').addEventListener('click', () => { modo === 'onda' ? stop() : stopA(); avisarEstudio({ tipo: 'para', modo: 'stop' }); });
   $('vol').addEventListener('input', e => {
     rellenar(e.target);
     vol = +e.target.value; $('oVol').textContent = vol + ' %';
@@ -1609,7 +1599,7 @@ registerProcessor('grabador', Grabador);`;
     const antes = corriendo();
     const f = escucha = sonarMuestra(tasa || velA, buf, { desde, destino: 'onda' });
     bufA = buf; estadoA = 'play';
-    if (!antes && !modoEstudio()) avisarEstudio({ tipo: 'corre', t: f.t0 });
+    if (!antes) avisarEstudio({ tipo: 'corre', t: f.t0 });
     f.src.addEventListener('ended', () => { if (escucha === f && !f.pausada) { escucha = null; estadoA = 'stop'; posA = 0; pintarTransporte(); datosAudio(); } });
     pintarTransporte(); datosAudio();
   }
@@ -2598,13 +2588,37 @@ registerProcessor('grabador', Grabador);`;
   /* ---------- EL ESTUDIO: otra ventana con pistas, que suena con ESTE motor (un solo reloj) ----------
      El Estudio se suscribe aquí: Meowdacity le avisa cuándo empieza a sonar, cuándo para y cuándo graba.
      Si el cable de NeliOS va de la salida de Meowdacity a una pista, la toma va a esa pista. */
+  // un audio que llega de otra app (la Grabadora lo manda con «→ Meowdacity»): queda en mis audios y se abre en AUDIO
+  async function recibirAudio(g) {
+    if (!g || !g.datos || !g.datos.length) return false;
+    const ya = (await listarGrabaciones()).some(x => x.id === g.id);
+    if (!ya) await guardarGrabacion({ id: g.id || 'r' + Date.now().toString(36), nombre: g.nombre || 'audio', fecha: g.fecha || Date.now(), sr: g.sr, datos: g.datos, origen: g.origen || 'grabadora' });
+    ponerMuestra(g.datos, g.sr, g.nombre || 'audio');
+    decir('<strong>' + esc(g.nombre || 'audio') + '</strong> llegó de la Grabadora: ' + miles(g.datos.length) + ' números. Está en <strong>muestras → mis audios</strong>.');
+    return true;
+  }
+  // con el motor compartido, al cerrar la ventana hay que desconectar lo propio (el contexto sigue vivo en el escritorio)
+  function apagar() { try { if (salidaCable) salidaCable.disconnect(); if (maestro) maestro.disconnect(); if (nodo) nodo.disconnect(); if (metro && metro.bus) metro.bus.disconnect(); clearInterval(metro.reloj); } catch (e) {} }
+  addEventListener('pagehide', apagar);
+  // lo que sale por el cable hacia la Grabadora: la mezcla al nivel del volumen al 100 % y con el mismo limitador
+  // (igual que grababa el ● de antes): no depende de cuánto tengas subido el volumen para escuchar
+  let salidaCable = null;
+  function salidaRec() {
+    if (!ctx || !mezclaSalida) return null;
+    if (!salidaCable) {
+      const n = ctx.createGain(); n.gain.value = .26;
+      const l = ctx.createDynamicsCompressor(); l.threshold.value = -10; l.knee.value = 0; l.ratio.value = 20; l.attack.value = .002; l.release.value = .15;
+      mezclaSalida.connect(n); n.connect(l); salidaCable = l;
+    }
+    return salidaCable;
+  }
+  if (compartido) { const api = { salida: salidaRec, arrancar, recibirAudio, apagar, ctx: () => ctx }; compartido.registrar('meowdacity', api); }
   window.__mdacity = {
-    version: 40,
+    version: 42, recibirAudio, loop: () => estado,
     ctx: () => ctx, arrancar, salida: () => maestro,          // las pistas entran después de la mezcla: el grabador no las vuelve a grabar
     corriendo, grabando: () => grabando || !!sinc,
     ritmo: () => ({ on: metro.on, bpm: metro.bpm, pulsos: acentos().length, t0: metro.t0 }),
-    suscribir(f) { estudio.oyentes.add(f); pintarTransporte(); return () => { estudio.oyentes.delete(f); if (!estudio.oyentes.size) { cintaCorre = false; estudio.pausada = false; } pintarTransporte(); }; },
-    loop: () => estado,                                       // para las pruebas: el loop de la onda
+    suscribir(f) { estudio.oyentes.add(f); return () => estudio.oyentes.delete(f); },
     recibirTomas(f) { estudio.destino = f; },
     cable: () => estudio.cable,
     reloj: () => ({ grabT0, grabT0real }),          // para las pruebas
