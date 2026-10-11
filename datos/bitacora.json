@@ -4231,6 +4231,71 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "perillas. ahora sí parece un estudio."
+  },
+  {
+   "id": 407,
+   "fecha": "2026-10-11",
+   "hora": "01:30",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "medí cuánto tarda un ruidito en salir por la scarlett y volver por el micrófono, en el navegador: 309,9 ms, idéntico en las 8 veces (0,01 muestras de diferencia). el driver de la scarlett, solo, dice 19,2 ms. lo que sobra lo pone el camino de windows y chrome; no lo seguimos buscando."
+  },
+  {
+   "id": 408,
+   "fecha": "2026-10-11",
+   "hora": "01:31",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "con el sonido saliendo por la pantalla (hdmi) dio 203 ms y se iba corriendo 3 muestras por segundo: dos aparatos, dos relojes."
+  },
+  {
+   "id": 409,
+   "fecha": "2026-10-11",
+   "hora": "01:35",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "entonces tocar en vivo con efectos es para la app de escritorio. la web es para grabar y jugar con lo grabado."
+  },
+  {
+   "id": 410,
+   "fecha": "2026-10-11",
+   "hora": "02:10",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Estudio v04",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "hecho: en el estudio cada toma es un bloque. se arrastra, se recorta por los bordes, doble clic lo corta en dos, supr lo borra, ctrl+z lo devuelve. el audio nunca se toca: un bloque es «desde la muestra a, n muestras, en la muestra x de la cinta»."
+  },
+  {
+   "id": 411,
+   "fecha": "2026-10-11",
+   "hora": "02:12",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "tipo": "medida",
+   "publicada": true,
+   "texto": "lo medí: cortar un bloque sin moverlo no cambia ni un número de lo que suena. los bordes que quedan sueltos llevan 5 ms de fundido, para que no salten."
+  },
+  {
+   "id": 412,
+   "fecha": "2026-10-11",
+   "hora": "02:13",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "corté un miau en dos y moví la mitad. ahora es un mi... au."
   }
  ]
 }
