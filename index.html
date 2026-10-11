@@ -541,7 +541,8 @@ body.nace .icono { animation: icono-nace .42s cubic-bezier(.3, 1.6, .5, 1) both;
 .jack:focus-visible { outline: 2px solid #3B3F77; outline-offset: 2px; }
 body.con-cable, body.con-cable * { cursor: grabbing !important; }
 body.patita .jack { cursor: var(--patita-mover), grab; }
-#cables { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 7900; overflow: visible; }
+#cables { position: absolute; inset: 0; pointer-events: none; }   /* sin z-index: cada tramo compite con las ventanas */
+#cables .tramo { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 #cables .cable-borde { fill: none; stroke: #2A2D52; stroke-width: 8; stroke-linecap: round; }
 #cables .cable { fill: none; stroke: #F27FA3; stroke-width: 4; stroke-linecap: round; }
 #cables .punta { fill: #2A2D52; stroke: #F27FA3; stroke-width: 2; }
@@ -619,7 +620,7 @@ let activa = null;
 
 function alFrente(ventana) {
   ventana.hidden = false;                  // si estaba minimizada, vuelve
-  z = z + 1;
+  z = z + 2;                               // de a dos: entre una ventana y la siguiente cabe un cable (ver pintarCable)
   ventana.style.zIndex = z;
   activa = ventana;
   pintarBarra();
@@ -1177,7 +1178,8 @@ window.neliAudio = (() => {
 // =====================================================================
 let cables = Object.assign({ md: false, pista: null }, mem.leer('cables', {}));   // md: Meowdacity→Grabadora · pista: Grabadora→pista del Estudio
 let arrastreCable = null;                   // mientras se arrastra: { de, x, y }
-const capaCables = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+// cada cable va en su propia capa, justo encima de la más alta de sus dos ventanas: una ventana que esté más adelante lo tapa
+const capaCables = document.createElement('div');
 capaCables.id = 'cables'; capaCables.setAttribute('aria-hidden', 'true');
 escritorio.append(capaCables);
 const appDe = (id) => APPS.find((a) => a.id === id);
@@ -1332,21 +1334,22 @@ function pintarCable() {
   if (sm) {
     let b = arrastreCable && arrastreCable.de === 'meowdacity' ? arrastreCable : null;
     if (!b && cables.md && visible('grabadora')) { const k = abiertas.grabadora.querySelector('.jack.entrada'); if (k) b = centroDe(k); }
-    if (b) tramos.push([centroDe(sm), b]);
+    if (b) tramos.push([centroDe(sm), b, b === arrastreCable ? null : ['meowdacity', 'grabadora']]);
   }
   // Grabadora → pista del Estudio
   if (sg) {
     let b = arrastreCable && arrastreCable.de === 'grabadora' ? arrastreCable : null;
     if (!b && cables.pista != null && visible('estudio')) { const k = abiertas.estudio.querySelector('.jack.entrada[data-pista="' + cables.pista + '"]'); if (k) b = centroDe(k); }
-    if (b) tramos.push([centroDe(sg), b]);
+    if (b) tramos.push([centroDe(sg), b, b === arrastreCable ? null : ['grabadora', 'estudio']]);
   }
   if (!tramos.length || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
   const piso = escritorio.clientHeight - 12;
-  const svg = tramos.map(([a, b]) => {
+  const svg = tramos.map(([a, b, par]) => {
+    const zc = par ? Math.max(...par.map((id) => +abiertas[id].style.zIndex || 0)) + 1 : 7900;   // arrastrando: por encima de todo
     const d = Math.hypot(b.x - a.x, b.y - a.y), cae = Math.max(0, Math.min(160, 30 + d * .3, piso - Math.max(a.y, b.y)));   // cuelga, sin salirse del escritorio
     // cuelga desde la salida y llega al enchufe casi de lado (así no cruza por encima de lo que hay al lado del enchufe)
     const ruta = `M${a.x},${a.y} C${a.x + 50},${a.y + cae} ${b.x - 90},${b.y + Math.round(cae * .15)} ${b.x},${b.y}`;
-    return `<path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/>`;
+    return `<svg class="tramo" style="z-index:${zc}"><path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/></svg>`;
   }).join('');
   if (svg !== rutaAnterior) { rutaAnterior = svg; capaCables.innerHTML = svg; }   // solo se redibuja si algo se movió
   // mientras haya cable, se mira cada cuadro si las ventanas se movieron: el cable las sigue
