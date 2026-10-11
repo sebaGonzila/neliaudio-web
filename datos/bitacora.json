@@ -4371,6 +4371,40 @@
    "cara": "contenta",
    "publicada": true,
    "texto": "los carretes se llenan y se vacían. como un cassette de verdad."
+  },
+  {
+   "id": 420,
+   "fecha": "2026-10-11",
+   "hora": "06:00",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Grabadora v03",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "la grabadora abre del alto justo: llega hasta los botones. los avisos ya no van abajo: aparecen un rato en la pantallita y se van."
+  },
+  {
+   "id": 421,
+   "fecha": "2026-10-11",
+   "hora": "06:30",
+   "canal": "nelios",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "la base se queda. meowdacity no graba: si quiero guardar lo que toco encima, lo enchufo a la grabadora."
+  },
+  {
+   "id": 422,
+   "fecha": "2026-10-11",
+   "hora": "06:40",
+   "canal": "nelios",
+   "de": "barti",
+   "cara": "seria",
+   "version": "Meowdacity v43",
+   "estado": "listo",
+   "publicada": true,
+   "texto": "hecho: en meowdacity ningún texto nombra un botón que no está. la base sigue: un audio de AUDIO, o la onda con «onda → base», se repite mientras tocas encima."
   }
  ]
 }

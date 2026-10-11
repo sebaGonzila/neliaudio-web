@@ -735,7 +735,7 @@ body.en-ventana { padding: 12px; }
           <div class="e-fila"><small>nivel</small><span class="e-medidor"><i id="eMedidor"></i></span><b id="eDb">–</b></div>
           <div class="e-fila"><small>latencia</small><b id="eLat">–</b><button class="chip" id="eMedir" type="button" disabled>MEDIR</button></div>
           <div class="e-fila"><button class="chip" id="eMon" type="button" aria-pressed="false" disabled>ESCUCHARME</button><span class="e-nota">mejor con audífonos</span></div>
-          <p class="e-txt" id="eTxt">Lo que entra también son números: 48.000 por segundo. Con ● se graba encima de lo que suena, corrido por la latencia para que calce.</p>
+          <p class="e-txt" id="eTxt">Lo que entra también son números: 48.000 por segundo. Para grabarlo, enchufa la salida de Meowdacity en la Grabadora.</p>
         </div>
       </div>
     </div>
@@ -1417,7 +1417,7 @@ registerProcessor('grabador', Grabador);`;
       '<div class="a-sec">mis audios</div>' +
       (gs.length ? gs.map(g => '<div class="a-fila"><button type="button" role="menuitem" data-g="' + g.id + '"><b>' + esc(g.nombre) + '</b><small>' + (g.origen === 'archivo' ? 'importado' : 'grabado') + ' · ' + dec(g.datos.length / g.sr, 1) + ' s · ' + new Date(g.fecha).toLocaleString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</small></button>' +
         '<button type="button" class="a-borrar" data-borrar="' + g.id + '" aria-label="Borrar ' + esc(g.nombre) + '" title="Borrar">' + EQUIS + '</button></div>').join('')
-        : '<div class="a-nada">Todavía no hay nada. Graba con ● o importa un audio.</div>');
+        : '<div class="a-nada">Todavía no hay nada. Graba en la Grabadora o importa un audio.</div>');
   }
   function abrirMuestras(on) { if (on) pintarMuestras(); $('aMenu').hidden = !on; $('aMuestrasBtn').setAttribute('aria-expanded', on ? 'true' : 'false'); }
   $('aMuestrasBtn').addEventListener('click', () => abrirMuestras($('aMenu').hidden));
@@ -1871,8 +1871,8 @@ registerProcessor('grabador', Grabador);`;
   document.addEventListener('pointerdown', e => { if (!$('sMenu').hidden && !e.target.closest('.s-mis')) abrirSonidos(false); });
   /* ---------- EL RITMO: metrónomo, base y grabación a compás ----------
      El metrónomo suena aparte (no entra a la grabación ni al osciloscopio). Con el metrónomo andando,
-     ● espera al próximo compás, graba compases enteros y la grabación vuelve sola como BASE: un loop
-     que calza con el metrónomo. Lo que grabes encima se suma a la base (sobregrabar). */
+     la base es un audio que se repite en loop mientras tocas encima (un audio de AUDIO, o la onda con «onda → base»).
+     Grabar es de la Grabadora (v43): el ● de aquí está escondido y su código queda sin usar. */
   const COMPASES = { '2/4': [2, 0], '3/4': [2, 0, 0], '4/4': [2, 0, 0, 0], '5/4': [2, 0, 0, 1, 0], '6/8': [2, 0, 0, 1, 0, 0], '7/8': [2, 0, 1, 0, 1, 0, 0] };
   const metro = { on: false, bpm: 100, compas: '4/4', t0: 0, sig: 0, idx: 0, cola: [], reloj: null, bus: null, vol: 60 };
   const nivelMetro = v => 1.4 * Math.pow(v / 100, 2);        // en curva, como el volumen general
@@ -1960,7 +1960,7 @@ registerProcessor('grabador', Grabador);`;
     if (!capas.length || capas.tope !== muestra) capas = [];   // otra base: empieza una pila de capas nueva
     const cuando = metro.on ? proximaBarra(ctx.currentTime + .05) : ctx.currentTime + .03;
     ponerBase(muestra, $('aNombre').title || 'audio', cuando, 0);
-    decir('La base se repite' + (metro.on ? ' desde el próximo compás' : '') + '. Toca encima, o aprieta ● para grabar una capa más.');
+    decir('La base se repite' + (metro.on ? ' desde el próximo compás' : '') + '. Toca encima.');
   }
   $('aBase').addEventListener('click', usarComoBase);
   /* BASE es play/pausa de la base: en pausa, su audio queda guardado (con el metrónomo, vuelve en el próximo uno).
@@ -2374,8 +2374,8 @@ registerProcessor('grabador', Grabador);`;
       frase = tieneSalto() ? 'Cada vez que el loop vuelve a empezar, suena un golpe: <strong>' + dec(vps, 1) + ' golpes por segundo</strong>.'
         : 'Esta forma no tiene salto, así que no da golpes. Todavía es muy grave para ser nota.';
     } else { clase = 'nota'; texto = 'NOTA'; frase = 'Más de 20 vueltas por segundo: ya no se oyen golpes, se oye <strong>una nota</strong>. Más vueltas, más aguda.'; }
-    if (modo === 'onda' && ondaBase && !sostenidas.length) frase = '<strong>La onda es la base</strong> (' + miles(Math.round(velBase)) + ' números/s). Toca encima con el teclado; ● la graba con lo que toques.';
-    if (modo === 'onda' && base && estado === 'stop' && !sostenidas.length) frase = 'Suena la base (<strong>' + esc(base.nombre) + '</strong>). Toca encima, o aprieta ● para sumarle una capa.';
+    if (modo === 'onda' && ondaBase && !sostenidas.length) frase = '<strong>La onda es la base</strong> (' + miles(Math.round(velBase)) + ' números/s). Toca encima con el teclado. Para grabarlo, la Grabadora.';
+    if (modo === 'onda' && base && estado === 'stop' && !sostenidas.length) frase = 'Suena la base (<strong>' + esc(base.nombre) + '</strong>). Toca encima con el teclado.';
     if (modo === 'onda' && aCompas && !ondaBase && estado === 'play' && !sostenidas.length) frase = '<strong>A compás</strong> (' + metro.compas + ' a ' + metro.bpm + ' BPM): una vuelta dura un compás y el número 0 cae justo en cada uno. Las líneas marcan los pulsos.';
     if (modo === 'audio') { [clase, texto, frase] = fraseAudio(); }
     else if (modo === 'sonido') { [clase, texto, frase] = fraseSonido(); }
@@ -2614,7 +2614,7 @@ registerProcessor('grabador', Grabador);`;
   }
   if (compartido) { const api = { salida: salidaRec, arrancar, recibirAudio, apagar, ctx: () => ctx }; compartido.registrar('meowdacity', api); }
   window.__mdacity = {
-    version: 42, recibirAudio, loop: () => estado,
+    version: 43, recibirAudio, loop: () => estado,
     ctx: () => ctx, arrancar, salida: () => maestro,          // las pistas entran después de la mezcla: el grabador no las vuelve a grabar
     corriendo, grabando: () => grabando || !!sinc,
     ritmo: () => ({ on: metro.on, bpm: metro.bpm, pulsos: acentos().length, t0: metro.t0 }),
