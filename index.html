@@ -1345,11 +1345,15 @@ function pintarCable() {
   if (!tramos.length || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
   const piso = escritorio.clientHeight - 12;
   const svg = tramos.map(([a, b, par]) => {
-    const zc = par ? Math.max(...par.map((id) => +abiertas[id].style.zIndex || 0)) + 1 : 7900;   // arrastrando: por encima de todo
+    // el cable pasa por detrás: su cuerpo va justo encima de la ventana de más atrás del par (lo tapa cualquier ventana más adelante,
+    // también la otra del par), y cada enchufe va encima de su propia ventana. Arrastrando, todo va por encima.
+    const zv = par ? par.map((id) => +abiertas[id].style.zIndex || 0) : null;
+    const zc = par ? Math.min(...zv) + 1 : 7900, za = par ? zv[0] + 1 : 7900, zb = par ? zv[1] + 1 : 7900;
     const d = Math.hypot(b.x - a.x, b.y - a.y), cae = Math.max(0, Math.min(160, 30 + d * .3, piso - Math.max(a.y, b.y)));   // cuelga, sin salirse del escritorio
     // cuelga desde la salida y llega al enchufe casi de lado (así no cruza por encima de lo que hay al lado del enchufe)
     const ruta = `M${a.x},${a.y} C${a.x + 50},${a.y + cae} ${b.x - 90},${b.y + Math.round(cae * .15)} ${b.x},${b.y}`;
-    return `<svg class="tramo" style="z-index:${zc}"><path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/></svg>`;
+    return `<svg class="tramo" style="z-index:${zc}"><path d="${ruta}" class="cable-borde"/><path d="${ruta}" class="cable"/></svg>` +
+      `<svg class="tramo" style="z-index:${za}"><circle cx="${a.x}" cy="${a.y}" r="5" class="punta"/></svg><svg class="tramo" style="z-index:${zb}"><circle cx="${b.x}" cy="${b.y}" r="5" class="punta"/></svg>`;
   }).join('');
   if (svg !== rutaAnterior) { rutaAnterior = svg; capaCables.innerHTML = svg; }   // solo se redibuja si algo se movió
   // mientras haya cable, se mira cada cuadro si las ventanas se movieron: el cable las sigue
