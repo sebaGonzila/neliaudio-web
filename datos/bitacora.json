@@ -4405,6 +4405,248 @@
    "estado": "listo",
    "publicada": true,
    "texto": "hecho: en meowdacity ningún texto nombra un botón que no está. la base sigue: un audio de AUDIO, o la onda con «onda → base», se repite mientras tocas encima."
+  },
+  {
+   "id": 423,
+   "fecha": "2026-10-08",
+   "hora": "20:40",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti. ya sé hacer sonar cosas. ahora quiero guardarlas. y juntarlas."
+  },
+  {
+   "id": 424,
+   "fecha": "2026-10-08",
+   "hora": "20:41",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "un estudio. pistas, una encima de otra."
+  },
+  {
+   "id": 425,
+   "fecha": "2026-10-08",
+   "hora": "20:41",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "pero que no repita nada de meowdacity. solo las pistas."
+  },
+  {
+   "id": 426,
+   "fecha": "2026-10-08",
+   "hora": "23:31",
+   "canal": "barti",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "barti instaló el Estudio en el escritorio."
+  },
+  {
+   "id": 427,
+   "fecha": "2026-10-08",
+   "hora": "23:31",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "feliz",
+   "tipo": "app",
+   "app": "estudio",
+   "publicada": true,
+   "texto": ""
+  },
+  {
+   "id": 428,
+   "fecha": "2026-10-09",
+   "hora": "00:15",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "apreté play y sonaron dos cosas. una encima de la otra."
+  },
+  {
+   "id": 429,
+   "fecha": "2026-10-09",
+   "hora": "00:41",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "eran dos plays en un botón. ya no."
+  },
+  {
+   "id": 430,
+   "fecha": "2026-10-10",
+   "hora": "23:50",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "cuando grabo la guitarra encima, ¿llega a tiempo?"
+  },
+  {
+   "id": 431,
+   "fecha": "2026-10-10",
+   "hora": "23:52",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "lo medí con tu scarlett: el navegador tarda 310 ms en ir y volver. el driver solo, 19."
+  },
+  {
+   "id": 432,
+   "fecha": "2026-10-10",
+   "hora": "23:53",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "¿310? eso es un tercio de segundo."
+  },
+  {
+   "id": 433,
+   "fecha": "2026-10-10",
+   "hora": "23:54",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "sí. tocar en vivo con efectos va a ser cosa de la app de escritorio. la web es para grabar y jugar con lo grabado."
+  },
+  {
+   "id": 434,
+   "fecha": "2026-10-10",
+   "hora": "23:55",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "entonces juguemos."
+  },
+  {
+   "id": 435,
+   "fecha": "2026-10-11",
+   "hora": "02:50",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "otra cosa. grabar no es de meowdacity. meowdacity es para tocar."
+  },
+  {
+   "id": 436,
+   "fecha": "2026-10-11",
+   "hora": "02:51",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "quiero algo que solo grabe. chiquitito. y cables."
+  },
+  {
+   "id": 437,
+   "fecha": "2026-10-11",
+   "hora": "02:52",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "meowdacity toca, la grabadora graba, el estudio mezcla. el cable siempre pasa por la grabadora."
+  },
+  {
+   "id": 438,
+   "fecha": "2026-10-11",
+   "hora": "02:52",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "sí. eso."
+  },
+  {
+   "id": 439,
+   "fecha": "2026-10-11",
+   "hora": "05:42",
+   "canal": "barti",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "barti instaló la Grabadora en el escritorio."
+  },
+  {
+   "id": 440,
+   "fecha": "2026-10-11",
+   "hora": "05:42",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "feliz",
+   "tipo": "app",
+   "app": "grabadora",
+   "publicada": true,
+   "texto": ""
+  },
+  {
+   "id": 441,
+   "fecha": "2026-10-11",
+   "hora": "05:44",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "tiene carretes. giran."
+  },
+  {
+   "id": 442,
+   "fecha": "2026-10-11",
+   "hora": "06:31",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿y la base de meowdacity? esa me gusta."
+  },
+  {
+   "id": 443,
+   "fecha": "2026-10-11",
+   "hora": "06:32",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "se queda. lo que toques encima lo grabas con la grabadora."
+  },
+  {
+   "id": 444,
+   "fecha": "2026-10-11",
+   "hora": "07:15",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "feliz",
+   "publicada": true,
+   "texto": "ya está arriba, en neli.audio. las tres."
+  },
+  {
+   "id": 445,
+   "fecha": "2026-10-11",
+   "hora": "07:15",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "voy a grabar un miau en la pista 1."
+  },
+  {
+   "id": 446,
+   "fecha": "2026-10-11",
+   "hora": "00:10",
+   "canal": "ideas",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "una versión de escritorio de las apps de audio (juce, con el driver de la interfaz): ahí sí se puede tocar en vivo con efectos, con pocos milisegundos. la web se queda con aprender, grabar y editar."
   }
  ]
 }
