@@ -4641,6 +4641,147 @@
   {
    "id": 446,
    "fecha": "2026-10-11",
+   "hora": "11:05",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "abrí otra ventana entre la grabadora y el estudio y el cable le pasaba por encima. como una lana en la cara."
+  },
+  {
+   "id": 447,
+   "fecha": "2026-10-11",
+   "hora": "11:06",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "el cable ahora va por detrás. solo las puntas quedan encima de su ventana."
+  },
+  {
+   "id": 448,
+   "fecha": "2026-10-11",
+   "hora": "11:30",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "como los cables de verdad. detrás del escritorio, enredados."
+  },
+  {
+   "id": 449,
+   "fecha": "2026-10-11",
+   "hora": "13:10",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "barti. los pedales. pero no todos. el que sube el volumen, el chorus, el delay y el flanger."
+  },
+  {
+   "id": 450,
+   "fecha": "2026-10-11",
+   "hora": "13:11",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "y que se puedan usar juntos en una tabla, o sueltos, cada uno con su cable."
+  },
+  {
+   "id": 451,
+   "fecha": "2026-10-11",
+   "hora": "13:12",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "son casi el mismo pedal. guardan lo que entra y leen un poco más atrás. el delay lee fijo; el chorus y el flanger mueven cuánto atrás."
+  },
+  {
+   "id": 452,
+   "fecha": "2026-10-11",
+   "hora": "13:12",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿y el de volumen?"
+  },
+  {
+   "id": 453,
+   "fecha": "2026-10-11",
+   "hora": "13:13",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "ese solo multiplica cada número."
+  },
+  {
+   "id": 454,
+   "fecha": "2026-10-11",
+   "hora": "14:20",
+   "canal": "barti",
+   "de": "sistema",
+   "publicada": true,
+   "texto": "barti instaló la Pedalera en el escritorio."
+  },
+  {
+   "id": 455,
+   "fecha": "2026-10-11",
+   "hora": "14:20",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "feliz",
+   "tipo": "app",
+   "app": "pedalera",
+   "publicada": true,
+   "texto": ""
+  },
+  {
+   "id": 456,
+   "fecha": "2026-10-11",
+   "hora": "14:22",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "medido: el eco del delay a 350 ms cae 16.800 números después. justo."
+  },
+  {
+   "id": 457,
+   "fecha": "2026-10-11",
+   "hora": "14:23",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "tienen orejas."
+  },
+  {
+   "id": 458,
+   "fecha": "2026-10-11",
+   "hora": "14:24",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "enojada",
+   "publicada": true,
+   "texto": "quise enchufar el delay en sí mismo y no me dejó."
+  },
+  {
+   "id": 459,
+   "fecha": "2026-10-11",
+   "hora": "14:24",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "el sonido daría vueltas para siempre. por eso."
+  },
+  {
+   "id": 460,
+   "fecha": "2026-10-11",
    "hora": "00:10",
    "canal": "ideas",
    "de": "barti",

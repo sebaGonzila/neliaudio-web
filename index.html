@@ -536,6 +536,10 @@ body.nace .icono { animation: icono-nace .42s cubic-bezier(.3, 1.6, .5, 1) both;
 .jack { width: 20px; height: 20px; padding: 0; border-radius: 50%; cursor: grab; border: 3px solid #2A2D52;
   background: radial-gradient(circle, #0E0F1E 0 34%, #C9CDD6 36% 58%, #8E93A6 60%); box-shadow: 0 1px 2px rgba(42,45,82,.35); touch-action: none; }
 .regleta.izq .jack { position: absolute; left: 3px; margin-top: -10px; }
+/* los pedales y la Pedalera: entra por la izquierda, sale por la derecha, a media altura (como un pedal de verdad, pero en el sentido en que se lee) */
+.regleta.der { flex: 0 0 26px; position: relative; border-left: 1px solid #D4DAF4; }
+.cuerpo.con-app iframe { min-width: 0; min-height: 0; }   /* al lado de las regletas, la app se achica (un iframe no se achica solo) */
+.regleta.lado .jack { position: absolute; left: 3px; top: 50%; margin-top: -10px; }
 .jack:hover, .jack.cerca { box-shadow: 0 0 0 4px rgba(242,127,163,.35); }
 .jack[aria-pressed="true"] { background: radial-gradient(circle, #F27FA3 0 40%, #2A2D52 42% 52%, #C9CDD6 54%); }
 .jack:focus-visible { outline: 2px solid #3B3F77; outline-offset: 2px; }
@@ -590,6 +594,16 @@ const APPS = [
     contenido: (m) => { m.src = '/apps/grabadora.html?ventana'; } },
   { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 860, h: 560, pista: 'Aquí se mezcla. Enchufa la salida de la Grabadora en una pista y lo que grabes cae ahí.', enchufes: { entrada: 'pistas' }, cerca: 'grabadora',
     contenido: (m) => { m.src = '/apps/estudio.html?ventana'; } },
+  { id: 'pedalera',   nombre: 'Pedalera',   icono: '/img/iconos/pedalera.svg', w: 790, h: 530, pista: 'Toca «prueba» y pisa un pedal. Abajo se ve lo que hace por dentro.', enchufes: { lados: true },
+    contenido: (m) => { m.src = '/apps/pedales.html?ventana'; } },
+  { id: 'pedal-ganancia', nombre: 'Ganancia', icono: '/img/iconos/pedalera.svg', w: 300, h: 640, escondida: true, enchufes: { lados: true }, cerca: 'pedalera',
+    contenido: (m) => { m.src = '/apps/pedales.html?ventana&pedal=ganancia'; } },
+  { id: 'pedal-chorus', nombre: 'Chorus', icono: '/img/iconos/pedalera.svg', w: 300, h: 640, escondida: true, enchufes: { lados: true }, cerca: 'pedalera',
+    contenido: (m) => { m.src = '/apps/pedales.html?ventana&pedal=chorus'; } },
+  { id: 'pedal-flanger', nombre: 'Flanger', icono: '/img/iconos/pedalera.svg', w: 300, h: 640, escondida: true, enchufes: { lados: true }, cerca: 'pedalera',
+    contenido: (m) => { m.src = '/apps/pedales.html?ventana&pedal=flanger'; } },
+  { id: 'pedal-delay', nombre: 'Delay', icono: '/img/iconos/pedalera.svg', w: 300, h: 640, escondida: true, enchufes: { lados: true }, cerca: 'pedalera',
+    contenido: (m) => { m.src = '/apps/pedales.html?ventana&pedal=delay'; } },
   { id: 'archivos',   nombre: 'Archivos',   icono: '/img/iconos/archivos.svg', w: 860, h: 560, pista: 'Estas son mis cosas. Puedes mirar, pero no se borra nada.',
     contenido: (m) => { m.src = '/apps/archivos.html'; } },
   { id: 'fotos',      nombre: 'Fotos',      icono: '/img/iconos/fotos.svg', w: 940, h: 640, pista: 'Ponle stickers a mis fotos. Que salga linda.',
@@ -771,7 +785,8 @@ function cerrar(id) {
   abiertas[id].remove();     // la saca de la página (y con ella el iframe: la app deja de sonar)
   if (location.hash === '#' + id) history.replaceState(null, '', location.pathname + location.search);
   delete abiertas[id];       // y la borra del diccionario
-  if (['meowdacity', 'grabadora', 'estudio'].includes(id)) { avisarCable(); pintarCable(); }   // sin una punta el cable no lleva nada (queda anotado para cuando se abra de nuevo)
+  if (/^pedal-[a-z]+$/.test(id)) puentear(id);                 // un pedal suelto que se cierra vuelve a la Pedalera: el cable sigue de largo
+  if (enCadena(id)) { avisarCable(); pintarCable(); }   // sin una punta el cable no lleva nada (queda anotado para cuando se abra de nuevo)
   elegirActiva();
   pintarCable();
 }
@@ -937,6 +952,7 @@ function abrir(app, desde) {
 const contenedor = document.getElementById('iconos');
 
 for (const app of APPS) {
+  if (app.escondida) continue;           // los pedales sueltos no tienen ícono: se abren desde la Pedalera (o con su dirección)
   const boton = document.createElement('button');
   boton.className = 'icono';
   boton.type = 'button';
@@ -1171,65 +1187,99 @@ window.neliAudio = (() => {
 })();
 
 // =====================================================================
-// Los cables. Dos tramos posibles:
-//   Meowdacity (salida) → Grabadora (entrada): la Grabadora graba lo que suena en Meowdacity.
+// Los cables. Cada salida lleva un cable a una entrada:
+//   Meowdacity, la Pedalera y cada pedal suelto → la entrada de un pedal, de la Pedalera o de la Grabadora (LÍNEA).
 //   Grabadora (salida) → una pista del Estudio: lo que se graba cae en esa pista, a tiempo con la cinta.
-// El escritorio dibuja los cables por encima de las ventanas y le avisa a cada app cómo quedó.
+// El sonido no puede dar vueltas en círculo. El escritorio dibuja los cables y le avisa a cada app qué le entra y a dónde sale.
 // =====================================================================
-let cables = Object.assign({ md: false, pista: null }, mem.leer('cables', {}));   // md: Meowdacity→Grabadora · pista: Grabadora→pista del Estudio
+const esPedal = (id) => id === 'pedalera' || /^pedal-[a-z]+$/.test(id);
+const enCadena = (id) => ['meowdacity', 'grabadora', 'estudio'].includes(id) || esPedal(id);
+// enlaces: de cada salida, a dónde va. { meowdacity: 'pedalera', pedalera: 'grabadora', grabadora: 1 } (la Grabadora va a una pista: un número)
+let enlaces = (() => {
+  const g = mem.leer('enlaces', null); if (g && typeof g === 'object' && !Array.isArray(g)) return g;
+  const v = mem.leer('cables', {}), e = {}; if (v.md) e.meowdacity = 'grabadora'; if (v.pista != null) e.grabadora = v.pista; return e;   // los cables de antes
+})();
+const guardarEnlaces = () => mem.guardar('enlaces', enlaces);
+// quién está enchufado en esta entrada (en el Estudio, en esta pista)
+const entraEn = (a, pista) => Object.keys(enlaces).find((de) => a === 'estudio' ? de === 'grabadora' && enlaces.grabadora === pista : de !== 'grabadora' && enlaces[de] === a);
+function puedeIr(de, a) {
+  if (de === a) return false;
+  if (de === 'grabadora') return a === 'estudio';
+  if (!(a === 'grabadora' || esPedal(a))) return false;               // al Estudio se llega por la Grabadora; a Meowdacity no le entra nada
+  for (let x = a, k = 0; typeof x === 'string' && k < 20; x = enlaces[x], k++) if (x === de) return false;   // sin vueltas en círculo
+  return true;
+}
+function enlazar(de, a, pista) {
+  if (a == null) { delete enlaces[de]; return true; }
+  if (!puedeIr(de, a)) return false;
+  const otro = entraEn(a, pista); if (otro && otro !== de) delete enlaces[otro];   // una entrada recibe un solo cable
+  enlaces[de] = a === 'estudio' ? pista : a; return true;
+}
+// un pedal suelto que vuelve a la Pedalera: lo que le entraba sigue derecho a donde salía
+function puentear(id) {
+  const ent = entraEn(id), sal = enlaces[id]; delete enlaces[id];
+  if (ent) { delete enlaces[ent]; if (sal && puedeIr(ent, sal)) enlaces[ent] = sal; }
+  guardarEnlaces();
+}
 let arrastreCable = null;                   // mientras se arrastra: { de, x, y }
-// cada cable va en su propia capa, justo encima de la más alta de sus dos ventanas: una ventana que esté más adelante lo tapa
+// cada cable va en su propia capa (ver pintarCable): una ventana que esté más adelante lo tapa
 const capaCables = document.createElement('div');
 capaCables.id = 'cables'; capaCables.setAttribute('aria-hidden', 'true');
 escritorio.append(capaCables);
 const appDe = (id) => APPS.find((a) => a.id === id);
+// los enchufes: tocar una salida sin arrastrar la desenchufa o la lleva a la Grabadora; tocar una entrada la desenchufa o le trae Meowdacity
+function armarSalida(j, de) {
+  j.addEventListener('pointerdown', (ev) => tomarCable(ev, j, de));
+  j.addEventListener('click', () => { if (!j._movio) tocarSalida(de); });
+}
+function armarEntrada(j, a, pista) {
+  j.addEventListener('pointerdown', (ev) => { const o = entraEn(a, pista); if (o) tomarCable(ev, j, o); });
+  j.addEventListener('click', () => { if (!j._movio) tocarEntrada(a, pista); });
+}
+function tocarSalida(de) {
+  if (enlaces[de] != null) { conectar({ de, a: null }); return; }
+  if (de === 'grabadora') { if (!abiertas.estudio) { abrir(appDe('estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de la Grabadora hasta una pista.'); } return; }
+  if (!abiertas.grabadora) { abrir(appDe('grabadora')); hablar('Esta es la Grabadora. Arrastra el cable desde la salida hasta su entrada.'); return; }
+  conectar({ de, a: 'grabadora' });
+}
+function tocarEntrada(a, pista) {
+  const o = entraEn(a, pista); if (o) { conectar({ de: o, a: null }); return; }
+  if (a === 'estudio') { conectar({ pista }); return; }
+  if (a === 'grabadora') { conectar({ md: true }); return; }
+  // un pedal: se mete entre Meowdacity y lo que venía después
+  if (!abiertas.meowdacity) { hablar('Primero abre Meowdacity: el sonido sale de ella.'); abrir(appDe('meowdacity')); }
+  const antes = enlaces.meowdacity;
+  if (enlazar('meowdacity', a) && typeof antes === 'string' && antes !== a && enlaces[a] == null) enlazar(a, antes);
+  guardarEnlaces(); avisarCable(); pintarCable();
+}
 function ponerEnchufes(app, ventana, cuerpo) {
   const e = app.enchufes;
   if (e.cara) {                                                   // la Grabadora dibuja sus enchufes en su panel: los de verdad van justo encima
     const capa = document.createElement('div'); capa.className = 'enchufes-cara';
-    capa.innerHTML = '<button type="button" class="jack entrada" data-a="' + app.id + '" hidden aria-label="Entrada de línea de la Grabadora: conectar la salida de Meowdacity" title="Línea: aquí entra el cable de Meowdacity"></button>' +
+    capa.innerHTML = '<button type="button" class="jack entrada" data-a="' + app.id + '" hidden aria-label="Entrada de línea de la Grabadora: conectar una salida" title="Línea: aquí entra el cable de Meowdacity o de un pedal"></button>' +
       '<button type="button" class="jack salida" data-de="' + app.id + '" hidden aria-label="Salida de la Grabadora: arrástrala hasta una pista del Estudio" title="Salida: arrástrala hasta una pista del Estudio"></button>';
     ventana.append(capa);
-    const je = capa.querySelector('.entrada'), js = capa.querySelector('.salida');
-    je.addEventListener('pointerdown', (ev) => { if (cables.md) tomarCable(ev, je, 'meowdacity'); });
-    je.addEventListener('click', () => { if (je._movio) return; conectar({ md: !cables.md }); });
-    js.addEventListener('pointerdown', (ev) => tomarCable(ev, js, app.id));
-    js.addEventListener('click', () => {
-      if (js._movio) return;
-      if (cables.pista != null) { conectar({ pista: null }); return; }
-      if (!abiertas.estudio) { abrir(appDe('estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de la Grabadora hasta una pista.'); }
-    });
+    armarEntrada(capa.querySelector('.entrada'), app.id); armarSalida(capa.querySelector('.salida'), app.id);
+    return;
+  }
+  if (e.lados) {                                                  // un pedal o la Pedalera: entra por la izquierda, sale por la derecha
+    const ri = document.createElement('div'); ri.className = 'regleta izq lado';
+    ri.innerHTML = '<button type="button" class="jack entrada" data-a="' + app.id + '" aria-label="Entrada de ' + app.nombre + '" title="Entrada: aquí entra el cable de Meowdacity o de otro pedal"></button>';
+    const rd = document.createElement('div'); rd.className = 'regleta der lado';
+    rd.innerHTML = '<button type="button" class="jack salida" data-de="' + app.id + '" aria-label="Salida de ' + app.nombre + ': arrástrala hasta otro pedal o la Grabadora" title="Salida: arrástrala hasta otro pedal o la Grabadora"></button>';
+    cuerpo.prepend(ri); cuerpo.append(rd);
+    armarEntrada(ri.querySelector('.jack'), app.id); armarSalida(rd.querySelector('.jack'), app.id);
     return;
   }
   if (e.salida) {
     const r = document.createElement('div'); r.className = 'regleta abajo';
-    const a = app.id === 'meowdacity' ? 'hasta la entrada de la Grabadora' : 'hasta una pista del Estudio';
-    r.innerHTML = '<span>salida</span><button type="button" class="jack salida" data-de="' + app.id + '" aria-label="Salida de ' + app.nombre + ': arrástrala ' + a + '" title="Salida: arrástrala ' + a + '"></button>';
+    r.innerHTML = '<span>salida</span><button type="button" class="jack salida" data-de="' + app.id + '" aria-label="Salida de ' + app.nombre + ': arrástrala hasta la Grabadora o un pedal" title="Salida: arrástrala hasta la Grabadora o un pedal"></button>';
     ventana.append(r);
-    const j = r.querySelector('.jack');
-    j.addEventListener('pointerdown', (ev) => tomarCable(ev, j, app.id));
-    j.addEventListener('click', () => {
-      if (j._movio) return;
-      if (app.id === 'meowdacity') {
-        if (cables.md) { conectar({ md: false }); return; }
-        if (!abiertas.grabadora) { abrir(appDe('grabadora')); hablar('Esta es la Grabadora. Arrastra el cable desde la salida de Meowdacity hasta su entrada.'); }
-        else conectar({ md: true });
-      } else {
-        if (cables.pista != null) { conectar({ pista: null }); return; }
-        if (!abiertas.estudio) { abrir(appDe('estudio')); hablar('Este es el Estudio. Arrastra el cable desde la salida de la Grabadora hasta una pista.'); }
-      }
-    });
+    armarSalida(r.querySelector('.jack'), app.id);
   }
   if (e.entrada) {
     const r = document.createElement('div'); r.className = 'regleta izq';
     cuerpo.prepend(r);
-    if (e.entrada === 'una') {                                    // la Grabadora: una sola entrada, arriba
-      const j = document.createElement('button'); j.type = 'button'; j.className = 'jack entrada'; j.dataset.a = app.id;
-      j.style.top = 'auto'; j.style.bottom = '6px'; j.setAttribute('aria-label', 'Entrada de la Grabadora: conectar la salida de Meowdacity'); j.title = 'Entrada: aquí entra el cable de Meowdacity';
-      j.addEventListener('pointerdown', (ev) => { if (cables.md) tomarCable(ev, j, 'meowdacity'); });
-      j.addEventListener('click', () => { if (j._movio) return; conectar({ md: !cables.md }); });
-      r.append(j);
-    }
   }
 }
 // el Estudio dice a qué altura está cada pista; aquí se ponen sus enchufes
@@ -1241,8 +1291,7 @@ function ponerEntradas(ys) {
     j.style.top = Math.round(y) + 'px';
     j.setAttribute('aria-label', 'Entrada de la pista ' + (i + 1) + ': conectar la salida de la Grabadora');
     j.title = 'Pista ' + (i + 1) + ': aquí entra el cable de la Grabadora';
-    j.addEventListener('pointerdown', (ev) => { if (cables.pista === i) tomarCable(ev, j, 'grabadora'); });
-    j.addEventListener('click', () => { if (j._movio) return; conectar({ pista: cables.pista === i ? null : i }); });
+    armarEntrada(j, 'estudio', i);
     r.append(j);
   });
   pintarCable();
@@ -1270,32 +1319,50 @@ function juntarSiSeTapan() {
   }
   pintarCable();
 }
-// cambiar los cables (desde los enchufes, desde las apps o desde sus listas)
+// cambiar los cables. { de, a } en general; { md } y { pista } son los de siempre (Meowdacity → Grabadora, Grabadora → pista)
 function conectar(c) {
-  if ('md' in c && c.md && !abiertas.meowdacity) { hablar('Primero abre Meowdacity: ese cable sale de ella.'); abrir(appDe('meowdacity')); }
-  if ('pista' in c && c.pista != null && !abiertas.estudio) abrir(appDe('estudio'));
-  Object.assign(cables, c); mem.guardar('cables', cables); avisarCable(); pintarCable();
+  if ('md' in c) {
+    if (c.md) { if (!abiertas.meowdacity) { hablar('Primero abre Meowdacity: ese cable sale de ella.'); abrir(appDe('meowdacity')); } enlazar('meowdacity', 'grabadora'); }
+    else { const o = entraEn('grabadora'); if (o) delete enlaces[o]; }
+  }
+  if ('pista' in c && !('de' in c)) {
+    if (c.pista != null) { if (!abiertas.estudio) abrir(appDe('estudio')); enlazar('grabadora', 'estudio', c.pista); }
+    else delete enlaces.grabadora;
+  }
+  if ('de' in c) enlazar(c.de, c.a, c.pista);
+  guardarEnlaces(); avisarCable(); pintarCable();
 }
 const marcoDe = (id) => abiertas[id] && abiertas[id].querySelector('iframe');
 function avisarCable() {
+  const vivo = (id) => typeof id === 'string' && !!marcoDe(id);
+  const desde = (a) => { const de = entraEn(a); return vivo(de) ? de : null; };
+  const post = (f, d) => { try { if (f) f.contentWindow.postMessage(d, '*'); } catch (er) {} };
   const m = marcoDe('meowdacity'), g = marcoDe('grabadora'), e = marcoDe('estudio');
-  const md = !!(cables.md && m && g), pista = cables.pista != null && g && e ? cables.pista : null;
-  try { if (m) m.contentWindow.postMessage({ nelios: 'cable', conectado: md }, '*'); } catch (er) {}
-  try { if (g) g.contentWindow.postMessage({ nelios: 'cable', entrada: md ? 'meowdacity' : null, pista, meowdacity: !!m, estudio: !!e, cara: innerWidth >= 720 }, '*'); } catch (er) {}
-  try { if (e) e.contentWindow.postMessage({ nelios: 'cable', pista, grabadora: !!g }, '*'); } catch (er) {}
+  const va = vivo(enlaces.meowdacity) ? enlaces.meowdacity : null;
+  const pista = typeof enlaces.grabadora === 'number' && g && e ? enlaces.grabadora : null;
+  // si Meowdacity va a un pedal, lo que se escucha es lo que sale del pedal: su salida directa se calla
+  post(m, { nelios: 'cable', conectado: va === 'grabadora', directo: !(va && esPedal(va)) });
+  const eg = desde('grabadora');
+  post(g, { nelios: 'cable', entrada: eg, entradaNombre: eg ? appDe(eg).nombre : null, pista, meowdacity: !!m, estudio: !!e, cara: innerWidth >= 720 });
+  post(e, { nelios: 'cable', pista, grabadora: !!g });
+  // a cada pedal: qué le entra y a dónde sale. Se escucha si su salida no va a otro pedal (la Grabadora no hace sonar lo que graba)
+  for (const id of Object.keys(abiertas)) if (esPedal(id)) {
+    const ent = desde(id), sal = vivo(enlaces[id]) ? enlaces[id] : null;
+    post(marcoDe(id), { nelios: 'cable', entrada: ent, entradaNombre: ent ? appDe(ent).nombre : null, salida: sal, salidaNombre: sal ? appDe(sal).nombre : null, monitor: !(sal && esPedal(sal)), cables: innerWidth >= 720 });
+  }
 }
 // arrastrar un cable desde una salida: mientras tanto los iframes no se quedan con el puntero (body.arrastrando)
 function tomarCable(e, j, de) {
   if (e.button !== 0) return;
   e.preventDefault(); j._movio = false;
-  const x0 = e.clientX, y0 = e.clientY, destinos = de === 'meowdacity' ? '.jack.entrada[data-a="grabadora"]' : '.jack.entrada[data-a="estudio"]';
+  const x0 = e.clientX, y0 = e.clientY, destinos = de === 'grabadora' ? '.jack.entrada[data-a="estudio"]' : '.jack.entrada[data-a]:not([data-a="estudio"])';
   document.body.classList.add('arrastrando', 'con-cable');
   const mover = (ev) => {
     if (!j._movio && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 6) return;
-    if (!j._movio) { j._movio = true; Object.assign(cables, de === 'meowdacity' ? { md: false } : { pista: null }); avisarCable(); }
+    if (!j._movio) { j._movio = true; delete enlaces[de]; avisarCable(); }
     const r = escritorio.getBoundingClientRect();
     arrastreCable = { de, x: ev.clientX - r.left, y: ev.clientY - r.top };
-    document.querySelectorAll('.jack.entrada').forEach((k) => k.classList.toggle('cerca', k.matches(destinos) && k === document.elementFromPoint(ev.clientX, ev.clientY)));
+    document.querySelectorAll('.jack.entrada').forEach((k) => k.classList.toggle('cerca', k.matches(destinos) && k.dataset.a !== de && k === document.elementFromPoint(ev.clientX, ev.clientY)));
     pintarCable();
   };
   const soltar = (ev) => {
@@ -1303,11 +1370,11 @@ function tomarCable(e, j, de) {
     document.body.classList.remove('arrastrando', 'con-cable');
     document.querySelectorAll('.jack.cerca').forEach((k) => k.classList.remove('cerca'));
     if (j._movio) {
-      const d = document.elementFromPoint(ev.clientX, ev.clientY);
-      if (d && d.matches && d.matches(destinos)) conectar(de === 'meowdacity' ? { md: true } : { pista: +d.dataset.pista });
+      const d = document.elementFromPoint(ev.clientX, ev.clientY), a = d && d.matches && d.matches('.jack.entrada') ? d.dataset.a : null;
+      if (a && d.matches(destinos) && puedeIr(de, a)) conectar(de === 'grabadora' ? { de, a, pista: +d.dataset.pista } : { de, a });
       else {
-        conectar(de === 'meowdacity' ? { md: false } : { pista: null });
-        if (d && d.matches && d.matches('.jack.entrada')) hablar(de === 'meowdacity' ? 'Lo de Meowdacity pasa primero por la Grabadora: enchúfalo en su entrada.' : 'La salida de la Grabadora va a una pista del Estudio.');
+        conectar({ de, a: null });
+        if (a) hablar(a === de ? 'Un pedal no se enchufa a sí mismo.' : de === 'grabadora' ? 'La salida de la Grabadora va a una pista del Estudio.' : a === 'estudio' ? 'Al Estudio se llega por la Grabadora: enchúfalo en su entrada.' : 'Así el sonido daría vueltas en círculo: de ahí ya sale hacia acá.');
       }
       setTimeout(() => { j._movio = false; }, 0);
     }
@@ -1323,24 +1390,21 @@ function centroDe(el) {
 const visible = (id) => abiertas[id] && !abiertas[id].hidden;
 let relojCable = 0, rutaAnterior = '';
 function pintarCable() {
-  document.querySelectorAll('.jack.entrada[data-a="estudio"]').forEach((k) => k.setAttribute('aria-pressed', cables.pista === +k.dataset.pista && abiertas.grabadora ? 'true' : 'false'));
-  document.querySelectorAll('.jack.entrada[data-a="grabadora"]').forEach((k) => k.setAttribute('aria-pressed', cables.md && abiertas.meowdacity ? 'true' : 'false'));
-  const sal = (id) => visible(id) && abiertas[id].querySelector('.jack.salida');
-  const sm = sal('meowdacity'), sg = sal('grabadora');
-  if (abiertas.meowdacity) { const s = abiertas.meowdacity.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cables.md && abiertas.grabadora ? 'true' : 'false'); }
-  if (abiertas.grabadora) { const s = abiertas.grabadora.querySelector('.jack.salida'); if (s) s.setAttribute('aria-pressed', cables.pista != null && abiertas.estudio ? 'true' : 'false'); }
+  document.querySelectorAll('.jack.entrada').forEach((k) => { const o = entraEn(k.dataset.a, k.dataset.a === 'estudio' ? +k.dataset.pista : undefined); k.setAttribute('aria-pressed', o && abiertas[o] ? 'true' : 'false'); });
+  document.querySelectorAll('.jack.salida').forEach((k) => { const de = k.dataset.de, a = enlaces[de]; k.setAttribute('aria-pressed', (de === 'grabadora' ? typeof a === 'number' && abiertas.estudio : a && abiertas[a]) ? 'true' : 'false'); });
   const tramos = [];
-  // Meowdacity → Grabadora
-  if (sm) {
-    let b = arrastreCable && arrastreCable.de === 'meowdacity' ? arrastreCable : null;
-    if (!b && cables.md && visible('grabadora')) { const k = abiertas.grabadora.querySelector('.jack.entrada'); if (k) b = centroDe(k); }
-    if (b) tramos.push([centroDe(sm), b, b === arrastreCable ? null : ['meowdacity', 'grabadora']]);
-  }
-  // Grabadora → pista del Estudio
-  if (sg) {
-    let b = arrastreCable && arrastreCable.de === 'grabadora' ? arrastreCable : null;
-    if (!b && cables.pista != null && visible('estudio')) { const k = abiertas.estudio.querySelector('.jack.entrada[data-pista="' + cables.pista + '"]'); if (k) b = centroDe(k); }
-    if (b) tramos.push([centroDe(sg), b, b === arrastreCable ? null : ['grabadora', 'estudio']]);
+  for (const de of Object.keys(abiertas)) {
+    if (!visible(de)) continue;
+    const s = abiertas[de].querySelector('.jack.salida'); if (!s || s.hidden) continue;
+    let b = arrastreCable && arrastreCable.de === de ? arrastreCable : null, par = null;
+    if (!b) {
+      const a = enlaces[de]; if (a == null) continue;
+      const dest = de === 'grabadora' ? 'estudio' : a; if (!visible(dest)) continue;
+      const k = de === 'grabadora' ? abiertas.estudio.querySelector('.jack.entrada[data-pista="' + a + '"]') : abiertas[dest].querySelector('.jack.entrada');
+      if (!k || k.hidden) continue;
+      b = centroDe(k); par = [de, dest];
+    }
+    tramos.push([centroDe(s), b, par]);
   }
   if (!tramos.length || innerWidth < 720) { capaCables.replaceChildren(); rutaAnterior = ''; cancelAnimationFrame(relojCable); relojCable = 0; return; }
   const piso = escritorio.clientHeight - 12;
@@ -1361,7 +1425,7 @@ function pintarCable() {
 }
 window.addEventListener('message', (e) => {
   const d = e.data; if (!d || typeof d.nelios !== 'string') return;
-  const de = ['estudio', 'grabadora'].find((id) => marcoDe(id) && e.source === marcoDe(id).contentWindow); if (!de) return;
+  const de = Object.keys(abiertas).find((id) => marcoDe(id) && e.source === marcoDe(id).contentWindow); if (!de || !enCadena(de)) return;
   if (de === 'estudio' && d.nelios === 'jacks' && Array.isArray(d.ys)) ponerEntradas(d.ys.map(Number));
   if (de === 'grabadora' && d.nelios === 'enchufesCara') {          // la Grabadora dice dónde dibujó sus enchufes (en coordenadas de su ventana)
     const v = abiertas.grabadora, f = marcoDe('grabadora'), capa = v && v.querySelector('.enchufes-cara'); if (!capa) return;
@@ -1376,7 +1440,9 @@ window.addEventListener('message', (e) => {
     if ('pista' in d) conectar({ pista: d.pista == null ? null : Math.max(0, Math.min(7, d.pista | 0)) });
     if ('md' in d) conectar({ md: !!d.md });
   }
-  if (d.nelios === 'abrir' && ['meowdacity', 'grabadora', 'estudio'].includes(d.app)) abrir(appDe(d.app));
+  if (d.nelios === 'abrir' && typeof d.app === 'string' && enCadena(d.app) && appDe(d.app)) abrir(appDe(d.app));
+  // la Pedalera trae de vuelta un pedal suelto (o el pedal se devuelve solo): se cierra su ventana
+  if (d.nelios === 'cerrarApp' && esPedal(de) && /^pedal-[a-z]+$/.test(d.id || '') && abiertas[d.id]) cerrar(d.id);
 });
 addEventListener('resize', pintarCable);
 

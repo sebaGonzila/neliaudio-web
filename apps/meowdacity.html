@@ -949,7 +949,8 @@ registerProcessor('grabador', Grabador);`;
       for (const c of ['onda', 'teclas', 'base']) { canal[c] = ctx.createGain(); canal[c].gain.value = gananciaDe(mix[c]); canal[c].connect(mezcla); }   // la mezcla: un volumen por parte
       nodo.connect(separa); separa.connect(pa, 0); pa.connect(salida); salida.connect(canal.onda);
       separa.connect(paT, 1); paT.connect(canal.teclas); entradaTeclas = paT; mezclaSalida = mezcla; mezcla.connect(maestro); mezcla.connect(analiza);                    // las teclas no pasan por la puerta del transporte: tienen la suya
-      maestro.connect(lim); lim.connect(ctx.destination);
+      directo = ctx.createGain(); directo.gain.value = conDirecto ? 1 : 0;   // a los parlantes; con el cable en un pedal se calla: se escucha lo que sale del pedal
+      maestro.connect(lim); lim.connect(directo); directo.connect(ctx.destination);
       enviarTabla(); fijarVel(vel, true);
       if (ctx.state === 'suspended') await ctx.resume();
       return ctx.state === 'running';
@@ -2598,11 +2599,15 @@ registerProcessor('grabador', Grabador);`;
     return true;
   }
   // con el motor compartido, al cerrar la ventana hay que desconectar lo propio (el contexto sigue vivo en el escritorio)
-  function apagar() { try { if (salidaCable) salidaCable.disconnect(); if (maestro) maestro.disconnect(); if (nodo) nodo.disconnect(); if (metro && metro.bus) metro.bus.disconnect(); clearInterval(metro.reloj); } catch (e) {} }
+  function apagar() { try { if (salidaCable) salidaCable.disconnect(); if (directo) directo.disconnect(); if (maestro) maestro.disconnect(); if (nodo) nodo.disconnect(); if (metro && metro.bus) metro.bus.disconnect(); clearInterval(metro.reloj); } catch (e) {} }
   addEventListener('pagehide', apagar);
   // lo que sale por el cable hacia la Grabadora: la mezcla al nivel del volumen al 100 % y con el mismo limitador
   // (igual que grababa el ● de antes): no depende de cuánto tengas subido el volumen para escuchar
-  let salidaCable = null;
+  let salidaCable = null, directo = null, conDirecto = true;
+  function ponerDirecto(on) {          // sin saltos: rampa de 20 ms
+    conDirecto = on; if (!directo || !ctx) return;
+    const t = ctx.currentTime; directo.gain.cancelScheduledValues(t); directo.gain.setValueAtTime(directo.gain.value, t); directo.gain.linearRampToValueAtTime(on ? 1 : 0, t + .02);
+  }
   function salidaRec() {
     if (!ctx || !mezclaSalida) return null;
     if (!salidaCable) {
@@ -2614,7 +2619,7 @@ registerProcessor('grabador', Grabador);`;
   }
   if (compartido) { const api = { salida: salidaRec, arrancar, recibirAudio, apagar, ctx: () => ctx }; compartido.registrar('meowdacity', api); }
   window.__mdacity = {
-    version: 43, recibirAudio, loop: () => estado,
+    version: 44, directo: () => conDirecto, recibirAudio, loop: () => estado,
     ctx: () => ctx, arrancar, salida: () => maestro,          // las pistas entran después de la mezcla: el grabador no las vuelve a grabar
     corriendo, grabando: () => grabando || !!sinc,
     ritmo: () => ({ on: metro.on, bpm: metro.bpm, pulsos: acentos().length, t0: metro.t0 }),
@@ -2629,7 +2634,7 @@ registerProcessor('grabador', Grabador);`;
   window.addEventListener('resize', () => { medir(); dibujar(); medirOsc(); });
   // mensajes del escritorio de NeliOS (solo de la ventana que contiene a la app)
   window.addEventListener('message', e => {
-    const c = e.data; if (e.source === window.parent && c && c.nelios === 'cable') { estudio.cable = !!c.conectado; return; }
+    const c = e.data; if (e.source === window.parent && c && c.nelios === 'cable') { estudio.cable = !!c.conectado; ponerDirecto(c.directo !== false); return; }
     const d = e.data; if (e.source !== window.parent || !d || d.nelios !== 'cursor') return;
     if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) {
       document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita');

@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/vt323-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<title>Pedalera</title>
+<style>
+@font-face { font-family: 'Silkscreen'; src: url(/fuentes/silkscreen-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'VT323'; src: url(/fuentes/vt323-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-700-normal.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+/* Por fuera, pedales de juguete con la piel de Meowdacity; por dentro, la pantallita negra con el mecanismo y los números. */
+:root {
+  --fondo: #000; --fondo-img: none; --panel: #04100A; --barra: #08180F; --linea: #0E3A24; --linea-suave: #0E3A24;
+  --tenue: #2F9E63; --neon: #6CFFA8; --neon-borde: #6CFFA8; --neon-suave: rgba(108,255,168,.14); --texto: #A8F0C8; --tinta: #F2FFF7; --sobre-neon: #000;
+  --lienzo: #010502; --rejilla: #041A0E; --cero: #0E3A24; --onda: #B794FF; --alto: #F2FFF7; --ve: #B794FF; --cabezal: #4CC9FF; --salto: #FFD23F;
+  --umbral: #FF6B8B; --ambar: #FFD23F; --nota: #4CC9FF; --tecla: #071A10; --negra: #000; --brillo: rgba(108,255,168,.45);
+  --radio: 0px; --radio-btn: 0px; --pista: #0E3A24; --boton: transparent;
+  --sombra-panel: 6px 6px 0 #0E3A24; --sombra-btn: 3px 3px 0 #0E3A24;
+  --f-marca: 'Silkscreen', 'Courier New', monospace;
+  --f-etiqueta: 'Silkscreen', 'Courier New', monospace;
+  --f-numero: 'VT323', 'Courier New', monospace;
+  --f-texto: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --k-num: 1;                       /* VT323 es chica: la otra fuente de números se escala a 0,72 */
+  --borde: 2px;
+  color-scheme: dark;
+}
+body[data-piel="neli"] {
+  --fondo: #E4E0F8; --fondo-img: radial-gradient(1200px 600px at 15% -10%, #F3EEFF 0%, transparent 60%), radial-gradient(900px 500px at 110% 110%, #D6DDF8 0%, transparent 60%), linear-gradient(160deg, #E9E3FB, #DCDDF7);
+  --panel: rgba(255,255,255,.74); --barra: linear-gradient(180deg, #F1F3FE, #E4E9FB); --linea: #B7C1EC; --linea-suave: #D4DAF4;
+  --tenue: #575C93; --neon: #F27FA3; --neon-borde: #E8668F; --neon-suave: #FFE6EE; --texto: #3E4380; --tinta: #2B2F66; --sobre-neon: #2A2D52;
+  --lienzo: #FBFAFF; --rejilla: #ECEAFB; --cero: #D9D3F6; --onda: #DCD4FA; --alto: #7A63E0; --ve: #7A63E0; --cabezal: #5BBFEF; --salto: #F27FA3;
+  --umbral: #F27FA3; --ambar: #D9962A; --nota: #3D8FC6; --tecla: #FFFFFF; --negra: #3E4380; --brillo: rgba(242,127,163,.35);
+  --radio: 14px; --radio-btn: 9px; --pista: #D6DBF4; --boton: #FFFFFF;
+  --sombra-panel: 0 8px 24px rgba(72,76,150,.12), 0 1px 0 rgba(255,255,255,.9) inset; --sombra-btn: 0 1px 2px rgba(72,76,150,.12);
+  --f-marca: 'Silkscreen', 'Courier New', monospace;
+  --f-etiqueta: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-numero: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --f-texto: 'IBM Plex Sans', system-ui, sans-serif;
+  --k-num: .72;
+  --borde: 1.5px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--fondo-img), var(--fondo); color: var(--texto); font-family: var(--f-texto); font-size: 12px; line-height: 1.35; overflow-x: hidden; }
+body[data-piel="neli"] { --tenue: #575C93; }
+body.en-ventana { --fondo-img: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px dashed var(--tinta); outline-offset: 2px; }
+.etq { font-family: var(--f-etiqueta); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+main { min-height: 100%; display: flex; flex-direction: column; gap: 10px; padding: 10px 12px 12px; }
+
+/* arriba: el sonido de prueba y qué entra y a dónde sale */
+.cabeza { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tinta); box-shadow: var(--sombra-btn); font-family: var(--f-etiqueta); font-size: 10px; font-weight: 600; white-space: nowrap; }
+.chip svg { width: 10px; height: 10px; fill: currentColor; }
+.chip[aria-pressed="true"] { background: var(--neon-suave); border-color: var(--neon-borde); }
+.chip:hover { border-color: var(--tenue); }
+.ruta { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; justify-content: flex-end; color: var(--tenue); font-size: 11px; }
+.ruta b { color: var(--tinta); font-weight: 600; }
+.ruta .flecha { color: var(--tenue); }
+
+/* la tabla: los pedales en fila, en el orden en que pasa el sonido */
+.tabla { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 156px)); justify-content: space-between; gap: 14px; padding: 16px 16px 14px; background: repeating-linear-gradient(180deg, #2A2D52 0 22px, #262948 22px 24px); border: 3px solid #1C1E3A; border-radius: 14px; box-shadow: inset 0 2px 0 rgba(255,255,255,.06), 0 3px 0 rgba(42,45,82,.25); }
+body[data-piel="terminal"] .tabla { background: #070A0D; border-color: var(--linea); border-radius: 0; }
+.suelto .tabla { grid-template-columns: minmax(0, 168px); justify-content: center; }
+
+/* un pedal: la caja con orejas, la luz, las perillas, el nombre y el botón que se pisa */
+.pedal { position: relative; padding-top: 18px; min-width: 0; }
+.pedal .orejas { position: absolute; top: 0; left: 0; width: 100%; height: 34px; overflow: visible; }
+.pedal .orejas path { fill: var(--c); stroke: #2A2D52; stroke-width: 3; stroke-linejoin: round; }
+.cara { position: relative; display: grid; justify-items: center; gap: 8px; padding: 10px 8px 12px; background: var(--c); border: 3px solid #2A2D52; border-radius: 14px 14px 18px 18px; box-shadow: 0 4px 0 #1C1E3A; cursor: pointer; }
+.pedal.elegido .cara { box-shadow: 0 4px 0 #1C1E3A, 0 0 0 3px #F27FA3; }
+body[data-piel="terminal"] .cara { background: #0B0F14; border-color: var(--c); border-radius: 0; box-shadow: none; }
+body[data-piel="terminal"] .pedal .orejas path { fill: #0B0F14; stroke: var(--c); }
+body[data-piel="terminal"] .pedal.elegido .cara { box-shadow: 0 0 0 2px #F27FA3; }
+.arriba { width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 18px; }
+.led { width: 10px; height: 10px; margin-left: 4px; border-radius: 50%; background: #6B2A33; border: 2px solid #2A2D52; }
+.pedal.on .led { background: #FF4D6D; box-shadow: 0 0 8px 2px rgba(255,77,109,.75); }
+.soltar { width: 22px; height: 22px; padding: 0; display: grid; place-items: center; background: rgba(255,255,255,.55); border: 2px solid #2A2D52; border-radius: 6px; color: #2A2D52; font-size: 12px; line-height: 1; }
+.soltar:hover { background: #fff; }
+body:not(.con-cables) .soltar { visibility: hidden; }
+.perillas { display: flex; justify-content: center; gap: 6px; min-height: 52px; }
+.perilla { display: grid; justify-items: center; gap: 1px; outline: none; touch-action: none; cursor: ns-resize; border-radius: 8px; padding: 1px 2px; }
+body.patita .perilla { cursor: var(--patita-ns, ns-resize); }
+.perilla svg { width: 34px; height: 34px; display: block; }
+.perilla small { font-family: var(--f-etiqueta); font-size: 8px; letter-spacing: .06em; text-transform: uppercase; color: #2A2D52; }
+body[data-piel="terminal"] .perilla small { color: var(--c); }
+.perilla .riel { fill: none; stroke: rgba(42,45,82,.22); stroke-width: 3; stroke-linecap: round; }
+.perilla .arco { fill: none; stroke: #2A2D52; stroke-width: 3; stroke-linecap: round; }
+.perilla .cuerpo { fill: #FAF4E9; stroke: #2A2D52; stroke-width: 2; }
+.perilla .raya { stroke: #2A2D52; stroke-width: 2.2; stroke-linecap: round; }
+body[data-piel="terminal"] .perilla .arco, body[data-piel="terminal"] .perilla .raya { stroke: var(--c); }
+body[data-piel="terminal"] .perilla .cuerpo { fill: #0B0F14; stroke: var(--c); }
+.perilla:focus-visible { box-shadow: 0 0 0 2px #F27FA3; }
+.nombre { font-family: 'Silkscreen', var(--f-etiqueta), monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #2A2D52; }
+body[data-piel="terminal"] .nombre { color: var(--c); }
+.pisar { width: 44px; height: 44px; padding: 0; border-radius: 50%; background: radial-gradient(circle at 36% 30%, #FFFFFF 0 10%, #DCDDE6 26%, #A7ABBE 70%, #8E93A6); border: 3px solid #2A2D52; box-shadow: 0 3px 0 #1C1E3A; }
+.pisar:active, .pisar.pisado { transform: translateY(2px); box-shadow: 0 1px 0 #1C1E3A; }
+/* el pedal anda suelto, en su propia ventana: aquí queda el hueco */
+.hueco-suelto { position: absolute; inset: 18px 0 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; border: 2px dashed rgba(255,255,255,.35); border-radius: 14px; color: #C9CDE8; font-size: 11px; }
+.pedal.anda-suelto .cara, .pedal.anda-suelto .orejas { visibility: hidden; }
+.traer { height: 26px; padding: 0 10px; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tinta); font-family: var(--f-etiqueta); font-size: 10px; font-weight: 600; }
+/* el cablecito entre un pedal y el siguiente */
+.tabla .pedal:not(:last-child)::after { content: ''; position: absolute; top: 50%; right: -16px; width: 18px; height: 4px; background: #F27FA3; border-radius: 2px; box-shadow: 0 0 0 2px #1C1E3A; }
+.tabla .pedal.anda-suelto::after, .tabla .pedal.antes-de-suelto::after { background: #575C93; }
+
+/* por dentro: la pantallita negra con el mecanismo y sus números */
+.adentro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; background: #050807; border: 3px solid #1C2030; border-radius: 8px; box-shadow: inset 0 0 0 1px #000, inset 0 0 18px rgba(108,255,168,.08); overflow: hidden; min-height: 150px; }
+body[data-piel="terminal"] .adentro { border-radius: 0; border-color: var(--linea); }
+.suelto .adentro { grid-template-columns: 1fr; }
+.ad-dibujo { position: relative; min-height: 132px; }
+#lienzo { position: absolute; left: 0; top: 0; image-rendering: pixelated; image-rendering: crisp-edges; }
+.ad-texto { padding: 8px 10px 8px 8px; font-family: 'VT323', var(--f-numero), monospace; font-size: 16px; line-height: 1.12; color: #6CFFA8; text-shadow: 0 0 6px rgba(108,255,168,.35); }
+.ad-texto h2 { margin: 0 0 4px; font-family: 'Silkscreen', var(--f-etiqueta), monospace; font-size: 9px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: #8FA89A; text-shadow: none; }
+.ad-texto p { margin: 0 0 3px; }
+.ad-texto b { font-weight: 400; color: #4CC9FF; }
+.ad-texto i { font-style: normal; color: #FF6B8B; }
+.ad-texto .apagado { color: #8FA89A; }
+.suelto .ad-dibujo { min-height: 120px; }
+
+.suelto .ruta { justify-content: flex-start; flex-basis: 100%; font-size: 11px; }
+.suelto .cabeza { gap: 6px; }
+/* celular y ventanas angostas: de a dos pedales por fila */
+@media (max-width: 640px) {
+  body:not(.suelto) .tabla { grid-template-columns: repeat(2, minmax(0, 156px)); justify-content: space-around; row-gap: 18px; }
+  .tabla .pedal:nth-child(2n)::after { display: none; }
+  body:not(.suelto) .adentro { grid-template-columns: 1fr; }
+  .ruta { justify-content: flex-start; flex-basis: 100%; }
+}
+body.patita, body.patita button { cursor: var(--patita), auto; }
+</style>
+</head>
+<body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
+<main role="main">
+  <h1 class="sr" id="titulo">Pedalera</h1>
+  <div class="cabeza">
+    <button type="button" class="chip" id="bPrueba" aria-pressed="false" title="Un sonido de guitarra sintetizado, para probar los pedales sin enchufar nada"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1.5 1L7 4L1.5 7Z"/></svg><span>prueba</span></button>
+    <button type="button" class="chip" id="bVolver" hidden title="Devolver este pedal a la Pedalera">↙ a la pedalera</button>
+    <div class="ruta" id="ruta" aria-live="polite"></div>
+  </div>
+  <div class="tabla" id="tabla"></div>
+  <section class="adentro" aria-labelledby="adTit">
+    <div class="ad-dibujo" id="adDibujo"><canvas id="lienzo" width="120" height="60" aria-hidden="true"></canvas></div>
+    <div class="ad-texto" id="adTexto"><h2 id="adTit">por dentro</h2><div id="lect"></div></div>
+  </section>
+</main>
+<script>
+(() => {
+  'use strict';
+  /* La Pedalera v01: cuatro pedales en fila (ganancia, chorus, flanger, delay), en el orden en que pasa el sonido.
+     Cada pedal se puede soltar: abre en su propia ventana, con su entrada y su salida, y se cablea como cualquier nodo.
+     El mismo documento es la Pedalera (sin nada) o un pedal suelto (?pedal=delay).
+     Lo que hace cada pedal es una línea de retardo: guarda lo que entra y lee un poco más atrás. El chorus y el flanger
+     mueven cuánto atrás; el delay lee fijo y vuelve a meter lo leído. La ganancia solo multiplica.
+     Dentro de NeliOS usa el motor de audio del escritorio: el mismo reloj que Meowdacity y la Grabadora. */
+  const $ = id => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const dec = (x, d = 1) => (Math.round(x * 10 ** d) / 10 ** d).toFixed(d).replace('.', ',').replace('-', '−');
+  const miles = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const leerLS = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const guardarLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const compartido = (() => { try { return window.parent !== window && window.parent.neliAudio ? window.parent.neliAudio : null; } catch (e) { return null; } })();
+  const app = id => compartido ? compartido.app(id) : null;
+  const SOLO = (() => { const m = /[?&]pedal=([a-z]+)/.exec(location.search); return window.PEDAL || (m && m[1]) || ''; })();
+
+  // ---------- los pedales ----------
+  const PEDALES = [
+    { id: 'ganancia', nombre: 'Ganancia', c: '#FFE1A1', perillas: [
+      { k: 'db', et: 'nivel', min: -24, max: 24, paso: .5, cero: 0, desde: 0, txt: v => (v > 0 ? '+' : '') + dec(v, 1) + ' dB' }] },
+    { id: 'chorus', nombre: 'Chorus', c: '#C9E6FF', perillas: [
+      { k: 'vel', et: 'vel', min: .1, max: 5, paso: .05, cero: .8, desde: .1, txt: v => dec(v, 2) + ' Hz' },
+      { k: 'prof', et: 'prof', min: 0, max: 10, paso: .1, cero: 4, desde: 0, txt: v => dec(v, 1) + ' ms' },
+      { k: 'mezcla', et: 'mezcla', min: 0, max: 100, paso: 1, cero: 50, desde: 0, txt: v => Math.round(v) + ' %' }] },
+    { id: 'flanger', nombre: 'Flanger', c: '#DCCBFF', perillas: [
+      { k: 'vel', et: 'vel', min: .05, max: 2, paso: .01, cero: .25, desde: .05, txt: v => dec(v, 2) + ' Hz' },
+      { k: 'prof', et: 'prof', min: 0, max: 5, paso: .05, cero: 2, desde: 0, txt: v => dec(v, 2) + ' ms' },
+      { k: 'fb', et: 'realim', min: -90, max: 90, paso: 1, cero: 50, desde: 0, txt: v => Math.round(v) + ' %' }] },
+    { id: 'delay', nombre: 'Delay', c: '#BFEBD3', perillas: [
+      { k: 'tiempo', et: 'tiempo', min: 40, max: 1500, paso: 5, cero: 350, desde: 40, txt: v => Math.round(v) + ' ms' },
+      { k: 'fb', et: 'repite', min: 0, max: 90, paso: 1, cero: 40, desde: 0, txt: v => Math.round(v) + ' %' },
+      { k: 'mezcla', et: 'mezcla', min: 0, max: 100, paso: 1, cero: 50, desde: 0, txt: v => Math.round(v) + ' %' }] },
+  ];
+  const DEF = Object.fromEntries(PEDALES.map(p => [p.id, p]));
+  if (SOLO && !DEF[SOLO]) { document.body.textContent = 'Ese pedal no existe.'; return; }
+  const AQUI = SOLO ? [SOLO] : PEDALES.map(p => p.id);     // los pedales que suenan en este documento
+  const MI_ID = SOLO ? 'pedal-' + SOLO : 'pedalera';
+  const CHORUS_BASE = .015, FLANGER_BASE = .0003, MEMORIA = 2;   // segundos
+  // las perillas → lo que usa la línea de retardo
+  function dsp(id, v) {
+    if (id === 'ganancia') return { g: 10 ** (v.db / 20) };
+    if (id === 'chorus') return { base: CHORUS_BASE, prof: v.prof / 1000, vel: v.vel, fb: 0, mix: v.mezcla / 100 };
+    if (id === 'flanger') return { base: FLANGER_BASE, prof: v.prof / 1000, vel: v.vel, fb: v.fb / 100, mix: 1 };
+    return { base: v.tiempo / 1000, prof: 0, vel: 0, fb: v.fb / 100, mix: v.mezcla / 100 };
+  }
+  const MODO = { ganancia: 'ganancia', chorus: 'mezcla', flanger: 'mezcla', delay: 'suma' };
+  // lo que se recuerda de cada pedal (en la Pedalera o suelto, es el mismo pedal)
+  const LS = 'pedales.v1';
+  function leerPedal(id) {
+    const g = (leerLS(LS, {}) || {})[id] || {}, v = {};
+    for (const k of DEF[id].perillas) v[k.k] = typeof g[k.k] === 'number' ? clamp(g[k.k], k.min, k.max) : k.cero;
+    return { on: !!g.on, v };
+  }
+  function guardarPedal(id) { const g = leerLS(LS, {}) || {}; g[id] = Object.assign({ on: ped[id].on }, ped[id].v); guardarLS(LS, g); }
+
+  // ---------- la línea de retardo: el mismo código corre en el AudioWorklet o, si no hay, en un ScriptProcessor ----------
+  const LINEA = `class LineaPedal {
+    constructor(sr, modo, ini) {
+      this.sr = sr; this.modo = modo; this.N = Math.ceil(sr * ${MEMORIA + .05}) + 4;
+      this.b = modo === 'ganancia' ? null : [new Float32Array(this.N), new Float32Array(this.N)];
+      this.w = 0; this.ph = 0; this.d = 0; this.pin = 0; this.pout = 0;
+      this.o = Object.assign({ g: 1, base: 0, prof: 0, vel: 0, fb: 0, mix: 0, on: 0 }, ini || {});
+      this.v = Object.assign({}, this.o);                  // lo que suena ahora: va hacia this.o sin saltos
+      this.a = 1 - Math.exp(-1 / (.005 * sr));             // constante de 5 ms: llega al 99 % en ~23 ms
+    }
+    poner(p) { for (const k in p) if (k in this.o && isFinite(p[k])) this.o[k] = +p[k]; }
+    informe() { const r = { d: this.d, ph: this.ph, pin: this.pin, pout: this.pout }; this.pin = 0; this.pout = 0; return r; }
+    run(L, R, oL, oR, n) {
+      const o = this.o, v = this.v, a = this.a, N = this.N, sr = this.sr, B = this.b, suma = this.modo === 'suma';
+      let g = v.g, base = v.base, prof = v.prof, vel = v.vel, fb = v.fb, mix = v.mix, on = v.on, ph = this.ph, w = this.w, pin = this.pin, pout = this.pout, d = this.d;
+      for (let i = 0; i < n; i++) {
+        g += (o.g - g) * a; base += (o.base - base) * a; prof += (o.prof - prof) * a; vel += (o.vel - vel) * a;
+        fb += (o.fb - fb) * a; mix += (o.mix - mix) * a; on += (o.on - on) * a;
+        const xl = L[i], xr = R[i]; let yl, yr;
+        if (!B) { yl = xl * g; yr = xr * g; }
+        else {
+          // cuánto atrás se lee: fijo (delay) o subiendo y bajando con una onda lenta (chorus, flanger)
+          d = base + prof * .5 * (1 - Math.cos(6.283185307179586 * ph));
+          ph += vel / sr; if (ph >= 1) ph -= 1;
+          let r = w - Math.max(1, d * sr); if (r < 0) r += N;
+          const i0 = r | 0, f = r - i0, i1 = i0 + 1 === N ? 0 : i0 + 1, bl = B[0], br = B[1];
+          const el = bl[i0] + (bl[i1] - bl[i0]) * f, er = br[i0] + (br[i1] - br[i0]) * f;
+          bl[w] = xl + fb * el; br[w] = xr + fb * er;          // lo que entra, más lo leído de vuelta (las repeticiones)
+          if (++w === N) w = 0;
+          if (suma) { yl = xl + mix * el; yr = xr + mix * er; }
+          else { yl = xl * (1 - mix * .5) + el * mix * .5; yr = xr * (1 - mix * .5) + er * mix * .5; }
+        }
+        const sl = xl + (yl - xl) * on, sr2 = xr + (yr - xr) * on;   // apagado: pasa derecho (con rampa)
+        oL[i] = sl; oR[i] = sr2;
+        const ai = Math.abs(xl) > Math.abs(xr) ? Math.abs(xl) : Math.abs(xr), ao = Math.abs(sl) > Math.abs(sr2) ? Math.abs(sl) : Math.abs(sr2);
+        if (ai > pin) pin = ai; if (ao > pout) pout = ao;
+      }
+      v.g = g; v.base = base; v.prof = prof; v.vel = vel; v.fb = fb; v.mix = mix; v.on = on;
+      this.ph = ph; this.w = w; this.pin = pin; this.pout = pout; this.d = d;
+    }
+  }`;
+  const CODIGO = LINEA + `
+  class PedalNelios extends AudioWorkletProcessor {
+    constructor(op) { super(); const p = op.processorOptions || {}; this.l = new LineaPedal(sampleRate, p.modo, p.ini); this.k = 0; this.z = new Float32Array(128);
+      this.port.onmessage = e => this.l.poner(e.data); }
+    process(ins, outs) {
+      const i = ins[0], o = outs[0], n = o[0].length; if (this.z.length < n) this.z = new Float32Array(n);
+      const L = i && i[0] ? i[0] : this.z, R = i && i[1] ? i[1] : L;
+      this.l.run(L, R, o[0], o[1] || o[0], n);
+      if ((this.k += n) >= 1024) { this.k = 0; const r = this.l.informe(); r.t = currentTime; this.port.postMessage(r); }
+      return true;
+    }
+  }
+  registerProcessor('pedal-nelios-1', PedalNelios);`;
+  const urlsCodigo = () => { const u = []; try { u.push(URL.createObjectURL(new Blob([CODIGO], { type: 'application/javascript' }))); } catch (e) {} u.push('data:application/javascript;charset=utf-8,' + encodeURIComponent(CODIGO)); return u; };   // la blob no carga desde file://, la data sí
+  let conWorklet = false;
+  async function cargarModulo(c) {
+    if (!c.audioWorklet) return false;
+    if (compartido && c === compartido.ctx()) { try { await compartido.modulo('pedal-nelios-1', urlsCodigo()); return true; } catch (e) { return false; } }
+    for (const u of urlsCodigo()) { try { await c.audioWorklet.addModule(u); return true; } catch (e) {} }
+    return false;
+  }
+  function crearLinea(c, modo, ini) {
+    if (conWorklet) {
+      const n = new AudioWorkletNode(c, 'pedal-nelios-1', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2], channelCount: 2, channelCountMode: 'explicit', channelInterpretation: 'speakers', processorOptions: { modo, ini } });
+      return { nodo: n, enviar: p => n.port.postMessage(p), escuchar: f => { n.port.onmessage = e => f(e.data); } };
+    }
+    // respaldo: el mismo código en el hilo principal, con un búfer grande
+    const L = new Function(LINEA + '; return LineaPedal;')(), l = new L(c.sampleRate, modo, ini);
+    const sp = c.createScriptProcessor(4096, 2, 2); let oye = null;
+    sp.onaudioprocess = e => { const i = e.inputBuffer, o = e.outputBuffer; l.run(i.getChannelData(0), i.getChannelData(1), o.getChannelData(0), o.getChannelData(1), o.length); if (oye) { const r = l.informe(); r.t = c.currentTime; oye(r); } };
+    return { nodo: sp, enviar: p => l.poner(p), escuchar: f => { oye = f; } };
+  }
+
+  // ---------- el motor: entrada → los pedales de aquí, en orden → salida (→ parlantes si nadie más la toma) ----------
+  const ped = {};       // id → { v, on, ent, sal, anaIn, anaOut, linea, info, el }
+  for (const id of AQUI) Object.assign(ped[id] = { info: { d: 0, ph: 0, t: 0 } }, leerPedal(id));
+  let ctx = null, entrada = null, salida = null, mon = null, anaEnt = null, anaSal = null, listo = null;
+  const suelto = {};    // en la Pedalera: los que andan en su propia ventana (no suenan aquí)
+  function motor() {
+    if (listo) return listo;
+    listo = (async () => {
+      try {
+        ctx = compartido ? compartido.ctx() : new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+        conWorklet = await cargarModulo(ctx);
+        entrada = ctx.createGain(); salida = ctx.createGain(); mon = ctx.createGain(); mon.gain.value = monitor ? 1 : 0;
+        anaEnt = ctx.createAnalyser(); anaEnt.fftSize = 1024; anaSal = ctx.createAnalyser(); anaSal.fftSize = 1024;
+        const lim = ctx.createDynamicsCompressor();         // por si un delay muy realimentado se pasa: a los parlantes nunca más de −1 dB
+        lim.threshold.value = -1; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = .002; lim.release.value = .1;
+        salida.connect(mon); mon.connect(lim); lim.connect(ctx.destination); salida.connect(anaSal); entrada.connect(anaEnt);
+        for (const id of AQUI) {
+          const p = ped[id];
+          p.ent = ctx.createGain(); p.sal = ctx.createGain(); p.anaIn = ctx.createAnalyser(); p.anaOut = ctx.createAnalyser();
+          p.anaIn.fftSize = p.anaOut.fftSize = 1024;
+          p.linea = crearLinea(ctx, MODO[id], Object.assign({ on: p.on ? 1 : 0 }, dsp(id, p.v)));
+          p.linea.escuchar(r => { p.info = r; });
+          p.ent.connect(p.linea.nodo); p.linea.nodo.connect(p.sal); p.ent.connect(p.anaIn); p.sal.connect(p.anaOut);
+        }
+        unir();
+        if (compartido) compartido.registrar(MI_ID, { salida: () => salida, apagar });
+        return true;
+      } catch (e) { decir('El navegador no dejó encender el audio (' + esc(e.name || e.message || e) + ').'); listo = null; return false; }
+    })();
+    return listo;
+  }
+  // une los pedales que suenan aquí, en orden. Si cambia el orden, la salida baja y sube en ~20 ms: sin chasquido
+  function unir(conRampa) {
+    if (!entrada) return;
+    const hacer = () => {
+      try { entrada.disconnect(); } catch (e) {}
+      entrada.connect(anaEnt);
+      let prev = entrada;
+      for (const id of AQUI) { const p = ped[id]; try { p.sal.disconnect(); } catch (e) {} p.sal.connect(p.anaOut); if (suelto[id]) continue; prev.connect(p.ent); prev = p.sal; }
+      prev.connect(salida);
+    };
+    if (!conRampa) { hacer(); return; }
+    const t = ctx.currentTime; salida.gain.cancelScheduledValues(t); salida.gain.setValueAtTime(salida.gain.value, t); salida.gain.linearRampToValueAtTime(0, t + .008);
+    setTimeout(() => { hacer(); const t2 = ctx.currentTime; salida.gain.setValueAtTime(0, t2); salida.gain.linearRampToValueAtTime(1, t2 + .012); }, 12);
+  }
+  const rampa = (g, v, s = .02) => { const t = ctx.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(v, t + s); };
+
+  // ---------- lo que entra por el cable (Meowdacity, la Pedalera u otro pedal) y a dónde sale ----------
+  let deId = null, deNombre = '', aId = null, aNombre = '', monitor = true, deNodo = null, hayCables = false;
+  async function enchufarEntrada() {
+    if (!(await motor())) return;
+    if (deNodo) { try { deNodo.disconnect(entrada); } catch (e) {} deNodo = null; }
+    if (!deId) return;
+    const a = app(deId); if (!a) return;
+    let n = a.salida(); if (!n && a.arrancar) { await a.arrancar(); n = a.salida(); }
+    if (n) { n.connect(entrada); deNodo = n; }
+  }
+  setInterval(() => { if (deId && !deNodo && app(deId) && app(deId).salida()) enchufarEntrada(); }, 1000);   // si lo de antes todavía no tenía audio, se reintenta
+  function pintarRuta() {
+    const ent = deId ? '<b>' + esc(deNombre) + '</b>' : sonandoPrueba ? '<b>prueba</b>' : hayCables ? 'nada enchufado' : 'la prueba';
+    const sal = aId ? '<b>' + esc(aNombre) + '</b>' + (monitor ? ' y los parlantes' : '') : 'los parlantes';
+    $('ruta').innerHTML = '<span class="etq">entra</span> ' + ent + ' <span class="flecha">→</span> <span class="etq">sale a</span> ' + sal;
+  }
+
+  // ---------- un sonido de prueba: una guitarra sintetizada (cuerda pulsada: ruido que se repite y se apaga) ----------
+  let prueba = null, sonandoPrueba = false;
+  function cuerdas(c) {
+    const sr = c.sampleRate, n = Math.round(sr * 2), buf = c.createBuffer(1, n, sr), d = buf.getChannelData(0);
+    const notas = [[0, 110], [.5, 164.81], [1, 220], [1.25, 261.63], [1.5, 164.81]];   // La2, Mi3, La3, Do4, Mi3: un arpegio que se repite cada 2 s
+    let semilla = 7; const azar = () => ((semilla = (semilla * 16807) % 2147483647) / 2147483647) * 2 - 1;
+    for (const [t0, f] of notas) {
+      const p = Math.round(sr / f), cuerda = new Float32Array(p); for (let k = 0; k < p; k++) cuerda[k] = azar();
+      const i0 = Math.round(t0 * sr);
+      for (let k = 0; k < n; k++) { const j = k % p, sig = (j + 1) % p, y = cuerda[j]; cuerda[j] = .4985 * (y + cuerda[sig]); d[(i0 + k) % n] += y * (k < 20 ? k / 20 : 1); }   // cada vuelta promedia dos vecinos: se apaga y se vuelve más grave
+    }
+    let m = 0; for (const v of d) m = Math.max(m, Math.abs(v)); for (let k = 0; k < n; k++) d[k] *= .5 / m;   // pico en −6 dB
+    return buf;
+  }
+  async function tocarPrueba(on) {
+    if (!(await motor())) return;
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (on && !prueba) { const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = cuerdas(ctx); s.loop = true; g.gain.value = 0; s.connect(g); g.connect(entrada); s.start(); prueba = { s, g }; }
+    if (prueba) rampa(prueba.g, on ? 1 : 0);
+    sonandoPrueba = on; $('bPrueba').setAttribute('aria-pressed', on ? 'true' : 'false'); $('bPrueba').querySelector('span').textContent = on ? 'prueba (sonando)' : 'prueba';
+    pintarRuta();
+  }
+  $('bPrueba').addEventListener('click', () => tocarPrueba(!sonandoPrueba));
+
+  // ---------- los pedales en la pantalla ----------
+  let elegido = SOLO || leerLS('pedales.elegido', 'delay');
+  if (!ped[elegido]) elegido = AQUI[0];
+  function htmlPedal(p) {
+    return '<div class="pedal" data-p="' + p.id + '" style="--c:' + p.c + '">' +
+      '<svg class="orejas" viewBox="0 0 156 34" preserveAspectRatio="none" aria-hidden="true"><path d="M14 34 L24 3 L52 24 Z"/><path d="M142 34 L132 3 L104 24 Z"/></svg>' +
+      '<div class="cara" role="group" aria-label="' + p.nombre + '">' +
+        '<div class="arriba"><span class="led" aria-hidden="true"></span>' + (SOLO ? '' : '<button type="button" class="soltar" aria-label="Soltar ' + p.nombre + ' en su propia ventana" title="Soltar: el ' + p.nombre.toLowerCase() + ' en su propia ventana, para cablearlo aparte">↗</button>') + '</div>' +
+        '<div class="perillas">' + p.perillas.map(k => '<span class="perilla" data-k="' + k.k + '"></span>').join('') + '</div>' +
+        '<span class="nombre">' + p.nombre + '</span>' +
+        '<button type="button" class="pisar" aria-pressed="false" aria-label="Encender ' + p.nombre + '" title="Encender o apagar"></button>' +
+      '</div>' +
+      (SOLO ? '' : '<div class="hueco-suelto" hidden><span>el ' + p.nombre.toLowerCase() + '<br>anda suelto</span><button type="button" class="traer" title="Traerlo de vuelta a la Pedalera">↙ traer</button></div>') +
+    '</div>';
+  }
+  $('tabla').innerHTML = AQUI.map(id => htmlPedal(DEF[id])).join('');
+  if (SOLO) { document.body.classList.add('suelto'); document.title = DEF[SOLO].nombre; $('titulo').textContent = DEF[SOLO].nombre; }
+  for (const id of AQUI) {
+    const p = ped[id], el = $('tabla').querySelector('.pedal[data-p="' + id + '"]'); p.el = el;
+    p.perillas = DEF[id].perillas.map(k => perilla(el.querySelector('.perilla[data-k="' + k.k + '"]'), {
+      nombre: k.et + ' del ' + DEF[id].nombre.toLowerCase(), etiqueta: k.et, min: k.min, max: k.max, paso: k.paso, cero: k.cero, desde: k.desde, texto: k.txt,
+      valor: () => p.v[k.k], poner: v => { p.v[k.k] = v; if (p.linea) p.linea.enviar(dsp(id, p.v)); elegir(id); }, guardar: () => guardarPedal(id) }));
+    el.querySelector('.pisar').addEventListener('click', () => pisar(id));
+    el.querySelector('.cara').addEventListener('pointerdown', () => elegir(id));
+    el.querySelector('.cara').addEventListener('focusin', () => elegir(id));
+    const bs = el.querySelector('.soltar'); if (bs) bs.addEventListener('click', e => { e.stopPropagation(); soltar(id); });
+    const bt = el.querySelector('.traer'); if (bt) bt.addEventListener('click', () => traer(id));
+    pintarPedal(id);
+  }
+  async function pisar(id) {
+    const p = ped[id]; p.on = !p.on; guardarPedal(id); pintarPedal(id); elegir(id);
+    if (await motor()) { if (ctx.state === 'suspended') ctx.resume(); p.linea.enviar({ on: p.on ? 1 : 0 }); }
+    const b = p.el.querySelector('.pisar'); b.classList.add('pisado'); setTimeout(() => b.classList.remove('pisado'), 120);
+  }
+  function pintarPedal(id) {
+    const p = ped[id], b = p.el.querySelector('.pisar');
+    p.el.classList.toggle('on', p.on); b.setAttribute('aria-pressed', p.on ? 'true' : 'false');
+    b.setAttribute('aria-label', (p.on ? 'Apagar ' : 'Encender ') + DEF[id].nombre);
+    p.el.classList.toggle('anda-suelto', !!suelto[id]);
+    const h = p.el.querySelector('.hueco-suelto'); if (h) h.hidden = !suelto[id];
+    p.el.querySelector('.cara').inert = !!suelto[id];
+    p.el.classList.toggle('elegido', id === elegido && !SOLO && !suelto[id]);
+  }
+  function elegir(id) { if (elegido === id) return; elegido = id; if (!SOLO) guardarLS('pedales.elegido', id); AQUI.forEach(pintarPedal); medirLienzo(); }
+  // una perilla (como las del Estudio): arrastrar hacia arriba sube, flechas, rueda, doble clic al valor de partida
+  function perilla(el, o) {
+    el.setAttribute('role', 'slider'); el.tabIndex = 0; el.setAttribute('aria-label', o.nombre);
+    el.setAttribute('aria-valuemin', o.min); el.setAttribute('aria-valuemax', o.max);
+    el.innerHTML = '<svg viewBox="0 0 28 28" aria-hidden="true"><path class="riel"/><path class="arco"/><circle class="cuerpo" cx="14" cy="14" r="8.5"/><line class="raya" x1="14" y1="14" x2="14" y2="7.5"/></svg><small>' + o.etiqueta + '</small>';
+    const ang = v => -135 + (v - o.min) / (o.max - o.min) * 270;
+    const punto = a => { const r = 12, t = (a - 90) * Math.PI / 180; return (14 + r * Math.cos(t)).toFixed(2) + ' ' + (14 + r * Math.sin(t)).toFixed(2); };
+    const arco = (a, b) => a === b ? '' : 'M' + punto(Math.min(a, b)) + ' A12 12 0 ' + (Math.abs(b - a) > 180 ? 1 : 0) + ' 1 ' + punto(Math.max(a, b));
+    el.querySelector('.riel').setAttribute('d', arco(-135, 135));
+    const pintar = () => {
+      const v = o.valor(), a = ang(v);
+      el.querySelector('.arco').setAttribute('d', arco(ang(o.desde), a));
+      el.querySelector('.raya').setAttribute('transform', 'rotate(' + a + ' 14 14)');
+      el.setAttribute('aria-valuenow', v); el.setAttribute('aria-valuetext', o.texto(v)); el.title = o.etiqueta + ': ' + o.texto(v);
+    };
+    const poner = v => { v = clamp(Math.round(v / o.paso) * o.paso, o.min, o.max); v = +v.toFixed(4); if (v !== o.valor()) { o.poner(v); pintar(); } };
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault(); e.stopPropagation(); el.focus(); el.setPointerCapture(e.pointerId);
+      const y0 = e.clientY, v0 = o.valor(), rango = o.max - o.min;
+      const mover = ev => poner(v0 + (y0 - ev.clientY) / (ev.shiftKey ? 600 : 150) * rango);
+      el.addEventListener('pointermove', mover);
+      el.addEventListener('pointerup', () => { el.removeEventListener('pointermove', mover); o.guardar(); }, { once: true });
+    });
+    el.addEventListener('keydown', e => {
+      const d = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 5, PageDown: -5 }[e.key];
+      if (d) { e.preventDefault(); poner(o.valor() + d * o.paso * (e.shiftKey ? 1 : 2)); o.guardar(); }
+      else if (e.key === 'Home') { e.preventDefault(); poner(o.cero); o.guardar(); }
+    });
+    el.addEventListener('wheel', e => { e.preventDefault(); poner(o.valor() - Math.sign(e.deltaY) * o.paso * 2); o.guardar(); }, { passive: false });
+    el.addEventListener('dblclick', () => { poner(o.cero); o.guardar(); });
+    pintar(); return { pintar };
+  }
+
+  // ---------- soltar y traer: el pedal pasa a su propia ventana (y deja de sonar aquí), o vuelve ----------
+  const pendiente = {};
+  function soltar(id) {
+    if (!compartido) return;
+    suelto[id] = true; pendiente[id] = performance.now(); unir(true); AQUI.forEach(pintarPedal);
+    if (elegido === id) { const otro = AQUI.find(x => !suelto[x]); if (otro) elegir(otro); }
+    parent.postMessage({ nelios: 'abrir', id: 'pedal-' + id }, '*');
+  }
+  function traer(id) { parent.postMessage({ nelios: 'cerrarApp', id: 'pedal-' + id }, '*'); }
+  if (!SOLO && compartido) setInterval(() => {          // ¿qué pedales andan sueltos? los que tienen su ventana abierta
+    let cambio = false;
+    for (const id of AQUI) {
+      const s = !!app('pedal-' + id) || (pendiente[id] && performance.now() - pendiente[id] < 3000);
+      if (app('pedal-' + id)) delete pendiente[id];
+      if (s !== !!suelto[id]) {
+        cambio = true; suelto[id] = s;
+        if (!s) { Object.assign(ped[id], leerPedal(id)); if (ped[id].linea) ped[id].linea.enviar(Object.assign({ on: ped[id].on ? 1 : 0 }, dsp(id, ped[id].v))); ped[id].perillas.forEach(k => k.pintar()); }   // vuelve con lo que le hicieron afuera
+      }
+    }
+    if (cambio) { unir(true); AQUI.forEach(pintarPedal); }
+  }, 400);
+  if (SOLO && compartido) {
+    $('bVolver').addEventListener('click', () => { parent.postMessage({ nelios: 'abrir', id: 'pedalera' }, '*'); parent.postMessage({ nelios: 'cerrarApp', id: MI_ID }, '*'); });
+  }
+
+  // ---------- por dentro: el mecanismo de cada pedal, con sus números ----------
+  const lz = $('lienzo'), g2 = lz.getContext('2d');
+  let W = lz.width, H = lz.height;
+  function medirLienzo() {                                   // escalado entero: cada punto del dibujo es un cuadrado de s × s
+    const caja = $('adDibujo'), cw = caja.clientWidth, ch = caja.clientHeight; if (!cw || !ch) return;
+    const s = Math.max(2, Math.min(4, Math.floor(Math.min(cw / 110, ch / 52))));
+    W = Math.floor(cw / s); H = Math.floor(ch / s); lz.width = W; lz.height = H;
+    lz.style.width = W * s + 'px'; lz.style.height = H * s + 'px'; lz.style.left = Math.floor((cw - W * s) / 2) + 'px'; lz.style.top = Math.floor((ch - H * s) / 2) + 'px';
+  }
+  addEventListener('resize', medirLienzo);
+  const VERDE = '#6CFFA8', AZUL = '#4CC9FF', ROSA = '#FF6B8B', OSCURO = '#0E2A1C', MEDIO = '#2F5E45';
+  const bufA = new Float32Array(1024), bufB = new Float32Array(1024);
+  const dB = x => x > 1e-4 ? dec(20 * Math.log10(x), 1) + ' dB' : '— dB';
+  const pico = b => { let m = 0; for (const v of b) { const a = Math.abs(v); if (a > m) m = a; } return m; };
+  let hist = new Float32Array(160), ultHist = -1, ultCuadro = 0;
+  function cuadro(t) {
+    requestAnimationFrame(cuadro);
+    if (document.hidden || t - ultCuadro < 33) return; ultCuadro = t;   // 30 cuadros por segundo
+    g2.fillStyle = '#050807'; g2.fillRect(0, 0, W, H);
+    const id = elegido, p = ped[id]; if (!p) return;
+    const lect = [];
+    if (suelto[id]) { $('adTit').textContent = 'por dentro'; $('lect').innerHTML = '<p class="apagado">Este pedal anda en su propia ventana.</p>'; return; }
+    $('adTit').textContent = 'por dentro · ' + DEF[id].nombre.toLowerCase() + (p.on ? '' : ' (apagado: pasa derecho)');
+    const hay = !!p.anaIn;
+    if (hay) { p.anaIn.getFloatTimeDomainData(bufA); p.anaOut.getFloatTimeDomainData(bufB); }
+    const sr = ctx ? ctx.sampleRate : 48000;
+    if (id === 'ganancia') dibujarGanancia(p, hay, lect);
+    else if (id === 'delay') dibujarDelay(p, hay, sr, lect);
+    else dibujarMovido(id, p, sr, lect);
+    $('lect').innerHTML = (aviso ? '<p><i>' + aviso + '</i></p>' : '') + lect.map(l => '<p>' + l + '</p>').join('');
+  }
+  // la ganancia: cada número que entra sale multiplicado. Más de 1 no cabe: al final se recorta
+  function dibujarGanancia(p, hay, lect) {
+    const g = 10 ** (p.v.db / 20), m = H >> 1, a = (H / 2 - 2) / 2;   // ±1 a media altura del borde: se ve hasta ±2
+    g2.fillStyle = OSCURO; for (let x = 0; x < W; x += 2) { g2.fillRect(x, Math.round(m - a), 1, 1); g2.fillRect(x, Math.round(m + a), 1, 1); }
+    g2.fillStyle = '#0B1A12'; g2.fillRect(0, m, W, 1);
+    if (hay) {
+      for (let x = 0; x < W; x++) {
+        const k = Math.floor(x / W * 512), vi = bufA[k], vo = bufB[k];
+        g2.fillStyle = MEDIO; g2.fillRect(x, Math.round(m - vi * a), 1, 1);
+        g2.fillStyle = Math.abs(vo) > 1 ? ROSA : AZUL; g2.fillRect(x, clamp(Math.round(m - vo * a), 0, H - 1), 1, 1);
+      }
+    }
+    const pi = hay ? pico(bufA) : 0, po = hay ? pico(bufB) : 0;
+    lect.push('cada número × <b>' + dec(g, 2) + '</b> = ' + (p.v.db > 0 ? '+' : '') + dec(p.v.db, 1) + ' dB');
+    lect.push('entra ' + dB(pi) + ' → sale <b>' + dB(po) + '</b>');
+    lect.push(po > 1 ? '<i>pasa de 1: al final se recorta</i>' : 'la raya punteada es 1, el tope');
+  }
+  // el delay: una memoria en círculo. Se escribe lo que entra y se lee un poco más atrás; lo leído vuelve a entrar más bajito
+  function dibujarDelay(p, hay, sr, lect) {
+    const tiempo = p.v.tiempo / 1000, fb = p.v.fb / 100, mix = p.v.mezcla / 100, ahora = ctx ? ctx.currentTime : performance.now() / 1000;
+    const M = hist.length, k = Math.floor((ahora % MEMORIA) / MEMORIA * M);
+    const nivel = hay ? Math.sqrt(pico(bufA)) : 0;
+    if (ultHist < 0) ultHist = k;
+    for (let j = ultHist; j !== k; j = (j + 1) % M) hist[(j + 1) % M] = nivel;   // llena lo que pasó desde el cuadro anterior
+    hist[k] = nivel; ultHist = k;
+    const R = Math.min(H / 2 - 2, W / 4), cx = Math.round(R + 3), cy = Math.round(H / 2), r0 = R * .42;
+    for (let j = 0; j < M; j++) {
+      const th = j / M * 2 * Math.PI - Math.PI / 2, l = r0 + hist[j] * (R - r0), c = Math.cos(th), s = Math.sin(th);
+      g2.fillStyle = OSCURO; g2.fillRect(Math.round(cx + c * r0), Math.round(cy + s * r0), 1, 1);
+      g2.fillStyle = MEDIO; for (let r = r0 + 1; r <= l; r += 1) g2.fillRect(Math.round(cx + c * r), Math.round(cy + s * r), 1, 1);
+    }
+    const cabeza = (fr, col) => { const th = fr * 2 * Math.PI - Math.PI / 2; g2.fillStyle = col; for (let r = 2; r <= R; r += .7) g2.fillRect(Math.round(cx + Math.cos(th) * r), Math.round(cy + Math.sin(th) * r), 1, 1); };
+    const fw = (ahora % MEMORIA) / MEMORIA, fl = ((ahora - tiempo) % MEMORIA + MEMORIA) % MEMORIA / MEMORIA;
+    cabeza(fl, ROSA); cabeza(fw, VERDE);
+    // a la derecha: lo que sale cuando entra un golpe solo (el original y sus ecos)
+    const x0 = cx + R + 6, x1 = W - 3, base = H - 4, alto = H - 10;
+    g2.fillStyle = OSCURO; g2.fillRect(x0, base + 1, x1 - x0, 1);
+    g2.fillStyle = VERDE; g2.fillRect(x0, base - alto, 1, alto);
+    let amp = mix, n = 1;
+    for (; n <= 30; n++, amp *= fb) { const x = Math.round(x0 + n * tiempo / MEMORIA * (x1 - x0)); if (x > x1 || amp < .01) break; const h = Math.max(1, Math.round(amp * alto)); g2.fillStyle = ROSA; g2.fillRect(x, base - h, 1, h); }
+    lect.push('memoria: ' + dec(MEMORIA, 1) + ' s = ' + miles(MEMORIA * sr) + ' números en círculo');
+    lect.push('<span style="color:#6CFFA8">escribe</span> aquí, <i>lee</i> ' + Math.round(p.v.tiempo) + ' ms atrás = <b>' + miles(tiempo * sr) + '</b> números');
+    lect.push('lo leído sale × ' + dec(mix, 2) + ' y vuelve a entrar × ' + dec(fb, 2));
+    lect.push('ecos: ' + [1, 2, 3].map(i => dec(mix * fb ** (i - 1), 2)).join(' · ') + (fb > 0 ? ' …' : ''));
+  }
+  // el chorus y el flanger: la misma memoria, pero cuánto atrás se lee sube y baja con una onda lenta
+  function dibujarMovido(id, p, sr, lect) {
+    const fl = id === 'flanger', q = dsp(id, p.v), base = q.base, prof = q.prof, vel = q.vel;
+    const ahora = ctx ? ctx.currentTime : 0, ph = ((p.info.ph || 0) + vel * Math.max(0, ahora - (p.info.t || ahora))) % 1;
+    const dAhora = base + prof * .5 * (1 - Math.cos(2 * Math.PI * ph));
+    const xa = 2, xb = fl ? Math.floor(W * .48) : W - 3, ya = 4, yb = H - 4, dmax = base + Math.max(prof, 1e-6);
+    const y = d => Math.round(yb - (d - base) / (dmax - base) * (yb - ya));
+    g2.fillStyle = OSCURO; g2.fillRect(xa, ya, xb - xa, 1); g2.fillRect(xa, yb, xb - xa, 1);
+    g2.fillStyle = MEDIO; for (let x = xa; x <= xb; x++) { const f = (x - xa) / (xb - xa); g2.fillRect(x, y(base + prof * .5 * (1 - Math.cos(2 * Math.PI * f))), 1, 1); }
+    const xp = Math.round(xa + ph * (xb - xa)), yp = y(dAhora);
+    g2.fillStyle = ROSA; g2.fillRect(xp - 1, yp - 1, 3, 3); g2.fillStyle = '#3A1620'; g2.fillRect(xp, ya + 1, 1, yb - ya - 1);
+    // la copia que se acerca o se aleja suena un poco más aguda o más grave
+    const dd = prof * Math.PI * vel * Math.sin(2 * Math.PI * ph), cents = 1200 * Math.log2(Math.max(1e-6, 1 - dd));
+    lect.push('lee <b>' + dec(dAhora * 1000, 2) + ' ms</b> atrás = ' + miles(dAhora * sr) + ' números');
+    lect.push('sube y baja entre ' + dec(base * 1000, 1) + ' y ' + dec((base + prof) * 1000, 1) + ' ms, ' + dec(vel, 2) + ' veces por segundo');
+    if (!fl) { lect.push('la copia suena <b>' + (cents >= 0 ? '+' : '') + dec(cents, 1) + ' cents</b>: casi la misma nota'); lect.push('original + copia × ' + dec(q.mix, 2) + ': como dos que tocan juntos'); return; }
+    // el flanger: sumar una copia tan cercana borra algunas frecuencias (huecos), y se mueven con el retraso
+    const x0 = xb + 6, x1 = W - 3, fa = Math.log(40), fbb = Math.log(16000), dbm = 12, dbn = -30, yd = v => Math.round(ya + (dbm - clamp(v, dbn, dbm)) / (dbm - dbn) * (yb - ya));
+    g2.fillStyle = OSCURO; g2.fillRect(x0, yd(0), x1 - x0, 1);
+    const fbv = q.fb, m = q.mix;
+    let prev = null;
+    for (let x = x0; x <= x1; x++) {
+      const f = Math.exp(fa + (x - x0) / (x1 - x0) * (fbb - fa)), w = 2 * Math.PI * f * dAhora, cr = Math.cos(w), ci = -Math.sin(w);
+      const dr = 1 - fbv * cr, di = -fbv * ci, den = dr * dr + di * di, qr = (cr * dr + ci * di) / den, qi = (ci * dr - cr * di) / den;   // z / (1 − realim · z)
+      const hr = (1 - m * .5) + m * .5 * qr, hi = m * .5 * qi, v = 10 * Math.log10(hr * hr + hi * hi + 1e-12), yy = yd(v);
+      g2.fillStyle = AZUL; if (prev !== null) { const a = Math.min(prev, yy), b = Math.max(prev, yy); g2.fillRect(x, a, 1, Math.max(1, b - a)); } else g2.fillRect(x, yy, 1, 1);
+      prev = yy;
+    }
+    const hueco = fbv >= 0 ? 1 / (2 * dAhora) : 1 / dAhora;
+    lect.push('a la derecha, qué frecuencias pasan: el primer hueco cae en <b>' + miles(hueco) + ' Hz</b>, y después cada ' + miles(1 / dAhora) + ' Hz');
+    lect.push('realimentación ' + Math.round(fbv * 100) + ' %: ' + (fbv >= 0 ? 'picos más altos entre los huecos' : 'los huecos se corren a las frecuencias pares'));
+  }
+
+  // ---------- NeliOS: los cables, la patita, la piel ----------
+  let aviso = '';
+  function decir(h) { aviso = h; }                    // un aviso (si el audio no enciende) queda arriba de las lecturas
+  window.addEventListener('message', e => {
+    if (e.source !== window.parent) return;
+    const d = e.data; if (!d || typeof d.nelios !== 'string') return;
+    if (d.nelios === 'cursor') {
+      if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+      else document.body.classList.remove('patita');
+      if (typeof d.ns === 'string' && d.ns.startsWith('data:image/')) document.documentElement.style.setProperty('--patita-ns', 'url(' + d.ns + ') 13 13');
+    }
+    if (d.nelios === 'cable') {
+      hayCables = !!d.cables; document.body.classList.toggle('con-cables', hayCables);
+      if (SOLO) $('bVolver').hidden = !hayCables;
+      const antes = deId; deId = d.entrada || null; deNombre = d.entradaNombre || ''; aId = d.salida || null; aNombre = d.salidaNombre || '';
+      monitor = d.monitor !== false; if (mon) rampa(mon, monitor ? 1 : 0);
+      if (antes !== deId || !deNodo) enchufarEntrada();
+      pintarRuta();
+    }
+  });
+  const ponerPiel = () => { let v = 'neli'; try { v = localStorage.getItem('meowdacity.piel') || 'neli'; } catch (e) {} document.body.dataset.piel = v === 'terminal' ? 'terminal' : 'neli'; };
+  addEventListener('storage', e => { if (e.key === 'meowdacity.piel') ponerPiel(); });
+  addEventListener('pointerdown', () => { if (ctx && ctx.state === 'suspended') ctx.resume(); }, true);
+
+  // al cerrar: se suelta todo (el motor del escritorio sigue vivo)
+  function apagar() {
+    try { if (prueba) { prueba.s.stop(); prueba.s.disconnect(); } if (deNodo) deNodo.disconnect(entrada); } catch (e) {}
+    try { if (salida) salida.disconnect(); if (mon) mon.disconnect(); for (const id of AQUI) { const p = ped[id]; if (p.linea) p.linea.nodo.disconnect(); if (p.sal) p.sal.disconnect(); } } catch (e) {}
+  }
+  addEventListener('pagehide', apagar);
+
+  // ---------- partir ----------
+  ponerPiel(); pintarRuta(); AQUI.forEach(pintarPedal); medirLienzo(); motor(); requestAnimationFrame(cuadro);
+  // para las pruebas: la misma línea, sin tiempo real (OfflineAudioContext), con una señal cualquiera
+  async function sinTiempoReal(id, v, senal, sr = 48000, on = 1) {
+    const oc = new OfflineAudioContext(2, senal.length, sr);
+    const okW = await cargarModulo(oc), antes = conWorklet; conWorklet = okW;
+    const l = crearLinea(oc, MODO[id], Object.assign({ on }, dsp(id, Object.assign(leerPedal(id).v, v)))); conWorklet = antes;
+    const b = oc.createBuffer(1, senal.length, sr); b.copyToChannel(Float32Array.from(senal), 0);
+    const s = oc.createBufferSource(); s.buffer = b; s.connect(l.nodo); l.nodo.connect(oc.destination); s.start();
+    const r = await oc.startRendering(); return { datos: Array.from(r.getChannelData(0)), worklet: okW };
+  }
+  window.__pedales = { ped, suelto, elegido: () => elegido, ctx: () => ctx, monitor: () => monitor, entrada: () => deId, conWorklet: () => conWorklet, sinTiempoReal, dsp, tocarPrueba, salida: () => salida, anaSal: () => anaSal };
+})();
+
+</script>
+</body>
+</html>
