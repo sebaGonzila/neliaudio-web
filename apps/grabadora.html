@@ -107,9 +107,9 @@ body[data-piel="terminal"] .pantalla { border-radius: 0; border-color: var(--lin
 .tomas-btn span { overflow: hidden; text-overflow: ellipsis; }
 
 /* el menú de las tomas */
-.menu { position: fixed; z-index: 10; min-width: 210px; max-height: calc(100% - 16px); overflow-y: auto; padding: 5px; background: var(--panel); border: var(--borde) solid var(--linea); border-radius: calc(var(--radio-btn) + 3px); box-shadow: 0 14px 34px rgba(62, 60, 140, .25); }
+.menu { position: fixed; z-index: 10; min-width: 0; width: max-content; max-height: calc(100% - 16px); overflow-y: auto; padding: 5px; background: var(--panel); border: var(--borde) solid var(--linea); border-radius: calc(var(--radio-btn) + 3px); box-shadow: 0 14px 34px rgba(62, 60, 140, .25); }
 body[data-piel="neli"] .menu { background: #fff; }
-.menu button { display: flex; justify-content: space-between; gap: 10px; width: 100%; padding: 6px 8px; background: none; border: 0; border-radius: 6px; text-align: left; color: var(--texto); }
+.menu button { display: flex; justify-content: space-between; gap: 10px; width: 100%; white-space: normal; overflow-wrap: anywhere; padding: 6px 8px; background: none; border: 0; border-radius: 6px; text-align: left; color: var(--texto); }
 .menu button:hover, .menu button:focus-visible { background: var(--neon-suave); }
 .menu button[aria-current="true"] { color: var(--tinta); font-weight: 700; }
 .menu .dat { color: var(--tenue); font-family: var(--f-numero); }
@@ -426,9 +426,11 @@ body.con-cables .toma-hembra .hueco { visibility: hidden; }
   // el menú: las tomas (para elegir cuál suena) y qué hacer con la elegida
   let menuAbierto = null;
   function abrirMenu(ancla, html, alElegir) {
-    const m = $('menu'); m.innerHTML = html; m.hidden = false; m.style.maxHeight = (innerHeight - 12) + 'px';   // la ventana es chica: el menú nunca se sale de ella
+    // el menú va entre las dos columnas de enchufes: los enchufes y cables de NeliOS están encima de la ventana y lo taparían
+    const col = $('tSalida').closest('.lado').getBoundingClientRect(), lado = Math.round(innerWidth - col.left + 4);
+    const m = $('menu'); m.innerHTML = html; m.hidden = false; m.style.maxHeight = (innerHeight - 12) + 'px'; m.style.maxWidth = (innerWidth - 2 * lado) + 'px';   // y nunca se sale de la ventana
     const r = ancla.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
-    m.style.left = Math.max(6, Math.min(innerWidth - w - 6, r.right - w)) + 'px';
+    m.style.left = Math.max(lado, Math.min(innerWidth - w - lado, r.right - w)) + 'px';
     m.style.top = Math.max(6, r.top - h - 6 > 4 ? r.top - h - 6 : Math.min(innerHeight - h - 6, r.bottom + 6)) + 'px';
     menuAbierto = { ancla, alElegir }; ancla.setAttribute('aria-expanded', 'true');
     const p = m.querySelector('button'); if (p) p.focus();
