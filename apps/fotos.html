@@ -80,7 +80,7 @@ button { font: inherit; color: inherit; }
 
 /* abajo, todo junto: anterior, las fotos, siguiente, cuál es y guardar */
 #abajo { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #EFEAF9; border-top: 2px solid var(--azul); }
-#tira { flex: 0 1 auto; min-width: 0; max-width: 284px; display: flex; gap: 8px; padding: 2px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+#tira { flex: 0 1 auto; min-width: 0; display: flex; gap: 8px; padding: 2px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
 #tira button { scroll-snap-align: start; }
 #info { flex: none; margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 0; max-width: 160px; }
 #nombre { font-weight: 700; color: var(--navy); font-size: 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -97,8 +97,7 @@ button { font: inherit; color: inherit; }
   #stickers { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
   #escena { padding: 10px; }
   #abajo { flex-wrap: wrap; gap: 8px; }
-  #tira { flex: 1 1 100%; order: -1; max-width: none; }
-  #tira button { width: calc((100vw - 48px) / 4); }   /* de a 4, a lo ancho */
+  #tira { flex: 1 1 100%; order: -1; }
   #info { flex: 1; align-items: center; max-width: none; }
   #stBtn { padding: 0 10px; }
 }
