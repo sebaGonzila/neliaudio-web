@@ -64,6 +64,13 @@ button { font: inherit; color: inherit; }
 #det .ver { display: grid; place-items: center; min-height: 120px; background: var(--crema); border: 2px solid var(--linea); border-radius: 10px; padding: 8px; }
 #det .ver img { max-width: 100%; max-height: 220px; border-radius: 6px; }
 #det .ver canvas { width: 100%; height: 90px; display: block; }
+#det .ver:has(ul.adentro) { grid-template-columns: minmax(0, 1fr); }
+#det .ver ul.adentro { min-width: 0; list-style: none; margin: 0; padding: 0; width: 100%; font: 12px/1.6 'IBM Plex Mono', ui-monospace, monospace; color: var(--tinta); }
+#det .ver ul.adentro li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--linea); }
+#det .ver ul.adentro li span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#det .ver ul.adentro li span:last-child { flex: none; white-space: nowrap; }
+#det .botones { display: flex; gap: 8px; flex-wrap: wrap; }
+#det a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 #det .ver pre { margin: 0; white-space: pre-wrap; font: 12px/1.5 'IBM Plex Mono', ui-monospace, monospace; color: var(--tinta); max-height: 260px; overflow: auto; width: 100%; }
 #det h3 { margin: 0; font-size: 14px; color: var(--navy); overflow-wrap: anywhere; }
 #det dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px; }
@@ -120,13 +127,14 @@ button { font: inherit; color: inherit; }
     return (await fetch(url)).arrayBuffer();
   }
   // qué app abre cada tipo. Si no está instalada, el escritorio avisa.
-  const ABRE = { imagen: { id: 'fotos', nombre: 'Fotos' }, audio: { id: 'meowamp', nombre: 'Meowamp' }, texto: { id: 'notas', nombre: 'Notas' } };
-  const TIPO = { imagen: 'imagen', audio: 'audio', texto: 'texto' };
+  const ABRE = { imagen: { id: 'fotos', nombre: 'Fotos' }, audio: { id: 'meowamp', nombre: 'Meowamp' }, texto: { id: 'notas', nombre: 'Notas' }, zip: { id: 'meowdacity', nombre: 'Meowdacity', instalar: true } };
+  const TIPO = { imagen: 'imagen', audio: 'audio', texto: 'texto', zip: 'comprimido (.zip)' };
 
   const ICO = {
     carpeta: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 51 V35 L9 8 L22 21 H42 L55 8 L59 35 V51 Q59 58 52 58 H12 Q5 58 5 51 Z" fill="#FFD37D" stroke="#2A2D52" stroke-width="3.5" stroke-linejoin="round"/><path d="M9 31 H55" stroke="#D9A441" stroke-width="2.2" stroke-linecap="round"/></svg>',
     audio: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="10" fill="#1A1C2E" stroke="#2A2D52" stroke-width="4"/><polyline points="13,32 18,32 21,20 25,44 29,14 33,50 37,24 41,38 45,28 48,32 51,32" fill="none" stroke="#6CFFA8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     texto: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 6 H40 L52 18 V58 H14 Z" fill="#fff" stroke="#2A2D52" stroke-width="4" stroke-linejoin="round"/><path d="M40 6 V18 H52" fill="#DCCEF8" stroke="#2A2D52" stroke-width="3" stroke-linejoin="round"/><g stroke="#A8B8E4" stroke-width="3.5" stroke-linecap="round"><path d="M21 28 H45"/><path d="M21 36 H45"/><path d="M21 44 H37"/></g></svg>',
+    zip: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 8 H44 L54 18 V56 H12 Z" fill="#F7B8CB" stroke="#2A2D52" stroke-width="4" stroke-linejoin="round"/><path d="M30 8 V44" stroke="#2A2D52" stroke-width="3" stroke-dasharray="4 4"/><rect x="25" y="40" width="10" height="11" rx="2" fill="#FFD37D" stroke="#2A2D52" stroke-width="3"/></svg>',
     imagen: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="11" width="50" height="42" rx="6" fill="#DCCEF8" stroke="#2A2D52" stroke-width="4"/><circle cx="22" cy="25" r="5" fill="#FFD37D" stroke="#2A2D52" stroke-width="3"/><path d="M11 49 L27 33 L37 43 L44 36 L53 45" fill="none" stroke="#2A2D52" stroke-width="3.5" stroke-linejoin="round"/></svg>'
   };
 
@@ -196,18 +204,21 @@ button { font: inherit; color: inherit; }
     if (a.tipo === 'imagen') filas.push(['medidas', num(a.ancho) + ' × ' + num(a.alto) + ' px'], ['puntos', num(a.ancho * a.alto)]);
     if (a.tipo === 'audio') filas.push(['duración', a.dur.toLocaleString('es-CL') + ' s'], ['por segundo', num(a.tasa) + ' números'], ['canales', a.canales === 1 ? '1 (mono)' : a.canales + ' (estéreo)'], ['en total', num(a.numeros) + ' números'], ['formato', a.formato === 'mp3' ? 'mp3 (comprimido)' : 'wav (los números tal cual)']);
     if (a.tipo === 'texto') filas.push(['líneas', num(a.lineas)]);
-    if (a.autor) filas.push(['lo escribió', a.autor]);
+    if (a.tipo === 'zip') filas.push(['sin comprimir', num(a.sinComprimir) + ' bytes'], ['comprimido', Math.round(100 * a.bytes / a.sinComprimir) + ' % del original']);
+    if (a.autor) filas.push([a.tipo === 'zip' ? 'lo dejó' : 'lo escribió', a.autor]);
     if (a.credito) filas.push(['crédito', a.credito]);
     const app = ABRE[a.tipo];
     d.innerHTML = '<button class="btn" id="cerrarDet">cerrar</button><div class="ver" id="ver"></div><h3>' + esc(a.nombre) + '</h3>' +
       (a.desc ? '<p class="nota">' + esc(a.desc) + '</p>' : '') +
       '<dl>' + filas.map(([k, v]) => '<dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd>').join('') + '</dl>' +
-      '<button class="btn" id="abrirBtn">abrir con ' + app.nombre + '</button>';
+      (app.instalar ? '<div class="botones"><button class="btn" id="abrirBtn">instalar</button><a class="btn" id="bajarBtn" href="' + esc(urlDe(a.ruta)) + '" download="' + esc(a.nombre) + '">bajar .zip</a></div>'
+                    : '<button class="btn" id="abrirBtn">abrir con ' + app.nombre + '</button>');
     $('cerrarDet').addEventListener('click', () => mostrarDetalle(null));
     $('abrirBtn').addEventListener('click', () => abrirArchivo(a));
     const v = $('ver');
     if (a.tipo === 'imagen') v.innerHTML = '<img src="' + esc(urlDe(a.mini)) + '" alt="' + esc(a.desc || a.nombre) + '">';
     if (a.tipo === 'texto') { v.innerHTML = '<pre>…</pre>'; try { const t = new TextDecoder().decode(await bytesDe(urlDe(a.ruta))); if (sel === a) v.firstChild.textContent = t; } catch (e) { v.firstChild.textContent = 'no se pudo leer.'; } }
+    if (a.tipo === 'zip') v.innerHTML = '<ul class="adentro">' + (a.contenido || []).map(c => '<li><span title="' + esc(c.nombre) + '">' + esc(c.nombre.split('/').pop()) + '</span><span>' + kb(c.bytes) + '</span></li>').join('') + '</ul>';
     if (a.tipo === 'audio') { v.innerHTML = '<canvas aria-label="La forma de onda completa de ' + esc(a.nombre) + '"></canvas>'; dibujarOnda(a, v.firstChild); }
   }
   // la onda entera, sin sonar: se decodifica en un contexto que no tiene salida
@@ -237,6 +248,12 @@ button { font: inherit; color: inherit; }
   // ---- abrir: el escritorio lo pasa a la app que corresponde ----
   function abrirArchivo(a) {
     const app = ABRE[a.tipo];
+    if (app.instalar) {   // un .zip con una app adentro: en NeliOS ya quedó instalada; se abre
+      if (window.parent === window) { avisar('para instalarla: bájala, descomprime y abre ' + app.id + '.html.'); return; }
+      avisar(app.nombre + ' ya está instalada en el escritorio. la abro.');
+      try { window.parent.postMessage({ nelios: 'abrir', id: app.id }, '*'); } catch (e) {}
+      return;
+    }
     if (window.parent === window) { avisar('abre el escritorio de NeliOS para usar ' + app.nombre + '.'); return; }
     try { window.parent.postMessage({ nelios: 'abrir', id: app.id, archivo: a.ruta }, '*'); } catch (e) {}
   }

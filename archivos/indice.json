@@ -1,6 +1,10 @@
 {
  "carpetas": [
   {
+   "id": "descargas",
+   "nombre": "Descargas"
+  },
+  {
    "id": "fotos",
    "nombre": "Fotos"
   },
@@ -403,6 +407,27 @@
    "fecha": "2026-10-11",
    "credito": "Neli · grabada por Seba",
    "desc": "un maullido de Neli que sube y baja: 696 → 744 → 543 Hz"
+  },
+  {
+   "ruta": "descargas/meowdacity.zip",
+   "nombre": "meowdacity.zip",
+   "carpeta": "descargas",
+   "tipo": "zip",
+   "bytes": 255285,
+   "sinComprimir": 503284,
+   "contenido": [
+    {
+     "nombre": "meowdacity/meowdacity.html",
+     "bytes": 502902
+    },
+    {
+     "nombre": "meowdacity/leeme.txt",
+     "bytes": 382
+    }
+   ],
+   "fecha": "2026-10-12",
+   "autor": "barti",
+   "desc": "Meowdacity, para instalar. Barti la dejó aquí. Adentro va la app en un solo archivo: funciona sin internet."
   },
   {
    "ruta": "documentos/leeme.txt",
