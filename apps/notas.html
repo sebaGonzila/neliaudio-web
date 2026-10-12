@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/ibm-plex-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/silkscreen-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fuentes/vt323-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<title>Notas</title>
+<style>
+@font-face { font-family: 'Silkscreen'; src: url(/fuentes/silkscreen-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'VT323'; src: url(/fuentes/vt323-latin-400-normal.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url(/fuentes/ibm-plex-sans-latin-700-normal.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+/* Un bloc de notas con la piel de Neli: sin adornos; el papel y los stickers los pone quien escribe. */
+:root {
+  --fondo: #000; --fondo-img: none; --panel: #04100A; --barra: #08180F; --linea: #0E3A24; --linea-suave: #0E3A24;
+  --tenue: #2F9E63; --neon: #6CFFA8; --neon-borde: #6CFFA8; --neon-suave: rgba(108,255,168,.14); --texto: #A8F0C8; --tinta: #F2FFF7; --sobre-neon: #000;
+  --lienzo: #010502; --rejilla: #041A0E; --cero: #0E3A24; --onda: #B794FF; --alto: #F2FFF7; --ve: #B794FF; --cabezal: #4CC9FF; --salto: #FFD23F;
+  --umbral: #FF6B8B; --ambar: #FFD23F; --nota: #4CC9FF; --tecla: #071A10; --negra: #000; --brillo: rgba(108,255,168,.45);
+  --radio: 0px; --radio-btn: 0px; --pista: #0E3A24; --boton: transparent;
+  --sombra-panel: 6px 6px 0 #0E3A24; --sombra-btn: 3px 3px 0 #0E3A24;
+  --f-marca: 'Silkscreen', 'Courier New', monospace;
+  --f-etiqueta: 'Silkscreen', 'Courier New', monospace;
+  --f-numero: 'VT323', 'Courier New', monospace;
+  --f-texto: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --k-num: 1;                       /* VT323 es chica: la otra fuente de números se escala a 0,72 */
+  --borde: 2px;
+  color-scheme: dark;
+}
+body[data-piel="neli"] {
+  --fondo: #E4E0F8; --fondo-img: radial-gradient(1200px 600px at 15% -10%, #F3EEFF 0%, transparent 60%), radial-gradient(900px 500px at 110% 110%, #D6DDF8 0%, transparent 60%), linear-gradient(160deg, #E9E3FB, #DCDDF7);
+  --panel: rgba(255,255,255,.74); --barra: linear-gradient(180deg, #F1F3FE, #E4E9FB); --linea: #B7C1EC; --linea-suave: #D4DAF4;
+  --tenue: #575C93; --neon: #F27FA3; --neon-borde: #E8668F; --neon-suave: #FFE6EE; --texto: #3E4380; --tinta: #2B2F66; --sobre-neon: #2A2D52;
+  --lienzo: #FBFAFF; --rejilla: #ECEAFB; --cero: #D9D3F6; --onda: #DCD4FA; --alto: #7A63E0; --ve: #7A63E0; --cabezal: #5BBFEF; --salto: #F27FA3;
+  --umbral: #F27FA3; --ambar: #D9962A; --nota: #3D8FC6; --tecla: #FFFFFF; --negra: #3E4380; --brillo: rgba(242,127,163,.35);
+  --radio: 14px; --radio-btn: 9px; --pista: #D6DBF4; --boton: #FFFFFF;
+  --sombra-panel: 0 8px 24px rgba(72,76,150,.12), 0 1px 0 rgba(255,255,255,.9) inset; --sombra-btn: 0 1px 2px rgba(72,76,150,.12);
+  --f-marca: 'Silkscreen', 'Courier New', monospace;
+  --f-etiqueta: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-numero: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --f-texto: 'IBM Plex Sans', system-ui, sans-serif;
+  --k-num: .72;
+  --borde: 1.5px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--fondo-img), var(--fondo); color: var(--texto); font-family: var(--f-texto); font-size: 12px; line-height: 1.35; overflow: hidden; }
+body[data-piel="neli"] { --tenue: #575C93; }
+body.en-ventana { --fondo-img: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px dashed var(--tinta); outline-offset: 2px; }
+.etq { font-family: var(--f-etiqueta); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* los papeles: las rayas caen justo bajo cada renglón (28 px) */
+:root { --renglon: 28px; --papel: #FFFCF4; --raya: #B7CDEA; --tinta-nota: #2A2D52; }
+body[data-piel="terminal"] { --papel: #0B0F14; --raya: #1E3A2C; --tinta-nota: #6CFFA8; }
+
+main { height: 100%; display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+/* la lista de notas */
+.lista { display: flex; flex-direction: column; min-height: 0; border-right: var(--borde) solid var(--linea); background: var(--panel); }
+body[data-piel="neli"] .lista { background: rgba(255,255,255,.55); }
+.lista .cab { display: flex; align-items: center; justify-content: space-between; padding: 10px 10px 6px; }
+.lista ul { list-style: none; margin: 0; padding: 0 6px 10px; overflow-y: auto; flex: 1; }
+.lista li button { width: 100%; display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 2px 8px; align-items: center; padding: 7px 8px; background: none; border: 0; border-radius: 8px; text-align: left; }
+.lista li button:hover { background: var(--neon-suave); }
+.lista li button[aria-current="true"] { background: var(--neon-suave); box-shadow: inset 0 0 0 var(--borde) var(--neon-borde); }
+.lista .muestra { width: 14px; height: 18px; border-radius: 3px; border: 1.5px solid var(--linea); background: var(--papel); grid-row: span 2; }
+.lista .tit { font-weight: 600; font-size: 12.5px; color: var(--texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lista .fecha { font-size: 10.5px; color: var(--tenue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lista .grupo { padding: 10px 8px 4px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; background: var(--boton); border: var(--borde) solid var(--linea); border-radius: var(--radio-btn); color: var(--tinta); box-shadow: var(--sombra-btn); font-family: var(--f-etiqueta); font-size: 10.5px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+.chip:hover:not(:disabled) { border-color: var(--tenue); }
+.chip[aria-pressed="true"] { background: var(--neon-suave); border-color: var(--neon-borde); }
+.chip:disabled { opacity: .45; cursor: default; }
+
+/* la nota abierta */
+.nota { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.barra { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: var(--borde) solid var(--linea); flex-wrap: wrap; }
+.barra .volver { display: none; }
+.papeles { display: flex; gap: 4px; align-items: center; }
+.papeles button { width: 30px; height: 28px; padding: 0; border: var(--borde) solid var(--linea); border-radius: 6px; background-color: var(--papel); }
+.papeles button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--neon-borde); border-color: var(--tinta); }
+.barra .espacio { flex: 1; }
+.barra .de-neli { font-size: 11px; color: var(--tenue); }
+
+.hoja { position: relative; flex: 1; min-height: 0; overflow-y: auto; background-color: var(--papel); background-attachment: local; }
+.hoja[data-papel="rayado"] { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)); background-position: 0 58px; }
+.hoja[data-papel="cuadros"] { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)), repeating-linear-gradient(to right, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)); background-position: 0 58px, 10px 0; }
+.hoja[data-papel="puntos"] { background-image: radial-gradient(circle, var(--raya) 1.6px, transparent 1.8px); background-size: var(--renglon) var(--renglon); background-position: 10px 44px; }
+/* pentagrama: cinco líneas cada 7 px, y un renglón libre entre uno y otro */
+.hoja[data-papel="pentagrama"] { background-image: repeating-linear-gradient(to bottom, var(--raya) 0 1px, transparent 1px 7px, var(--raya) 7px 8px, transparent 8px 14px, var(--raya) 14px 15px, transparent 15px 21px, var(--raya) 21px 22px, transparent 22px 28px, var(--raya) 28px 29px, transparent 29px 84px); background-position: 0 72px; }
+.hoja input.titulo { display: block; width: 100%; height: 44px; margin: 6px 0 8px; padding: 0 24px; background: transparent; border: 0; font: 700 20px/44px var(--f-texto); color: var(--tinta-nota); }
+.hoja input.titulo:focus { outline: none; }
+.hoja input.titulo::placeholder, .hoja textarea::placeholder { color: var(--tenue); opacity: .6; }
+.hoja textarea { display: block; width: 100%; min-height: calc(100% - 58px); padding: 0 24px 80px; background: transparent; border: 0; resize: none; overflow: hidden; font: 400 16px/var(--renglon) var(--f-texto); color: var(--tinta-nota); }
+.hoja textarea:focus { outline: none; }
+.hoja[data-papel="pentagrama"] textarea { line-height: 28px; }
+
+/* stickers: con su borde blanco, como los de verdad */
+.sticker { position: absolute; width: 64px; height: 64px; touch-action: none; cursor: grab; user-select: none; filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 3px 4px rgba(42,45,82,.25)); }
+.sticker svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.sticker.recien { animation: pegar .22s ease-out; }
+@keyframes pegar { from { transform: var(--rot) scale(1.35); } to { transform: var(--rot) scale(1); } }
+.sticker:focus-visible { outline: 2px dashed var(--tinta); outline-offset: 4px; }
+.solo-leer .sticker { cursor: default; }
+body.arrastrando, body.arrastrando * { cursor: grabbing !important; }
+.fantasma { position: fixed; z-index: 50; width: 64px; height: 64px; pointer-events: none; opacity: .9; }
+.fantasma.fuera { opacity: .35; }
+
+/* la plancha de stickers */
+.plancha { position: absolute; right: 12px; top: 54px; z-index: 20; width: 232px; padding: 12px; background: #F2F4FB; border: var(--borde) solid var(--linea); border-radius: 14px; box-shadow: 0 14px 34px rgba(62, 60, 140, .25); }
+body[data-piel="terminal"] .plancha { background: #10161C; border-radius: 0; }
+.plancha .cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.plancha .grilla { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.plancha button.st { width: 46px; height: 46px; padding: 0; background: none; border: 0; justify-self: center; touch-action: none; cursor: grab; filter: drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(0 2px 2px rgba(42,45,82,.2)); }
+.plancha button.st svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.plancha p { margin: 8px 0 0; font-size: 10.5px; color: var(--tenue); }
+.vacia { margin: auto; text-align: center; color: var(--tenue); padding: 40px 20px; }
+
+/* celular y ventanas angostas: una cosa a la vez */
+@media (max-width: 600px) {
+  main { grid-template-columns: 1fr; }
+  main.abierta .lista { display: none; }
+  main:not(.abierta) .nota { display: none; }
+  .barra .volver { display: inline-flex; }
+  .plancha { right: 8px; left: 8px; width: auto; }
+  .hoja input.titulo, .hoja textarea { padding-left: 16px; padding-right: 16px; }
+}
+body.patita, body.patita button { cursor: var(--patita), auto; }
+</style>
+</head>
+<body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
+<main role="main" id="todo">
+  <h1 class="sr">Notas</h1>
+  <aside class="lista" aria-label="Las notas">
+    <div class="cab"><span class="etq">notas</span><button type="button" class="chip" id="bNueva" title="Una nota nueva">+ nueva</button></div>
+    <ul id="lista"></ul>
+  </aside>
+  <section class="nota" aria-label="La nota abierta">
+    <div class="barra">
+      <button type="button" class="chip volver" id="bVolver">← notas</button>
+      <div class="papeles" id="papeles" role="group" aria-label="El papel"></div>
+      <button type="button" class="chip" id="bStickers" aria-pressed="false" aria-expanded="false" title="La plancha de stickers">stickers</button>
+      <span class="espacio"></span>
+      <span class="de-neli" id="deNeli" hidden>nota de neli · solo para leer</span>
+      <button type="button" class="chip" id="bBorrar" title="Borrar esta nota">borrar</button>
+    </div>
+    <div class="hoja" id="hoja" data-papel="rayado">
+      <input class="titulo" id="titulo" type="text" maxlength="80" placeholder="título" aria-label="Título de la nota" autocomplete="off">
+      <textarea id="texto" placeholder="escribe aquí…" aria-label="Texto de la nota" spellcheck="false"></textarea>
+    </div>
+    <div class="plancha" id="plancha" hidden>
+      <div class="cab"><span class="etq">stickers</span><button type="button" class="chip" id="bCerrarPlancha" aria-label="Cerrar la plancha">×</button></div>
+      <div class="grilla" id="grilla"></div>
+      <p>Arrástralos a la hoja. Para sacar uno, arrástralo fuera o selecciónalo y aprieta Supr.</p>
+    </div>
+  </section>
+</main>
+<script>
+// Las caras de Neli y Barti para la caja de diálogo.
+// Una sola cara en SVG por personaje, con ojos, cejas y boca que cambian según la expresión.
+// Estilo del logo de NeliOS: cuadro de color, contorno grueso, formas simples.
+//
+// Neli:  blanca, con una mancha atigrada (gris café con rayas) sobre la oreja y el ojo de un lado. Fondo naranjo.
+// Barti: blanco entero, con un "casco" negro en la parte de arriba de la cabeza. Fondo celeste.
+
+window.EXPRESIONES = ['feliz', 'seria', 'sorprendida', 'pensando', 'enojada', 'contenta'];
+
+window.GATOS = {
+  neli:  { nombre: 'NELI',  fondo: '#F08A5D', etiqueta: '#F17D9E' },
+  barti: { nombre: 'BARTI', fondo: '#7EC8E3', etiqueta: '#4FA3D9' },
+};
+
+window.caraSVG = function (expr, abierta, gato = 'neli') {
+  const L = '#1F2233';                    // contorno
+  const BLANCO = '#FBF7F1', ROSA = '#F3A3A8';
+  const TABBY = '#8E8377', RAYA = '#5F574F', NEGRO = '#23242B';
+  const g = GATOS[gato];
+  const id = gato;                        // ids únicos por gato: no chocan con otros elementos de la página
+  const trazo = `stroke="${L}" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"`;
+  const fino = `stroke="${L}" stroke-width="5" stroke-linecap="round" fill="none"`;
+
+  // ---- ojos ----
+  const ojo = (x, y, rx, ry, dx = 0, dy = 0) =>
+    `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${L}"/>` +
+    `<circle cx="${x + dx - rx * .3}" cy="${y + dy - ry * .35}" r="${Math.max(2.4, rx * .32)}" fill="#fff"/>`;
+  let ojos = '', cejas = '', boca = '', mejillas = false;
+  const EY = 112;
+
+  if (expr === 'feliz') {
+    ojos = ojo(72, EY, 8.5, 11) + ojo(128, EY, 8.5, 11);
+    mejillas = true;
+  } else if (expr === 'seria') {
+    // párpado a media asta: el ojo aparece recortado por arriba (ojos verde amarillo, como en la foto)
+    ojos = `<clipPath id="${id}Lid"><rect x="0" y="${EY - 2}" width="200" height="40"/></clipPath>` +
+      `<g clip-path="url(#${id}Lid)"><ellipse cx="72" cy="${EY}" rx="11" ry="10" fill="#C9CC72" stroke="${L}" stroke-width="4"/>` +
+      `<circle cx="74" cy="${EY + 3}" r="4.5" fill="${L}"/>` +
+      `<ellipse cx="128" cy="${EY}" rx="11" ry="10" fill="#C9CC72" stroke="${L}" stroke-width="4"/>` +
+      `<circle cx="130" cy="${EY + 3}" r="4.5" fill="${L}"/></g>` +
+      `<path d="M59 ${EY - 2} H85 M115 ${EY - 2} H141" ${fino}/>`;
+  } else if (expr === 'sorprendida') {
+    ojos = ojo(72, EY, 11, 13) + ojo(128, EY, 11, 13);
+    cejas = `<path d="M60 88 Q72 80 84 87 M116 87 Q128 80 140 88" ${fino}/>`;
+  } else if (expr === 'pensando') {
+    ojos = ojo(74, EY - 2, 8.5, 10.5, 2, -2) + ojo(130, EY - 2, 8.5, 10.5, 2, -2);
+    cejas = `<path d="M117 90 Q129 84 141 90" ${fino}/><path d="M61 94 H84" ${fino}/>`;
+  } else if (expr === 'enojada') {
+    ojos = ojo(72, EY + 2, 8, 9) + ojo(128, EY + 2, 8, 9);
+    cejas = `<path d="M58 92 L86 101 M142 92 L114 101" stroke="${L}" stroke-width="7" stroke-linecap="round"/>`;
+  } else if (expr === 'contenta') {
+    ojos = `<path d="M61 ${EY + 3} Q72 ${EY - 11} 83 ${EY + 3} M117 ${EY + 3} Q128 ${EY - 11} 139 ${EY + 3}" ${fino} stroke-width="6"/>`;
+    mejillas = true;
+  }
+
+  // ---- boca ----
+  if (abierta) {
+    const ry = expr === 'sorprendida' ? 10 : 8.5;
+    boca = `<ellipse cx="100" cy="148" rx="9.5" ry="${ry}" fill="${L}"/>` +
+      `<ellipse cx="100" cy="${148 + ry * .45}" rx="6" ry="${ry * .4}" fill="#F27B8C"/>`;
+  } else if (expr === 'seria') {
+    boca = `<path d="M91 146 H109" ${fino}/>`;
+  } else if (expr === 'enojada') {
+    boca = `<path d="M89 150 Q100 140 111 150" ${fino}/>`;
+  } else if (expr === 'sorprendida') {
+    boca = `<ellipse cx="100" cy="148" rx="6" ry="7" fill="${L}"/>`;
+  } else if (expr === 'pensando') {
+    boca = `<path d="M92 146 Q100 150 108 144" ${fino}/>`;
+  } else {
+    boca = `<path d="M86 141 Q93 150 100 141 Q107 150 114 141" ${fino}/>`;
+  }
+  const rubor = mejillas
+    ? `<ellipse cx="56" cy="134" rx="10" ry="6" fill="${ROSA}" opacity=".9"/><ellipse cx="144" cy="134" rx="10" ry="6" fill="${ROSA}" opacity=".9"/>`
+    : '';
+
+  // ---- marcas del pelaje ----
+  const CABEZA = 'M34 100 L46 34 L92 62 Q100 60 108 62 L154 34 L166 100 Q176 170 100 172 Q24 170 34 100 Z';
+  const orejaIzq = `<path d="M46 50 L58 46 L48 82 Z" fill="${ROSA}"/>`;
+  const orejaDer = `<path d="M154 50 L142 46 L152 82 Z" fill="${ROSA}"/>`;
+  let pelaje = '';
+  if (gato === 'neli') {
+    // mancha atigrada sobre la oreja y el ojo de la izquierda, con rayas en la frente
+    pelaje =
+      `<path d="M0 0 H102 Q100 56 94 80 Q90 100 92 120 Q80 132 58 130 Q42 128 30 120 L0 120 Z" fill="${TABBY}"/>` +
+      `<path d="M58 66 Q72 60 88 66 M54 78 Q70 72 90 78 M40 58 Q46 52 54 54" ${fino} stroke="${RAYA}" stroke-width="4.5"/>` +
+      orejaDer;
+  } else {
+    // casco negro en la parte de arriba, entre las orejas; las orejas quedan blancas
+    pelaje =
+      orejaIzq + orejaDer +
+      `<path d="M78 40 H122 L138 62 C130 74 114 81 97 81 C83 81 72 76 64 66 Z" fill="${NEGRO}"/>` +
+      // la partidura: una muesca blanca chica en el borde de abajo, casi al centro, un poco a la derecha
+      `<path d="M101 83 Q104 76 106 69 Q108 76 112 82 Z" fill="${BLANCO}"/>`;
+  }
+
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="188" height="188" rx="38" fill="${g.fondo}" ${trazo}/>
+  <clipPath id="${id}Cabeza"><path d="${CABEZA}"/></clipPath>
+  <path d="${CABEZA}" fill="${BLANCO}"/>
+  <g clip-path="url(#${id}Cabeza)">${pelaje}</g>
+  <path d="${CABEZA}" fill="none" ${trazo}/>
+  <path d="M14 122 L50 126 M16 140 L50 136 M186 122 L150 126 M184 140 L150 136" ${fino} stroke-width="4.5"/>
+  ${rubor}${cejas}${ojos}
+  <path d="M94 128 H106 L100 135 Z" fill="#E9868F" stroke="${L}" stroke-width="3" stroke-linejoin="round"/>
+  ${boca}
+</svg>`;
+};
+
+</script>
+<script>
+(() => {
+  'use strict';
+  /* Notas v01: un bloc de notas con la piel de Neli. Cuatro papeles (rayado, cuadros, puntos, pentagrama), una plancha de stickers
+     que se arrastran a la hoja, y nada más. Se guarda solo en el navegador. Las notas de Neli vienen adentro y son para leer.
+     Para los videos: window.__notas.escribir(texto) tipea letra por letra y .pegar(sticker, x, y) pega un sticker con su saltito. */
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const leerLS = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const guardarLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const L = '#2A2D52', T = 'stroke="' + L + '" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+
+  // ---------- los stickers (dibujos de 64 × 64; las caras de Neli son las de siempre) ----------
+  let nId = 0;
+  const cara = e => window.caraSVG ? window.caraSVG(e, false, 'neli').replace(/id="(\w+)"/g, (m, a) => 'id="' + a + '_' + (++nId) + '"').replace(/url\(#(\w+)\)/g, (m, a) => 'url(#' + a + '_' + nId + ')') : '';
+  const S = {
+    'neli-feliz': () => cara('feliz'), 'neli-contenta': () => cara('contenta'), 'neli-sorprendida': () => cara('sorprendida'),
+    'neli-pensando': () => cara('pensando'), 'neli-seria': () => cara('seria'), 'neli-enojada': () => cara('enojada'),
+    nota: () => '<svg viewBox="0 0 64 64"><path d="M26 46 V12 L48 8 V18 L30 22" fill="none" ' + T + '/><ellipse cx="20" cy="47" rx="9" ry="7" fill="#F27FA3" ' + T + '/></svg>',
+    notas: () => '<svg viewBox="0 0 64 64"><path d="M22 46 V14 L50 9 V40" fill="none" ' + T + '/><path d="M22 14 L50 9 V17 L22 22 Z" fill="' + L + '"/><ellipse cx="16" cy="47" rx="8" ry="6" fill="#B8A8F0" ' + T + '/><ellipse cx="44" cy="41" rx="8" ry="6" fill="#B8A8F0" ' + T + '/></svg>',
+    onda: () => '<svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="44" rx="10" fill="#1C2030" ' + T + '/><path d="M12 32 Q19 14 26 32 T40 32 T52 32" fill="none" stroke="#6CFFA8" stroke-width="4" stroke-linecap="round"/></svg>',
+    parlante: () => '<svg viewBox="0 0 64 64"><path d="M10 25 H20 L34 13 V51 L20 39 H10 Z" fill="#FFE1A1" ' + T + '/><path d="M42 24 Q48 32 42 40 M48 18 Q58 32 48 46" fill="none" ' + T + '/></svg>',
+    audifonos: () => '<svg viewBox="0 0 64 64"><path d="M12 38 V32 Q12 12 32 12 Q52 12 52 32 V38" fill="none" ' + T + '/><rect x="8" y="34" width="12" height="18" rx="5" fill="#C9E6FF" ' + T + '/><rect x="44" y="34" width="12" height="18" rx="5" fill="#C9E6FF" ' + T + '/></svg>',
+    corazon: () => '<svg viewBox="0 0 64 64"><path d="M32 52 C10 38 8 26 12 19 C17 11 28 12 32 21 C36 12 47 11 52 19 C56 26 54 38 32 52 Z" fill="#F27FA3" ' + T + '/></svg>',
+    estrella: () => '<svg viewBox="0 0 64 64"><path d="M32 8 L38.5 23.5 L55 25 L42.5 36 L46.5 52.5 L32 43.5 L17.5 52.5 L21.5 36 L9 25 L25.5 23.5 Z" fill="#FFD166" ' + T + '/></svg>',
+    patita: () => '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="42" rx="13" ry="11" fill="#F6C6D6" ' + T + '/><circle cx="14" cy="27" r="6" fill="#F6C6D6" ' + T + '/><circle cx="25" cy="17" r="6" fill="#F6C6D6" ' + T + '/><circle cx="39" cy="17" r="6" fill="#F6C6D6" ' + T + '/><circle cx="50" cy="27" r="6" fill="#F6C6D6" ' + T + '/></svg>',
+    idea: () => '<svg viewBox="0 0 64 64"><path d="M24 42 Q14 34 16 22 Q19 9 32 9 Q45 9 48 22 Q50 34 40 42 Z" fill="#FFE98A" ' + T + '/><path d="M25 48 H39 M27 54 H37" fill="none" ' + T + '/><path d="M28 30 L32 36 L36 30" fill="none" stroke="#E5A000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    listo: () => '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#BFEBD3" ' + T + '/><path d="M21 33 L29 41 L44 24" fill="none" ' + T + ' stroke-width="5"/></svg>',
+    miau: () => '<svg viewBox="0 0 64 64"><path d="M8 14 Q8 8 14 8 H50 Q56 8 56 14 V38 Q56 44 50 44 H26 L16 54 V44 H14 Q8 44 8 38 Z" fill="#FFFFFF" ' + T + '/><text x="32" y="32" text-anchor="middle" font-family="Silkscreen, monospace" font-size="12" fill="' + L + '">MIAU</text></svg>',
+    pregunta: () => '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#DCCBFF" ' + T + '/><path d="M24 25 Q24 15 32 15 Q40 15 40 23 Q40 29 32 32 V37" fill="none" ' + T + '/><circle cx="32" cy="46" r="3" fill="' + L + '"/></svg>',
+  };
+  const NOMBRES = { 'neli-feliz': 'Neli feliz', 'neli-contenta': 'Neli contenta', 'neli-sorprendida': 'Neli sorprendida', 'neli-pensando': 'Neli pensando', 'neli-seria': 'Neli seria', 'neli-enojada': 'Neli enojada', nota: 'una nota', notas: 'dos notas', onda: 'una onda', parlante: 'un parlante', audifonos: 'audífonos', corazon: 'un corazón', estrella: 'una estrella', patita: 'una patita', idea: 'una idea', listo: 'listo', miau: 'miau', pregunta: 'una pregunta' };
+  const PAPELES = [['rayado', 'Rayado'], ['cuadros', 'Cuadriculado'], ['puntos', 'Punteado'], ['pentagrama', 'Pentagrama']];
+
+  // ---------- las notas: las de Neli (vienen con la app, para leer) y las tuyas (en el navegador) ----------
+  const DE_NELI = (window.NOTAS_NELI || [
+    { id: 'neli-1', titulo: 'mis notas', papel: 'rayado', fecha: '2026-10-12',
+      texto: 'aquí anoto lo que voy descubriendo cuando pruebo las apps.\n\nestas son mías y no se pueden cambiar.\nlas tuyas sí: aprieta «+ nueva».',
+      stickers: [{ s: 'neli-feliz', x: .88, y: 40, r: 6 }, { s: 'notas', x: .7, y: 150, r: -8 }] },
+  ]).map(n => Object.assign({ deNeli: true }, n));
+  const LS = 'notas.v1';
+  let mias = leerLS(LS, []); if (!Array.isArray(mias)) mias = [];
+  const todas = () => DE_NELI.concat(mias);
+  let abierta = leerLS('notas.abierta', null), relojGuardar = 0;
+  function guardar() { clearTimeout(relojGuardar); relojGuardar = setTimeout(() => { relojGuardar = 0; guardarLS(LS, mias); }, 250); }
+  const guardarYa = () => { if (relojGuardar) { clearTimeout(relojGuardar); relojGuardar = 0; guardarLS(LS, mias); } };   // al cerrar o recargar, lo pendiente se guarda al tiro
+  addEventListener('pagehide', guardarYa); document.addEventListener('visibilitychange', () => { if (document.hidden) guardarYa(); });
+  const hoy = () => new Date().toISOString().slice(0, 10);
+  const fechaTxt = f => { const [a, m, d] = f.split('-').map(Number); return d + ' de ' + ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'][m - 1] + (a !== new Date().getFullYear() ? ' de ' + a : ''); };
+  const nota = () => todas().find(n => n.id === abierta) || null;
+
+  function pintarLista() {
+    const ul = $('lista'); ul.replaceChildren();
+    const grupo = (t) => { const li = document.createElement('li'); li.className = 'grupo etq'; li.textContent = t; ul.append(li); };
+    const item = n => {
+      const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button';
+      b.innerHTML = '<span class="muestra" data-p="' + n.papel + '"></span><span class="tit">' + esc(n.titulo || 'sin título') + '</span><span class="fecha">' + (n.deNeli ? 'de neli · ' : '') + fechaTxt(n.fecha) + '</span>';
+      b.setAttribute('aria-current', n.id === abierta ? 'true' : 'false');
+      b.addEventListener('click', () => abrir(n.id)); li.append(b); ul.append(li);
+    };
+    grupo('de neli'); DE_NELI.forEach(item);
+    grupo('tuyas'); if (!mias.length) { const li = document.createElement('li'); li.className = 'grupo'; li.style.cssText = 'text-transform:none;letter-spacing:0;font-size:11px;color:var(--tenue)'; li.textContent = 'todavía ninguna'; ul.append(li); }
+    mias.slice().sort((a, b) => (b.editada || 0) - (a.editada || 0)).forEach(item);
+  }
+  function abrir(id) {
+    abierta = id; guardarLS('notas.abierta', id); const n = nota();
+    $('todo').classList.toggle('abierta', !!n);
+    if (!n) { pintarLista(); return; }
+    $('titulo').value = n.titulo; $('texto').value = n.texto;
+    $('titulo').readOnly = $('texto').readOnly = !!n.deNeli;
+    $('hoja').classList.toggle('solo-leer', !!n.deNeli); $('deNeli').hidden = !n.deNeli; $('bBorrar').hidden = !!n.deNeli;
+    $('bStickers').disabled = !!n.deNeli; if (n.deNeli) mostrarPlancha(false);
+    ponerPapel(n.papel, true); crecer(); pintarStickers(); pintarLista();
+  }
+  function nueva(titulo, papel) {
+    const n = { id: 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), titulo: titulo || '', texto: '', papel: papel || 'rayado', fecha: hoy(), editada: Date.now(), stickers: [] };
+    mias.push(n); guardar(); abrir(n.id); if (!titulo) $('titulo').focus(); return n.id;
+  }
+  function tocar(n) { n.editada = Date.now(); guardar(); }
+  $('bNueva').addEventListener('click', () => nueva());
+  $('bVolver').addEventListener('click', () => { $('todo').classList.remove('abierta'); });
+  $('bBorrar').addEventListener('click', e => {
+    const n = nota(); if (!n || n.deNeli) return; const b = e.currentTarget;
+    if (!b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿seguro?'; setTimeout(() => { delete b.dataset.seguro; b.textContent = 'borrar'; }, 3000); return; }
+    delete b.dataset.seguro; b.textContent = 'borrar';
+    mias = mias.filter(x => x.id !== n.id); guardar(); abrir(DE_NELI[0].id);
+  });
+  $('titulo').addEventListener('input', () => { const n = nota(); if (!n || n.deNeli) return; n.titulo = $('titulo').value; tocar(n); pintarLista(); });
+  $('texto').addEventListener('input', () => { const n = nota(); if (!n || n.deNeli) return; n.texto = $('texto').value; tocar(n); crecer(); });
+  // la hoja crece con el texto (el papel sigue debajo)
+  function crecer() { const t = $('texto'); t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, $('hoja').clientHeight - 58) + 'px'; }
+  addEventListener('resize', () => { crecer(); pintarStickers(); });
+
+  // ---------- los papeles ----------
+  for (const [p, nom] of PAPELES) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.p = p; b.title = nom; b.setAttribute('aria-label', 'Papel ' + nom.toLowerCase());
+    b.className = 'hoja-muestra'; b.addEventListener('click', () => { const n = nota(); if (!n || n.deNeli) return; n.papel = p; tocar(n); ponerPapel(p); pintarLista(); });
+    $('papeles').append(b);
+  }
+  // cada botón muestra su papel en chico
+  const estiloMuestra = document.createElement('style');
+  estiloMuestra.textContent = PAPELES.map(([p]) => '[data-p="' + p + '"]{background-image:' + ({
+    rayado: 'repeating-linear-gradient(to bottom,transparent 0 5px,var(--raya) 5px 6px)',
+    cuadros: 'repeating-linear-gradient(to bottom,transparent 0 5px,var(--raya) 5px 6px),repeating-linear-gradient(to right,transparent 0 5px,var(--raya) 5px 6px)',
+    puntos: 'radial-gradient(circle,var(--raya) 1px,transparent 1.2px);background-size:6px 6px',
+    pentagrama: 'repeating-linear-gradient(to bottom,var(--raya) 0 1px,transparent 1px 3px,var(--raya) 3px 4px,transparent 4px 6px,var(--raya) 6px 7px,transparent 7px 13px)'
+  })[p] + '}').join('');
+  document.head.append(estiloMuestra);
+  function ponerPapel(p, sinAnimar) {
+    $('hoja').dataset.papel = p;
+    $('papeles').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === p ? 'true' : 'false'));
+  }
+
+  // ---------- los stickers en la hoja: x en fracción del ancho, y en píxeles desde arriba (se mueven con el texto) ----------
+  function pintarStickers() {
+    const n = nota(), hoja = $('hoja'); hoja.querySelectorAll('.sticker').forEach(s => s.remove()); if (!n) return;
+    const W = hoja.clientWidth;
+    n.stickers.forEach((st, i) => hoja.append(crearSticker(st, i, W, n.deNeli)));
+  }
+  function crearSticker(st, i, W, fijo) {
+    const d = document.createElement('div'); d.className = 'sticker'; d.innerHTML = S[st.s] ? S[st.s]() : '';
+    d.style.left = Math.round(st.x * W - 32) + 'px'; d.style.top = Math.round(st.y - 32) + 'px';
+    d.style.setProperty('--rot', 'rotate(' + (st.r || 0) + 'deg)'); d.style.transform = 'var(--rot)';
+    d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'sticker: ' + (NOMBRES[st.s] || st.s)); d.dataset.i = i;
+    if (!fijo) {
+      d.tabIndex = 0;
+      d.addEventListener('pointerdown', e => arrastrar(e, st.s, i));
+      d.addEventListener('keydown', e => { if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); quitarSticker(i); } });
+    }
+    return d;
+  }
+  function quitarSticker(i) { const n = nota(); if (!n || n.deNeli) return; n.stickers.splice(i, 1); tocar(n); pintarStickers(); }
+  // arrastrar: desde la plancha (i = null) o uno que ya está en la hoja (i = su lugar). Fuera de la hoja, se quita.
+  function arrastrar(e, s, i) {
+    const n = nota(); if (!n || n.deNeli || e.button > 0) return;
+    e.preventDefault(); document.body.classList.add('arrastrando');
+    const hoja = $('hoja'), g = document.createElement('div'); g.className = 'fantasma sticker'; g.innerHTML = S[s]();
+    const r0 = i != null ? (n.stickers[i].r || 0) : Math.round(Math.random() * 16 - 8);
+    g.style.transform = 'rotate(' + r0 + 'deg)'; document.body.append(g);
+    if (i != null) hoja.querySelector('.sticker[data-i="' + i + '"]').style.visibility = 'hidden';
+    const dentro = ev => { const r = hoja.getBoundingClientRect(); return ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom; };
+    const mover = ev => { g.style.left = (ev.clientX - 32) + 'px'; g.style.top = (ev.clientY - 32) + 'px'; g.classList.toggle('fuera', !dentro(ev)); };
+    mover(e);
+    const soltar = ev => {
+      removeEventListener('pointermove', mover); removeEventListener('pointerup', soltar); removeEventListener('pointercancel', soltar);
+      document.body.classList.remove('arrastrando'); g.remove();
+      const r = hoja.getBoundingClientRect();
+      if (dentro(ev)) {
+        const st = { s, x: Math.max(.04, Math.min(.96, (ev.clientX - r.left) / r.width)), y: Math.max(24, ev.clientY - r.top + hoja.scrollTop), r: r0 };
+        if (i != null) n.stickers[i] = st; else n.stickers.push(st);
+        tocar(n); pintarStickers();
+        const nuevo = hoja.querySelector('.sticker[data-i="' + (i != null ? i : n.stickers.length - 1) + '"]'); if (nuevo && i == null) nuevo.classList.add('recien');
+      } else if (i != null) quitarSticker(i);
+      else pintarStickers();
+    };
+    addEventListener('pointermove', mover); addEventListener('pointerup', soltar); addEventListener('pointercancel', soltar);
+  }
+
+  // ---------- la plancha ----------
+  for (const s of Object.keys(S)) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'st'; b.innerHTML = S[s]();
+    b.title = NOMBRES[s]; b.setAttribute('aria-label', 'Pegar ' + NOMBRES[s]);
+    b.addEventListener('pointerdown', e => arrastrar(e, s, null));
+    // con el teclado (o un toque sin arrastrar): se pega en la mitad de lo que se ve
+    b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pegar(s); } });
+    $('grilla').append(b);
+  }
+  function mostrarPlancha(on) { $('plancha').hidden = !on; $('bStickers').setAttribute('aria-pressed', on ? 'true' : 'false'); $('bStickers').setAttribute('aria-expanded', on ? 'true' : 'false'); }
+  $('bStickers').addEventListener('click', () => mostrarPlancha($('plancha').hidden));
+  $('bCerrarPlancha').addEventListener('click', () => mostrarPlancha(false));
+  addEventListener('keydown', e => { if (e.key === 'Escape') mostrarPlancha(false); });
+  function pegar(s, x, y, r) {
+    const n = nota(); if (!n || n.deNeli || !S[s]) return false; const hoja = $('hoja');
+    n.stickers.push({ s, x: x != null ? x : .75, y: y != null ? y : hoja.scrollTop + hoja.clientHeight / 2, r: r != null ? r : Math.round(Math.random() * 16 - 8) });
+    tocar(n); pintarStickers(); const el = hoja.querySelector('.sticker[data-i="' + (n.stickers.length - 1) + '"]'); if (el) el.classList.add('recien'); return true;
+  }
+
+  // ---------- para los videos: tipear una nota letra por letra ----------
+  async function escribir(texto, ms = 45, enTitulo = false) {
+    const n = nota(); if (!n || n.deNeli) return false;
+    const campo = enTitulo ? $('titulo') : $('texto');
+    for (const ch of texto) {
+      campo.value += ch; if (enTitulo) n.titulo = campo.value; else { n.texto = campo.value; crecer(); }
+      await new Promise(r => setTimeout(r, ch === '\n' ? ms * 6 : ch === ' ' ? ms * 1.5 : ms));
+    }
+    tocar(n); pintarLista(); return true;
+  }
+
+  // ---------- NeliOS: la patita, la piel ----------
+  window.addEventListener('message', e => {
+    if (e.source !== window.parent) return;
+    const d = e.data; if (!d || d.nelios !== 'cursor') return;
+    if (typeof d.patita === 'string' && d.patita.startsWith('data:image/')) { document.documentElement.style.setProperty('--patita', 'url(' + d.patita + ') 4 2'); document.body.classList.add('patita'); }
+    else document.body.classList.remove('patita');
+  });
+  const ponerPiel = () => { let v = 'neli'; try { v = localStorage.getItem('meowdacity.piel') || 'neli'; } catch (e) {} document.body.dataset.piel = v === 'terminal' ? 'terminal' : 'neli'; };
+  addEventListener('storage', e => { if (e.key === 'meowdacity.piel') ponerPiel(); if (e.key === LS) { mias = leerLS(LS, []); pintarLista(); } });
+
+  // ---------- partir ----------
+  ponerPiel(); if (!nota()) abierta = DE_NELI[0].id; abrir(abierta);
+  if (innerWidth <= 600) $('todo').classList.remove('abierta');   // en celular parte en la lista
+  window.__notas = { nueva, abrir, escribir, pegar, quitar: quitarSticker, mostrarPlancha, nota, mias: () => mias, stickers: Object.keys(S) };
+})();
+
+</script>
+</body>
+</html>
