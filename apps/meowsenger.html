@@ -218,7 +218,7 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
 </svg>`;
 };
 
-const CANALES = [{"id": "barti", "tipo": "dm", "nombre": "Barti", "tema": "mensajes directos · lo que nos decimos"}];
+const CANALES = [{"id": "barti", "tipo": "dm", "nombre": "Barti", "tema": ""}];
 const BITACORA = [{"canal": "barti", "fecha": "2026-10-11", "hora": "21:02", "de": "sistema", "cara": "", "texto": "neli ha iniciado sesión.", "id": 1}, {"canal": "barti", "fecha": "2026-10-11", "hora": "21:03", "de": "neli", "cara": "seria", "texto": "barti. necesito hablar contigo. es sobre música.", "id": 2}, {"canal": "barti", "fecha": "2026-10-11", "hora": "21:05", "de": "barti", "cara": "pensando", "texto": "dime. pero \"música\" es muy grande.", "id": 3}, {"canal": "barti", "fecha": "2026-10-11", "hora": "21:06", "de": "neli", "cara": "seria", "texto": "quiero entender por qué algo suena. después hago canciones. después me hago famosa.", "id": 4}, {"canal": "barti", "fecha": "2026-10-11", "hora": "21:09", "de": "barti", "cara": "feliz", "texto": "en ese orden me parece bien. déjame armarte algo.", "id": 5}, {"canal": "barti", "fecha": "2026-10-12", "hora": "09:40", "de": "neli", "cara": "enojada", "texto": "", "tipo": "zumbido", "id": 6}, {"canal": "barti", "fecha": "2026-10-12", "hora": "09:40", "de": "neli", "cara": "enojada", "texto": "¿ya?", "id": 7}, {"canal": "barti", "fecha": "2026-10-12", "hora": "09:52", "de": "barti", "cara": "seria", "texto": "no. te aviso por aquí.", "id": 8}];
 
 (function () {
@@ -260,9 +260,9 @@ const BITACORA = [{"canal": "barti", "fecha": "2026-10-11", "hora": "21:02", "de
   function abrir(id, alPrincipio) {
     const c = CANALES.find(x => x.id === id) || CANALES[0];
     document.querySelectorAll('.can').forEach(b => b.setAttribute('aria-current', b.dataset.id === c.id ? 'true' : 'false'));
-    $('cab').innerHTML = (c.tipo === 'dm' ? '<span class="cara">' + cara('feliz', 'barti') + '</span>' : '<span class="icono">#</span>') + '<b>' + esc(c.nombre) + '</b><span class="tema">' + esc(c.tema) + '</span>';
+    $('cab').innerHTML = (c.tipo === 'dm' ? '<span class="cara">' + cara('feliz', 'barti') + '</span>' : '<span class="icono">#</span>') + '<b>' + esc(c.nombre) + '</b>' + (c.tema ? '<span class="tema">' + esc(c.tema) + '</span>' : '');
     const conv = $('conv'); conv.innerHTML = '';
-    const intro = INTRO[c.id];
+    const intro = c.tema ? INTRO[c.id] : null;   // sin bajada, tampoco la tarjeta de presentación
     if (intro) { const d = document.createElement('div'); d.className = 'inicio'; d.innerHTML = '<b>' + esc(intro[0]) + '</b><p>' + esc(intro[1]) + '</p>'; conv.append(d); }
     let dia = '', grupo = null, ultimo = null;
     for (const e of BITACORA.filter(x => x.canal === c.id)) {

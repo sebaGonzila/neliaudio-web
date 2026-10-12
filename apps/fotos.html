@@ -61,22 +61,27 @@ button { font: inherit; color: inherit; }
 .st .tir { right: -20px; bottom: -20px; background: var(--lavanda); cursor: nwse-resize; touch-action: none; }
 .st .bor { right: -20px; top: -20px; background: var(--coral); color: #fff; }
 
-/* la bandeja de stickers */
+/* la plancha de stickers: flota sobre la foto, igual que en Notas (no le quita espacio) */
+#centro { position: relative; }
 #bandeja[hidden] { display: none; }
-#bandeja { width: 230px; flex: none; border-left: 2px solid var(--azul); background: #F2F4FB; overflow-y: auto; padding: 10px; }
-#bandeja h2 { font-family: 'Silkscreen', var(--ui); font-weight: 400; font-size: 10px; letter-spacing: 1px; color: var(--tenue); margin: 4px 2px 8px; text-transform: uppercase; }
-#stickers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-#stickers button { min-width: 0; background: none; border: 0; border-radius: 10px; padding: 2px; aspect-ratio: 1; display: grid; place-items: center; transition: transform .12s; }
+#bandeja { position: absolute; right: 12px; top: 12px; z-index: 6; width: 232px; max-height: calc(100% - 24px); overflow-y: auto; padding: 12px; background: #F2F4FB; border: 2px solid var(--linea); border-radius: 14px; box-shadow: 0 14px 34px rgba(62, 60, 140, .25); }
+#bandeja .cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+#bandeja h2 { font-family: 'Silkscreen', var(--ui); font-weight: 400; font-size: 10px; letter-spacing: 1px; color: var(--tenue); margin: 0; text-transform: uppercase; }
+#cerrarSt { width: 28px; height: 28px; min-width: 0; padding: 0; border: 2px solid var(--linea); border-radius: 8px; background: #fff; color: var(--tinta); font-weight: 700; line-height: 1; }
+#cerrarSt:hover { border-color: var(--tenue); }
+#stickers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+#stickers button { width: 46px; height: 46px; padding: 0; justify-self: center; background: none; border: 0; display: grid; place-items: center; transition: transform .12s; }
 #stickers button:hover { transform: scale(1.08) rotate(-3deg); }
 #stickers button:active { transform: scale(.94); }
+#stickers img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 .st img.recien { animation: pegar .22s ease-out; }
 @keyframes pegar { from { transform: scale(1.35); } to { transform: scale(1); } }
-#stickers img { width: 100%; height: 100%; max-width: 100%; object-fit: contain; pointer-events: none; }
-#bandeja .nota { color: var(--tenue); font-size: 11px; line-height: 1.45; margin: 10px 2px 0; }
+#bandeja .nota { color: var(--tenue); font-size: 10.5px; line-height: 1.45; margin: 8px 0 0; }
 
 /* abajo, todo junto: anterior, las fotos, siguiente, cuál es y guardar */
 #abajo { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #EFEAF9; border-top: 2px solid var(--azul); }
-#tira { flex: 0 1 auto; min-width: 0; display: flex; gap: 8px; padding: 2px; overflow-x: auto; }
+#tira { flex: 0 1 auto; min-width: 0; max-width: 284px; display: flex; gap: 8px; padding: 2px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+#tira button { scroll-snap-align: start; }
 #info { flex: none; margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 0; max-width: 160px; }
 #nombre { font-weight: 700; color: var(--navy); font-size: 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #cuenta { color: var(--tenue); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; }
@@ -87,12 +92,13 @@ button { font: inherit; color: inherit; }
 
 @media (max-width: 639px) {
   #centro { flex-direction: column; }
-  #bandeja { width: auto; border-left: 0; border-top: 2px solid var(--azul); max-height: 34%; padding: 8px; }
-  #bandeja h2, #bandeja .nota { display: none; }
-  #stickers { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+  #bandeja { left: 8px; right: 8px; top: 8px; width: auto; }
+  #bandeja .nota { display: none; }
+  #stickers { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
   #escena { padding: 10px; }
   #abajo { flex-wrap: wrap; gap: 8px; }
-  #tira { flex: 1 1 100%; order: -1; }
+  #tira { flex: 1 1 100%; order: -1; max-width: none; }
+  #tira button { width: calc((100vw - 48px) / 4); }   /* de a 4, a lo ancho */
   #info { flex: 1; align-items: center; max-width: none; }
   #stBtn { padding: 0 10px; }
 }
@@ -102,8 +108,8 @@ button { font: inherit; color: inherit; }
 <body><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
 <div id="centro" role="main"><h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Fotos</h1>
   <div id="escena"><div id="marco" role="img" aria-label="La foto"></div><div id="aviso" role="status"></div></div>
-  <aside id="bandeja" aria-label="Stickers">
-    <h2>stickers</h2>
+  <aside id="bandeja" aria-label="Stickers" hidden>
+    <div class="cab"><h2>stickers</h2><button id="cerrarSt" aria-label="Cerrar los stickers">×</button></div>
     <div id="stickers"></div>
     <p class="nota">toca uno para ponerlo. arrástralo para moverlo; el círculo lila lo agranda y lo gira. también: flechas, + y −, y suprimir.</p>
   </aside>
@@ -113,7 +119,7 @@ button { font: inherit; color: inherit; }
   <nav id="tira" aria-label="Todas las fotos"></nav>
   <button class="btn cuadro" id="sig" aria-label="Foto siguiente">›</button>
   <span id="info"><span id="nombre"></span><span id="cuenta">0 / 0</span></span>
-  <button class="btn" id="stBtn" aria-pressed="true" aria-controls="bandeja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 C6 16 3 13 3 9.2 C3 6.6 5 4.6 7.5 4.6 C9.4 4.6 11 5.7 12 7.3 C13 5.7 14.6 4.6 16.5 4.6 C19 4.6 21 6.6 21 9.2 C21 13 18 16 12 20.5 Z" fill="#F17D9E" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>stickers</button>
+  <button class="btn" id="stBtn" aria-pressed="false" aria-expanded="false" aria-controls="bandeja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 C6 16 3 13 3 9.2 C3 6.6 5 4.6 7.5 4.6 C9.4 4.6 11 5.7 12 7.3 C13 5.7 14.6 4.6 16.5 4.6 C19 4.6 21 6.6 21 9.2 C21 13 18 16 12 20.5 Z" fill="#F17D9E" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>stickers</button>
   <button class="btn prin" id="guardar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 V14.5 M7 10 L12 15 L17 10 M4.5 19.5 H19.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>guardar</button>
 </footer>
 <script>
@@ -275,15 +281,13 @@ const STICKERS = [{"nombre": "neli feliz", "svg": "<svg width=\"200\" height=\"2
     });
     pintarStickers();
   });
-  // la bandeja de stickers se puede esconder; la decisión se recuerda
+  // la plancha de stickers parte cerrada y flota sobre la foto (no le quita espacio)
   function bandeja(ver) {
-    $('bandeja').hidden = !ver; $('stBtn').setAttribute('aria-pressed', String(ver));
-    if (!ver && elegido >= 0) { elegido = -1; pintarStickers(); }
-    try { localStorage.setItem('nelios.fotos.stickers', ver ? '1' : '0'); } catch (e) {}
-    requestAnimationFrame(medir);
+    $('bandeja').hidden = !ver; $('stBtn').setAttribute('aria-pressed', String(ver)); $('stBtn').setAttribute('aria-expanded', String(ver));
   }
   $('stBtn').addEventListener('click', () => bandeja($('bandeja').hidden));
-  try { if (localStorage.getItem('nelios.fotos.stickers') === '0') bandeja(false); } catch (e) {}
+  $('cerrarSt').addEventListener('click', () => { bandeja(false); $('stBtn').focus(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('bandeja').hidden && elegido < 0) bandeja(false); });
   $('ant').addEventListener('click', () => mostrar(i - 1));
   $('sig').addEventListener('click', () => mostrar(i + 1));
   $('guardar').addEventListener('click', () => guardar().catch(() => avisar('no se pudo guardar.')));
