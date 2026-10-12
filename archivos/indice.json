@@ -5,10 +5,6 @@
    "nombre": "Fotos"
   },
   {
-   "id": "audios",
-   "nombre": "Audios"
-  },
-  {
    "id": "maullidos",
    "nombre": "Maullidos"
   },
@@ -77,64 +73,6 @@
    "alto": 920,
    "fecha": "2025-04-02",
    "desc": "neli, de verdad"
-  },
-  {
-   "ruta": "audios/maullidos-chicos.mp3",
-   "nombre": "maullidos-chicos.mp3",
-   "carpeta": "audios",
-   "tipo": "audio",
-   "bytes": 77659,
-   "dur": 3.84,
-   "tasa": 48000,
-   "canales": 1,
-   "formato": "mp3",
-   "numeros": 184320,
-   "fecha": "2026-10-06",
-   "credito": "BigSoundBank · CC0",
-   "desc": "maullidos prestados"
-  },
-  {
-   "ruta": "audios/miau-sintetico.wav",
-   "nombre": "miau-sintetico.wav",
-   "carpeta": "audios",
-   "tipo": "audio",
-   "bytes": 194084,
-   "dur": 1.1,
-   "tasa": 44100,
-   "canales": 2,
-   "formato": "pcm_s16le",
-   "numeros": 97020,
-   "fecha": "2026-10-06",
-   "desc": "un miau sintético, de las pruebas"
-  },
-  {
-   "ruta": "audios/miau.mp3",
-   "nombre": "miau.mp3",
-   "carpeta": "audios",
-   "tipo": "audio",
-   "bytes": 11085,
-   "dur": 0.528,
-   "tasa": 48000,
-   "canales": 1,
-   "formato": "mp3",
-   "numeros": 25344,
-   "fecha": "2026-10-06",
-   "credito": "IgnasD · OpenGameArt · CC0",
-   "desc": "un miau prestado"
-  },
-  {
-   "ruta": "audios/tono-300-hz.wav",
-   "nombre": "tono-300-hz.wav",
-   "carpeta": "audios",
-   "tipo": "audio",
-   "bytes": 176444,
-   "dur": 2.0,
-   "tasa": 44100,
-   "canales": 1,
-   "formato": "pcm_s16le",
-   "numeros": 88200,
-   "fecha": "2026-10-06",
-   "desc": "una onda que se repite 300 veces por segundo"
   },
   {
    "ruta": "maullidos/neli_miau_01.wav",
@@ -467,22 +405,12 @@
    "desc": "un maullido de Neli que sube y baja: 696 → 744 → 543 Hz"
   },
   {
-   "ruta": "documentos/cosas-que-entendi.txt",
-   "nombre": "cosas-que-entendi.txt",
-   "carpeta": "documentos",
-   "tipo": "texto",
-   "bytes": 646,
-   "lineas": 14,
-   "fecha": "2026-10-07",
-   "autor": "neli"
-  },
-  {
    "ruta": "documentos/leeme.txt",
    "nombre": "leeme.txt",
    "carpeta": "documentos",
    "tipo": "texto",
-   "bytes": 299,
-   "lineas": 10,
+   "bytes": 237,
+   "lineas": 9,
    "fecha": "2026-10-08",
    "autor": "barti"
   },
@@ -491,7 +419,7 @@
    "nombre": "lo-que-quiero.txt",
    "carpeta": "documentos",
    "tipo": "texto",
-   "bytes": 246,
+   "bytes": 132,
    "lineas": 7,
    "fecha": "2026-10-08",
    "autor": "neli"

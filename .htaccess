@@ -6,6 +6,8 @@ ErrorDocument 404 /404.html
 # ---------- siempre HTTPS y sin www (el audio y el micrófono del navegador exigen HTTPS) ----------
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # etapa 0 de la historia: estas apps todavía no llegan
+  RewriteRule ^(meowdacity|meowamp|bitacora)(/.*)?$ / [L,R=302]
   RewriteCond %{HTTPS} off [OR]
   RewriteCond %{HTTP_HOST} ^www\. [NC]
   RewriteRule ^ https://neliaudio.com%{REQUEST_URI} [L,R=301]

@@ -1,9 +1,8 @@
 esta carpeta es de neli.
 
-audios     sonidos para escuchar y abrir en meowdacity.
-           los miaus prestados son de dominio público.
 documentos notas de texto.
 fotos      fotos de verdad. se les pueden poner stickers.
+maullidos  maullidos de neli, grabados de verdad.
 
 si borras algo, no se borra. es la carpeta de neli, no la tuya.
 

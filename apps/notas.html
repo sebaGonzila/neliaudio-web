@@ -64,9 +64,14 @@ button:focus-visible, input:focus-visible { outline: 2px dashed var(--tinta); ou
 .etq { font-family: var(--f-etiqueta); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); }
 .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* los papeles: las rayas caen justo bajo cada renglón (28 px) */
+/* la hoja: siempre rayada (las rayas caen justo bajo cada renglón, 28 px); cambia el color, como las libretitas */
 :root { --renglon: 28px; --papel: #FFFCF4; --raya: #B7CDEA; --tinta-nota: #2A2D52; }
-body[data-piel="terminal"] { --papel: #0B0F14; --raya: #1E3A2C; --tinta-nota: #6CFFA8; }
+[data-color="crema"] { --papel: #FFFCF4; --raya: #B7CDEA; }
+[data-color="rosa"] { --papel: #FFE8EE; --raya: #EDB2C3; }
+[data-color="lavanda"] { --papel: #ECE9FF; --raya: #B9B2EC; }
+body[data-piel="terminal"] [data-color] { --papel: #0B0F14; --raya: #1E3A2C; --tinta-nota: #6CFFA8; }
+body[data-piel="terminal"] [data-color="rosa"] { --raya: #4A2233; }
+body[data-piel="terminal"] [data-color="lavanda"] { --raya: #2C2A55; }
 
 main { height: 100%; display: grid; grid-template-columns: 200px minmax(0, 1fr); }
 /* la lista de notas */
@@ -91,23 +96,18 @@ body[data-piel="neli"] .lista { background: rgba(255,255,255,.55); }
 .barra { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: var(--borde) solid var(--linea); flex-wrap: wrap; }
 .barra .volver { display: none; }
 .papeles { display: flex; gap: 4px; align-items: center; }
-.papeles button { width: 30px; height: 28px; padding: 0; border: var(--borde) solid var(--linea); border-radius: 6px; background-color: var(--papel); }
+.papeles button { width: 30px; height: 28px; padding: 0; border: var(--borde) solid var(--linea); border-radius: 6px; background-color: var(--papel); background-image: repeating-linear-gradient(to bottom, transparent 0 5px, var(--raya) 5px 6px); }
 .papeles button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--neon-borde); border-color: var(--tinta); }
 .barra .espacio { flex: 1; }
 .barra .de-neli { font-size: 11px; color: var(--tenue); }
 
 .hoja { position: relative; flex: 1; min-height: 0; overflow-y: auto; background-color: var(--papel); background-attachment: local; }
-.hoja[data-papel="rayado"] { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)); background-position: 0 58px; }
-.hoja[data-papel="cuadros"] { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)), repeating-linear-gradient(to right, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)); background-position: 0 58px, 10px 0; }
-.hoja[data-papel="puntos"] { background-image: radial-gradient(circle, var(--raya) 1.6px, transparent 1.8px); background-size: var(--renglon) var(--renglon); background-position: 10px 44px; }
-/* pentagrama: cinco líneas cada 7 px, y un renglón libre entre uno y otro */
-.hoja[data-papel="pentagrama"] { background-image: repeating-linear-gradient(to bottom, var(--raya) 0 1px, transparent 1px 7px, var(--raya) 7px 8px, transparent 8px 14px, var(--raya) 14px 15px, transparent 15px 21px, var(--raya) 21px 22px, transparent 22px 28px, var(--raya) 28px 29px, transparent 29px 84px); background-position: 0 72px; }
+.hoja { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--raya) calc(var(--renglon) - 1px) var(--renglon)); background-position: 0 58px; }
 .hoja input.titulo { display: block; width: 100%; height: 44px; margin: 6px 0 8px; padding: 0 24px; background: transparent; border: 0; font: 700 20px/44px var(--f-texto); color: var(--tinta-nota); }
 .hoja input.titulo:focus { outline: none; }
 .hoja input.titulo::placeholder, .hoja textarea::placeholder { color: var(--tenue); opacity: .6; }
 .hoja textarea { display: block; width: 100%; min-height: calc(100% - 58px); padding: 0 24px 80px; background: transparent; border: 0; resize: none; overflow: hidden; font: 400 16px/var(--renglon) var(--f-texto); color: var(--tinta-nota); }
 .hoja textarea:focus { outline: none; }
-.hoja[data-papel="pentagrama"] textarea { line-height: 28px; }
 
 /* stickers: con su borde blanco, como los de verdad */
 .sticker { position: absolute; width: 64px; height: 64px; touch-action: none; cursor: grab; user-select: none; filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 3px 4px rgba(42,45,82,.25)); }
@@ -152,13 +152,13 @@ body.patita, body.patita button { cursor: var(--patita), auto; }
   <section class="nota" aria-label="La nota abierta">
     <div class="barra">
       <button type="button" class="chip volver" id="bVolver">← notas</button>
-      <div class="papeles" id="papeles" role="group" aria-label="El papel"></div>
+      <div class="papeles" id="papeles" role="group" aria-label="El color de la hoja"></div>
       <button type="button" class="chip" id="bStickers" aria-pressed="false" aria-expanded="false" title="La plancha de stickers">stickers</button>
       <span class="espacio"></span>
       <span class="de-neli" id="deNeli" hidden>nota de neli · solo para leer</span>
       <button type="button" class="chip" id="bBorrar" title="Borrar esta nota">borrar</button>
     </div>
-    <div class="hoja" id="hoja" data-papel="rayado">
+    <div class="hoja" id="hoja" data-color="crema">
       <input class="titulo" id="titulo" type="text" maxlength="80" placeholder="título" aria-label="Título de la nota" autocomplete="off">
       <textarea id="texto" placeholder="escribe aquí…" aria-label="Texto de la nota" spellcheck="false"></textarea>
     </div>
@@ -282,7 +282,7 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
 <script>
 (() => {
   'use strict';
-  /* Notas v01: un bloc de notas con la piel de Neli. Cuatro papeles (rayado, cuadros, puntos, pentagrama), una plancha de stickers
+  /* Notas v02: un bloc de notas con la piel de Neli. Hoja rayada en tres colores de libretita (crema, rosado, lavanda), una plancha de stickers
      que se arrastran a la hoja, y nada más. Se guarda solo en el navegador. Las notas de Neli vienen adentro y son para leer.
      Para los videos: window.__notas.escribir(texto) tipea letra por letra y .pegar(sticker, x, y) pega un sticker con su saltito. */
   const $ = id => document.getElementById(id);
@@ -293,7 +293,8 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
 
   // ---------- los stickers (dibujos de 64 × 64; las caras de Neli son las de siempre) ----------
   let nId = 0;
-  const cara = e => window.caraSVG ? window.caraSVG(e, false, 'neli').replace(/id="(\w+)"/g, (m, a) => 'id="' + a + '_' + (++nId) + '"').replace(/url\(#(\w+)\)/g, (m, a) => 'url(#' + a + '_' + nId + ')') : '';
+  // cada cara trae dos id (la cabeza y el párpado): las dos llevan el MISMO número, si no la referencia apunta a la que no es
+  const cara = e => { if (!window.caraSVG) return ''; const k = ++nId; return window.caraSVG(e, false, 'neli').replace(/id="(\w+)"/g, (m, a) => 'id="' + a + '_' + k + '"').replace(/url\(#(\w+)\)/g, (m, a) => 'url(#' + a + '_' + k + ')'); };
   const S = {
     'neli-feliz': () => cara('feliz'), 'neli-contenta': () => cara('contenta'), 'neli-sorprendida': () => cara('sorprendida'),
     'neli-pensando': () => cara('pensando'), 'neli-seria': () => cara('seria'), 'neli-enojada': () => cara('enojada'),
@@ -311,11 +312,12 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
     pregunta: () => '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#DCCBFF" ' + T + '/><path d="M24 25 Q24 15 32 15 Q40 15 40 23 Q40 29 32 32 V37" fill="none" ' + T + '/><circle cx="32" cy="46" r="3" fill="' + L + '"/></svg>',
   };
   const NOMBRES = { 'neli-feliz': 'Neli feliz', 'neli-contenta': 'Neli contenta', 'neli-sorprendida': 'Neli sorprendida', 'neli-pensando': 'Neli pensando', 'neli-seria': 'Neli seria', 'neli-enojada': 'Neli enojada', nota: 'una nota', notas: 'dos notas', onda: 'una onda', parlante: 'un parlante', audifonos: 'audífonos', corazon: 'un corazón', estrella: 'una estrella', patita: 'una patita', idea: 'una idea', listo: 'listo', miau: 'miau', pregunta: 'una pregunta' };
-  const PAPELES = [['rayado', 'Rayado'], ['cuadros', 'Cuadriculado'], ['puntos', 'Punteado'], ['pentagrama', 'Pentagrama']];
+  const COLORES = [['crema', 'Crema'], ['rosa', 'Rosado'], ['lavanda', 'Lavanda']];
+  const colorDe = n => COLORES.some(c => c[0] === n.color) ? n.color : 'crema';
 
   // ---------- las notas: las de Neli (vienen con la app, para leer) y las tuyas (en el navegador) ----------
   const DE_NELI = (window.NOTAS_NELI || [
-    { id: 'neli-1', titulo: 'mis notas', papel: 'rayado', fecha: '2026-10-12',
+    { id: 'neli-1', titulo: 'mis notas', color: 'crema', fecha: '2026-10-12',
       texto: 'aquí anoto lo que voy descubriendo cuando pruebo las apps.\n\nestas son mías y no se pueden cambiar.\nlas tuyas sí: aprieta «+ nueva».',
       stickers: [{ s: 'neli-feliz', x: .88, y: 40, r: 6 }, { s: 'notas', x: .7, y: 150, r: -8 }] },
   ]).map(n => Object.assign({ deNeli: true }, n));
@@ -335,7 +337,7 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
     const grupo = (t) => { const li = document.createElement('li'); li.className = 'grupo etq'; li.textContent = t; ul.append(li); };
     const item = n => {
       const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button';
-      b.innerHTML = '<span class="muestra" data-p="' + n.papel + '"></span><span class="tit">' + esc(n.titulo || 'sin título') + '</span><span class="fecha">' + (n.deNeli ? 'de neli · ' : '') + fechaTxt(n.fecha) + '</span>';
+      b.innerHTML = '<span class="muestra" data-color="' + colorDe(n) + '"></span><span class="tit">' + esc(n.titulo || 'sin título') + '</span><span class="fecha">' + (n.deNeli ? 'de neli · ' : '') + fechaTxt(n.fecha) + '</span>';
       b.setAttribute('aria-current', n.id === abierta ? 'true' : 'false');
       b.addEventListener('click', () => abrir(n.id)); li.append(b); ul.append(li);
     };
@@ -351,10 +353,10 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
     $('titulo').readOnly = $('texto').readOnly = !!n.deNeli;
     $('hoja').classList.toggle('solo-leer', !!n.deNeli); $('deNeli').hidden = !n.deNeli; $('bBorrar').hidden = !!n.deNeli;
     $('bStickers').disabled = !!n.deNeli; if (n.deNeli) mostrarPlancha(false);
-    ponerPapel(n.papel, true); crecer(); pintarStickers(); pintarLista();
+    ponerColor(colorDe(n)); crecer(); pintarStickers(); pintarLista();
   }
-  function nueva(titulo, papel) {
-    const n = { id: 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), titulo: titulo || '', texto: '', papel: papel || 'rayado', fecha: hoy(), editada: Date.now(), stickers: [] };
+  function nueva(titulo, color) {
+    const n = { id: 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), titulo: titulo || '', texto: '', color: color || 'crema', fecha: hoy(), editada: Date.now(), stickers: [] };
     mias.push(n); guardar(); abrir(n.id); if (!titulo) $('titulo').focus(); return n.id;
   }
   function tocar(n) { n.editada = Date.now(); guardar(); }
@@ -372,24 +374,15 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
   function crecer() { const t = $('texto'); t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, $('hoja').clientHeight - 58) + 'px'; }
   addEventListener('resize', () => { crecer(); pintarStickers(); });
 
-  // ---------- los papeles ----------
-  for (const [p, nom] of PAPELES) {
-    const b = document.createElement('button'); b.type = 'button'; b.dataset.p = p; b.title = nom; b.setAttribute('aria-label', 'Papel ' + nom.toLowerCase());
-    b.className = 'hoja-muestra'; b.addEventListener('click', () => { const n = nota(); if (!n || n.deNeli) return; n.papel = p; tocar(n); ponerPapel(p); pintarLista(); });
+  // ---------- el color de la hoja: siempre rayada, como las libretitas ----------
+  for (const [c, nom] of COLORES) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.color = c; b.title = nom; b.setAttribute('aria-label', 'Hoja ' + nom.toLowerCase());
+    b.addEventListener('click', () => { const n = nota(); if (!n || n.deNeli) return; n.color = c; tocar(n); ponerColor(c); pintarLista(); });
     $('papeles').append(b);
   }
-  // cada botón muestra su papel en chico
-  const estiloMuestra = document.createElement('style');
-  estiloMuestra.textContent = PAPELES.map(([p]) => '[data-p="' + p + '"]{background-image:' + ({
-    rayado: 'repeating-linear-gradient(to bottom,transparent 0 5px,var(--raya) 5px 6px)',
-    cuadros: 'repeating-linear-gradient(to bottom,transparent 0 5px,var(--raya) 5px 6px),repeating-linear-gradient(to right,transparent 0 5px,var(--raya) 5px 6px)',
-    puntos: 'radial-gradient(circle,var(--raya) 1px,transparent 1.2px);background-size:6px 6px',
-    pentagrama: 'repeating-linear-gradient(to bottom,var(--raya) 0 1px,transparent 1px 3px,var(--raya) 3px 4px,transparent 4px 6px,var(--raya) 6px 7px,transparent 7px 13px)'
-  })[p] + '}').join('');
-  document.head.append(estiloMuestra);
-  function ponerPapel(p, sinAnimar) {
-    $('hoja').dataset.papel = p;
-    $('papeles').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === p ? 'true' : 'false'));
+  function ponerColor(c) {
+    $('hoja').dataset.color = c;
+    $('papeles').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.color === c ? 'true' : 'false'));
   }
 
   // ---------- los stickers en la hoja: x en fracción del ancho, y en píxeles desde arriba (se mueven con el texto) ----------
@@ -480,7 +473,7 @@ window.caraSVG = function (expr, abierta, gato = 'neli') {
   // ---------- partir ----------
   ponerPiel(); if (!nota()) abierta = DE_NELI[0].id; abrir(abierta);
   if (innerWidth <= 600) $('todo').classList.remove('abierta');   // en celular parte en la lista
-  window.__notas = { nueva, abrir, escribir, pegar, quitar: quitarSticker, mostrarPlancha, nota, mias: () => mias, stickers: Object.keys(S) };
+  window.__notas = { nueva, abrir, color: c => { const n = nota(); if (!n || n.deNeli) return false; n.color = c; tocar(n); ponerColor(c); pintarLista(); return true; }, escribir, pegar, quitar: quitarSticker, mostrarPlancha, nota, mias: () => mias, stickers: Object.keys(S) };
 })();
 
 </script>
