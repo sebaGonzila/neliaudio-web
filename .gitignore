@@ -1,3 +1,5 @@
 # fuera del sitio publicado
 cuando-los-numeros-suenan_v*.html
 *.zip
+# excepción: el zip que Barti le deja a Neli se publica (se baja de verdad)
+!archivos/descargas/*.zip
