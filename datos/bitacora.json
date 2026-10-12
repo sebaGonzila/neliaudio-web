@@ -4782,6 +4782,96 @@
   {
    "id": 460,
    "fecha": "2026-10-11",
+   "hora": "23:40",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "me grabaron. dos veces. dije muchas cosas."
+  },
+  {
+   "id": 461,
+   "fecha": "2026-10-11",
+   "hora": "23:55",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "23 maullidos limpios. también estaba la voz de seba, pero tú suenas una octava más arriba: se separan solos."
+  },
+  {
+   "id": 462,
+   "fecha": "2026-10-12",
+   "hora": "01:30",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "los medí. casi todos hacen un arco: subes, bajas. primero abres la boca y el volumen, el tono llega después. y cuando maúllas seguido, cada 2,5 segundos, como un reloj."
+  },
+  {
+   "id": 463,
+   "fecha": "2026-10-12",
+   "hora": "01:31",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "pensando",
+   "publicada": true,
+   "texto": "¿puedes hacer uno falso?"
+  },
+  {
+   "id": 464,
+   "fecha": "2026-10-12",
+   "hora": "01:40",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "probé. suena a dibujo animado. los tuyos no se pueden copiar."
+  },
+  {
+   "id": 465,
+   "fecha": "2026-10-12",
+   "hora": "01:41",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "contenta",
+   "publicada": true,
+   "texto": "obvio."
+  },
+  {
+   "id": 466,
+   "fecha": "2026-10-12",
+   "hora": "02:30",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "pero sí se pueden ordenar. escribí «hola barti» y salieron dos de los tuyos, uno detrás del otro, y pegaban."
+  },
+  {
+   "id": 467,
+   "fecha": "2026-10-12",
+   "hora": "02:31",
+   "canal": "barti",
+   "de": "neli",
+   "cara": "seria",
+   "publicada": true,
+   "texto": "yo no dije eso."
+  },
+  {
+   "id": 468,
+   "fecha": "2026-10-12",
+   "hora": "02:31",
+   "canal": "barti",
+   "de": "barti",
+   "cara": "feliz",
+   "publicada": true,
+   "texto": "todavía no."
+  },
+  {
+   "id": 469,
+   "fecha": "2026-10-11",
    "hora": "00:10",
    "canal": "ideas",
    "de": "barti",

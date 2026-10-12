@@ -594,7 +594,9 @@ const APPS = [
     contenido: (m) => { m.src = '/apps/grabadora.html?ventana'; } },
   { id: 'estudio',    nombre: 'Estudio',    icono: '/img/iconos/estudio.svg', w: 860, h: 560, pista: 'Aquí se mezcla. Enchufa la salida de la Grabadora en una pista y lo que grabes cae ahí.', enchufes: { entrada: 'pistas' }, cerca: 'grabadora',
     contenido: (m) => { m.src = '/apps/estudio.html?ventana'; } },
-  { id: 'pedalera',   nombre: 'Pedalera',   icono: '/img/iconos/pedalera.svg', w: 790, h: 530, pista: 'Toca «prueba» y pisa un pedal. Abajo se ve lo que hace por dentro.', enchufes: { lados: true },
+  { id: 'miau',       nombre: 'Miau',       icono: '/img/iconos/miau.svg', w: 760, h: 470, pista: 'Escribe algo y yo lo digo. Con mis maullidos de verdad, uno por palabra.', enchufes: { salida: true },
+    contenido: (m) => { m.src = '/apps/miau.html?ventana'; } },
+  { id: 'pedalera',   nombre: 'Pedalera',   icono: '/img/iconos/pedalera.svg', w: 790, h: 530, escondida: true, pista: 'Toca «prueba» y pisa un pedal. Abajo se ve lo que hace por dentro.', enchufes: { lados: true },
     contenido: (m) => { m.src = '/apps/pedales.html?ventana'; } },
   { id: 'pedal-ganancia', nombre: 'Ganancia', icono: '/img/iconos/pedalera.svg', w: 300, h: 640, escondida: true, enchufes: { lados: true }, cerca: 'pedalera',
     contenido: (m) => { m.src = '/apps/pedales.html?ventana&pedal=ganancia'; } },
@@ -946,7 +948,7 @@ function abrir(app, desde) {
   ventana.addEventListener('pointerdown', () => alFrente(ventana));
   alFrente(ventana);
   saludar(app);
-  if (['meowdacity', 'grabadora', 'estudio'].includes(app.id)) juntarSiSeTapan();
+  if (['meowdacity', 'miau', 'grabadora', 'estudio'].includes(app.id)) juntarSiSeTapan();
 }
 
 const contenedor = document.getElementById('iconos');
@@ -1193,7 +1195,7 @@ window.neliAudio = (() => {
 // El sonido no puede dar vueltas en círculo. El escritorio dibuja los cables y le avisa a cada app qué le entra y a dónde sale.
 // =====================================================================
 const esPedal = (id) => id === 'pedalera' || /^pedal-[a-z]+$/.test(id);
-const enCadena = (id) => ['meowdacity', 'grabadora', 'estudio'].includes(id) || esPedal(id);
+const enCadena = (id) => ['meowdacity', 'grabadora', 'estudio', 'miau'].includes(id) || esPedal(id);
 // enlaces: de cada salida, a dónde va. { meowdacity: 'pedalera', pedalera: 'grabadora', grabadora: 1 } (la Grabadora va a una pista: un número)
 let enlaces = (() => {
   const g = mem.leer('enlaces', null); if (g && typeof g === 'object' && !Array.isArray(g)) return g;
@@ -1247,9 +1249,10 @@ function tocarEntrada(a, pista) {
   if (a === 'estudio') { conectar({ pista }); return; }
   if (a === 'grabadora') { conectar({ md: true }); return; }
   // un pedal: se mete entre Meowdacity y lo que venía después
-  if (!abiertas.meowdacity) { hablar('Primero abre Meowdacity: el sonido sale de ella.'); abrir(appDe('meowdacity')); }
-  const antes = enlaces.meowdacity;
-  if (enlazar('meowdacity', a) && typeof antes === 'string' && antes !== a && enlaces[a] == null) enlazar(a, antes);
+  const fuente = abiertas.meowdacity ? 'meowdacity' : abiertas.miau ? 'miau' : null;   // un pedal se mete entre lo que suena y lo que venía después
+  if (!fuente) { hablar('Primero abre Meowdacity (o Miau): el sonido sale de ahí.'); abrir(appDe('meowdacity')); return; }
+  const antes = enlaces[fuente];
+  if (enlazar(fuente, a) && typeof antes === 'string' && antes !== a && enlaces[a] == null) enlazar(a, antes);
   guardarEnlaces(); avisarCable(); pintarCable();
 }
 function ponerEnchufes(app, ventana, cuerpo) {
@@ -1299,7 +1302,7 @@ function ponerEntradas(ys) {
 // Meowdacity, la Grabadora y el Estudio se usan juntos: si se tapan, se ponen lado a lado, en el orden en que pasa el sonido
 function juntarSiSeTapan() {
   if (innerWidth < 720) return;
-  const orden = ['meowdacity', 'grabadora', 'estudio'].filter((id) => abiertas[id]); if (orden.length < 2) return;
+  const orden = ['meowdacity', 'miau', 'grabadora', 'estudio'].filter((id) => abiertas[id]); if (orden.length < 2) return;
   const caja = (v) => ({ left: v.offsetLeft, top: v.offsetTop, right: v.offsetLeft + v.offsetWidth, bottom: v.offsetTop + v.offsetHeight });   // sin la animación de abrir
   let tapan = false;
   for (let a = 0; a < orden.length; a++) for (let b = a + 1; b < orden.length; b++) {
@@ -1311,11 +1314,12 @@ function juntarSiSeTapan() {
   const wg = orden.includes('grabadora') ? Math.min(appDe('grabadora').w, Math.round(libre * .3)) : 0, resto = libre - wg;
   const ancho = { grabadora: wg };
   const grandes = orden.filter((id) => id !== 'grabadora');
-  if (grandes.length === 2) { ancho.meowdacity = Math.round(resto * .58); ancho.estudio = resto - ancho.meowdacity; } else if (grandes.length === 1) ancho[grandes[0]] = Math.min(resto, appDe(grandes[0]).w);
+  if (grandes.length === 2 && !orden.includes('miau')) { ancho.meowdacity = Math.round(resto * .58); ancho.estudio = resto - ancho.meowdacity; }
+  else { const cada = Math.floor(resto / Math.max(1, grandes.length)); for (const id of grandes) ancho[id] = Math.min(cada, appDe(id).w); }
   const h = Math.min(H - 2 * m, 760); let x = m;
   for (const id of orden) {
     const v = abiertas[id]; v.classList.remove('agrandada'); v.hidden = false; v.dataset.estirada = '1';
-    v.style.width = ancho[id] + 'px'; v.style.height = (id === 'grabadora' ? Math.min(h, appDe(id).h) : h) + 'px'; ubicar(v, x, m); x += ancho[id] + g;
+    v.style.width = ancho[id] + 'px'; v.style.height = ((id === 'grabadora' || id === 'miau') ? Math.min(h, appDe(id).h) : h) + 'px'; ubicar(v, x, m); x += ancho[id] + g;
   }
   pintarCable();
 }
@@ -1342,6 +1346,8 @@ function avisarCable() {
   const pista = typeof enlaces.grabadora === 'number' && g && e ? enlaces.grabadora : null;
   // si Meowdacity va a un pedal, lo que se escucha es lo que sale del pedal: su salida directa se calla
   post(m, { nelios: 'cable', conectado: va === 'grabadora', directo: !(va && esPedal(va)) });
+  const vm = vivo(enlaces.miau) ? enlaces.miau : null;
+  post(marcoDe('miau'), { nelios: 'cable', salida: vm, salidaNombre: vm ? appDe(vm).nombre : null, directo: !(vm && esPedal(vm)) });
   const eg = desde('grabadora');
   post(g, { nelios: 'cable', entrada: eg, entradaNombre: eg ? appDe(eg).nombre : null, pista, meowdacity: !!m, estudio: !!e, cara: innerWidth >= 720 });
   post(e, { nelios: 'cable', pista, grabadora: !!g });
