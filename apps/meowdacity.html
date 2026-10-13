@@ -513,6 +513,77 @@ body[data-piel="neli"].en-ventana { --fondo: #F5F3FD; }
 /* dentro de una ventana de NeliOS: el nombre ya está en la barra de título */
 body.en-ventana { padding: 12px; }
 @media (prefers-reduced-motion: reduce) { .tb:active, .tb:hover { transform: none !important; } }
+
+/* ---------- v46 · celular vertical: una sola pantalla, sin desplazarse ----------
+   Arriba la onda (toma el alto que sobra), al medio el tempo, abajo la franja de Neli y el teclado.
+   Lo secundario (perillas, volumen, metrónomo, base, apariencia) va al cajón «más», que sube desde abajo. */
+#masBtn, .cajon, .cajon-velo { display: none; }
+@media (max-width: 599px) and (orientation: portrait) {
+  html, body { height: 100%; }
+  body { padding: 8px 10px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; box-sizing: border-box; }
+  body.en-ventana { padding: 8px; }
+  .app { flex: 1; min-height: 0; width: 100%; gap: 8px; }
+  .cab { flex: none; } .marca small { display: none; } .marca span { font-size: 18px; } .marca .gato { width: 24px; height: 24px; }
+  .panel { flex: none; }
+  .barra { min-height: 34px; padding: 3px 10px; } .barra h2 { font-size: 11px; }
+  /* la onda */
+  .p-onda { flex: 1 1 auto; display: flex; flex-direction: column; }   /* nunca más bajo que su contenido: en pantallas muy bajas, la página se desplaza un poco */
+  .formas { flex-wrap: nowrap; overflow-x: auto; padding: 7px 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .formas::-webkit-scrollbar { display: none; }
+  .formas button { flex: none; padding-top: 5px; padding-bottom: 5px; }
+  .p-onda .lienzo { flex: 1 1 auto; min-height: 84px; padding: 7px 10px 6px; }
+  .p-onda .lienzo .marco { aspect-ratio: auto; }
+  /* los números: la cuenta en una sola fila; posición y altura van sobre la onda (las mueve el script) */
+  html body .datos { padding: 0 10px 8px; }
+  html body .datos-in { display: block; }
+  html body .datos-in .cuenta { gap: 4px; grid-template-columns: minmax(0, 1.15fr) auto minmax(0, .85fr) auto minmax(0, 1.35fr); }
+  html body .cuenta .op { display: block; font-size: calc(12px * var(--k-num)); }
+  html body .dt { padding: 2px 7px 3px; }
+  html body .dt small { font-size: 8.5px; letter-spacing: .04em; }
+  html body .dt b { font-size: calc(16px * var(--k-num)); gap: 4px; }
+  html body .dt.res b { flex-direction: row; align-items: baseline; }
+  html body .cuenta .nota { margin-left: auto; align-self: center; font-size: 9px; padding: 0 4px; }
+  .sobre-datos { position: absolute; z-index: 2; top: 4px; right: 5px; display: flex; gap: 4px; pointer-events: none; }
+  html body .sobre-datos .dt { flex-direction: row; align-items: baseline; gap: 5px; padding: 1px 6px; background: color-mix(in srgb, var(--boton) 88%, transparent); }
+  html body .sobre-datos .dt small { font-size: 8px; }
+  html body .sobre-datos .dt b { font-size: calc(12.5px * var(--k-num)); }
+  /* el tempo */
+  .p-tempo .osc { padding: 8px 10px 2px; }
+  .p-tempo .marco-osc { aspect-ratio: auto; height: 74px; }
+  .tempo { padding: 4px 10px 0; }
+  .p-tempo .consola { margin: 6px 10px 8px; padding: 6px; gap: 6px; }
+  .transporte { width: 100%; } .transporte .tb { flex: 1 1 0; width: auto; min-width: 0; height: 40px; }
+  .transporte .tb.ancho { flex: 1.6 1 0; } #tAcelerar { display: inline; font-size: 11px; }
+  /* la franja de Neli: una línea; al tocarla se abre completa */
+  .pie { display: contents; }
+  .pie > .dice { order: 3; flex: none; padding: 5px 6px 5px 10px; min-height: 0; gap: 8px; cursor: pointer; }
+  .pie > .dice .neli { width: 28px; height: 28px; }
+  .pie > .dice p { flex: 1; min-width: 0; height: auto; display: block; font-size: 12.5px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pie > .dice.abierta p { white-space: normal; }
+  #masBtn { display: grid; flex: none; width: 40px; height: 34px; }
+  /* el teclado, al fondo */
+  .p-teclado { order: 4; flex: none; padding: 8px 8px 8px 6px; }
+  .p-teclado .teclado { height: 104px; }
+  .oct { width: 38px; }
+  /* el cajón */
+  .cajon-velo { display: block; position: fixed; inset: 0; z-index: 60; background: rgba(42,45,82,.28); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .cajon { display: flex; flex-direction: column; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; max-height: 78vh; overflow-y: auto; padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); background: var(--panel); border-top: var(--borde) solid var(--linea); border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px rgba(42,45,82,.18); transform: translateY(105%); transition: transform .24s cubic-bezier(.3,1.1,.5,1); visibility: hidden; }
+  body[data-piel="neli"] .cajon { background: #FBFAFF; }
+  body[data-piel="terminal"] .cajon { border-radius: 0; }
+  body.cajon-abierto .cajon { transform: none; visibility: visible; }
+  body.cajon-abierto .cajon-velo { opacity: 1; pointer-events: auto; }
+  .cajon-cab { display: flex; align-items: center; justify-content: space-between; font-family: var(--f-etiqueta); font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--tinta); }
+  .cajon .mixer { width: 100%; justify-content: space-around; border: 0; margin: 0; padding: 4px 0; }
+  .cajon .volumen { flex: none; min-width: 0; }
+  .cajon .ritmo { flex-wrap: wrap; }
+  .cajon .p-card { box-shadow: none; }
+  .cajon .ajustes .a-menu, .cajon .e-menu { position: static; margin-top: 8px; }
+}
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 700px) {
+  .app { gap: 6px; } .p-tempo .marco-osc { height: 54px; } .p-tempo .consola { margin: 4px 10px 6px; }
+  .p-teclado .teclado { height: 92px; } .p-onda .lienzo { min-height: 72px; }
+}
+@media (prefers-reduced-motion: reduce) { .cajon, .cajon-velo { transition: none !important; } }
 </style>
 </head>
 <body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
@@ -2645,6 +2716,47 @@ registerProcessor('grabador', Grabador);`;
   if (window.ResizeObserver) { new ResizeObserver(() => { medir(); dibujar(); }).observe($('marco')); new ResizeObserver(() => { medirOsc(); dibujarOsc(); }).observe($('marcoOsc')); new ResizeObserver(() => { medirAudio(); dibujarAudio(); }).observe($('aDetMarco')); new ResizeObserver(() => { medirSonido(); dibujarSonido(); }).observe($('sMarco')); }   // el marco cambia con el layout, no solo con la ventana
   let piel = 'neli'; try { piel = localStorage.getItem('meowdacity.piel') || 'neli'; } catch (e) {}
   medir(); medirOsc(); ponerNivel(3); ponerForma('saw'); ponerPiel(piel); fijarVel(2, true); pintarTransporte(); requestAnimationFrame(bucle);
+})();
+</script>
+
+<script>
+/* v46 · celular vertical: mueve lo secundario al cajón «más» (y lo devuelve si la pantalla cambia) */
+(function () {
+  'use strict';
+  const mq = matchMedia('(max-width: 599px) and (orientation: portrait)');
+  const $ = (s) => document.querySelector(s);
+  const dice = $('.pie > .dice'); if (!dice) return;
+  const btn = document.createElement('button');
+  btn.className = 'tb'; btn.id = 'masBtn'; btn.type = 'button'; btn.title = 'Más: perillas, volumen, metrónomo, base y apariencia';
+  btn.setAttribute('aria-label', 'Más controles'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'cajon');
+  btn.innerHTML = '<svg class="g" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/><circle cx="5" cy="4" r="1.6"/><circle cx="11" cy="8" r="1.6"/><circle cx="7" cy="12" r="1.6"/></svg>';
+  dice.append(btn);
+  const velo = document.createElement('div'); velo.className = 'cajon-velo';
+  const cajon = document.createElement('div'); cajon.className = 'cajon'; cajon.id = 'cajon'; cajon.setAttribute('role', 'dialog'); cajon.setAttribute('aria-label', 'Más controles');
+  cajon.innerHTML = '<div class="cajon-cab"><span>MÁS</span><button class="a-btn" type="button" id="cajonListo">listo</button></div>';
+  document.body.append(velo, cajon);
+  // lo que se muda al cajón, en este orden
+  const piezas = ['.p-teclado .mixer', '.p-tempo .volumen', '.pie > .ritmo', '.pie > .p-ent', '.pie > .p-base', '.pie > .ajustes'].map((s) => $(s)).filter(Boolean);
+  // posición y altura: sobre la onda, en una esquina
+  const sobre = document.createElement('div'); sobre.className = 'sobre-datos'; sobre.setAttribute('aria-hidden', 'false');
+  const datosIn = $('#datosOnda .datos-in'), marco = $('#marco');
+  const leen = datosIn ? [...datosIn.children].filter((e) => e.classList.contains('dt')).slice(0, 2) : [];
+  const casa = piezas.concat(leen).map((el) => [el, el.parentNode, el.nextSibling]);
+  function acomodar() {
+    if (mq.matches) { piezas.forEach((el) => cajon.append(el)); if (marco && leen.length) { leen.forEach((el) => sobre.append(el)); marco.append(sobre); } }
+    else { cerrar(); sobre.remove(); for (const [el, padre, sig] of casa) padre.insertBefore(el, sig && sig.parentNode === padre ? sig : null); }
+    window.dispatchEvent(new Event('resize'));
+  }
+  function abrir() { document.body.classList.add('cajon-abierto'); btn.setAttribute('aria-expanded', 'true'); }
+  function cerrar() { document.body.classList.remove('cajon-abierto'); btn.setAttribute('aria-expanded', 'false'); }
+  btn.addEventListener('click', (e) => { e.stopPropagation(); document.body.classList.contains('cajon-abierto') ? cerrar() : abrir(); });
+  velo.addEventListener('click', cerrar);
+  cajon.querySelector('#cajonListo').addEventListener('click', cerrar);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(); });
+  // la franja de Neli: tocarla la abre o la cierra
+  dice.addEventListener('click', (e) => { if (mq.matches && !e.target.closest('#masBtn')) dice.classList.toggle('abierta'); });
+  mq.addEventListener ? mq.addEventListener('change', acomodar) : mq.addListener(acomodar);
+  acomodar();
 })();
 </script>
 </body>
