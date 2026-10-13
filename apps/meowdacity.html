@@ -611,7 +611,107 @@ body.en-ventana { padding: 12px; }
   .p-teclado .teclado { height: 96px; }
 }
 @media (prefers-reduced-motion: reduce) { .cajon, .cajon-velo { transition: none !important; } }
+
+/* ---------- v49 · lo mismo, elegido en el computador: html.compacto ---------- */
+html.compacto, html.compacto body { height: 100%; }
+html.compacto body { padding: 8px 10px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; box-sizing: border-box; }
+html.compacto body.en-ventana { padding: 8px; }
+html.compacto .app { flex: 1; min-height: 0; width: 100%; gap: 8px; }
+html.compacto .cab { flex: none; }
+html.compacto .marca small { display: none; }
+html.compacto .marca span { font-size: 18px; }
+html.compacto .marca .gato { width: 24px; height: 24px; }
+html.compacto .panel { flex: none; }
+html.compacto .barra { min-height: 34px; padding: 3px 10px; }
+html.compacto .barra h2 { font-size: 11px; }
+/* la onda */html.compacto .p-onda { flex: 1 1 auto; display: flex; flex-direction: column; overflow: visible; }
+/* visible (no hidden): nunca más bajo que su contenido, y el panel de mis ondas puede salir del marco */html.compacto .p-onda > .barra { border-radius: calc(var(--radio) - 2px) calc(var(--radio) - 2px) 0 0; }
+html.compacto .p-onda { position: relative; z-index: 5; }
+html.compacto .mis-panel { z-index: 40; max-height: min(62vh, 440px); }
+/* clip (no hidden): así nunca queda más bajo que su contenido *//* nunca más bajo que su contenido: en pantallas muy bajas, la página se desplaza un poco */html.compacto .formas { flex-wrap: nowrap; overflow-x: auto; padding: 7px 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+html.compacto .formas::-webkit-scrollbar { display: none; }
+html.compacto .formas button { flex: none; padding-top: 5px; padding-bottom: 5px; }
+/* v48 · las formas solo con su dibujo (el nombre sigue ahí para lectores de pantalla y como título): todo cabe y «mis ondas» queda a la vista */html.compacto .formas { gap: 5px; overflow: visible; }
+html.compacto .formas > button[data-f] { flex: 1 1 0; min-width: 0; justify-content: center; font-size: 0; gap: 0; padding-left: 4px; padding-right: 4px; }
+html.compacto .formas > button[data-f] svg { width: 26px; height: 13px; }
+html.compacto .formas .mis { flex: none; margin-left: 2px; }
+html.compacto .formas .mis-btn { font-size: 11px; padding-left: 8px; padding-right: 7px; gap: 4px; }
+@media (max-width: 380px) {html.compacto .formas .mis-btn > svg:first-child { display: none; }
+ }
+html.compacto .p-onda .lienzo { flex: 1 1 auto; min-height: 84px; padding: 7px 10px 6px; }
+html.compacto .p-onda .lienzo .marco { aspect-ratio: auto; }
+/* los números: la cuenta en una sola fila; posición y altura van sobre la onda (las mueve el script) */html.compacto body .datos { padding: 0 10px 8px; }
+html.compacto body .datos-in { display: block; }
+html.compacto body .datos-in .cuenta { gap: 4px; grid-template-columns: minmax(0, 1.15fr) auto minmax(0, .85fr) auto minmax(0, 1.35fr); }
+html.compacto body .cuenta .op { display: block; font-size: calc(12px * var(--k-num)); }
+html.compacto body .dt { padding: 2px 7px 3px; }
+html.compacto body .dt small { font-size: 8.5px; letter-spacing: .04em; }
+html.compacto body .dt b { font-size: calc(16px * var(--k-num)); gap: 4px; }
+html.compacto body .dt.res b { flex-direction: row; align-items: baseline; }
+html.compacto body .cuenta .nota { margin-left: auto; align-self: center; font-size: 9px; padding: 0 4px; }
+html.compacto .sobre-datos { position: absolute; z-index: 2; top: 4px; right: 5px; display: flex; gap: 4px; pointer-events: none; }
+html.compacto body .sobre-datos .dt { flex-direction: row; align-items: baseline; gap: 5px; padding: 1px 6px; background: color-mix(in srgb, var(--boton) 88%, transparent); }
+html.compacto body .sobre-datos .dt small { font-size: 8px; }
+html.compacto body .sobre-datos .dt b { font-size: calc(12.5px * var(--k-num)); }
+/* el tempo */html.compacto .p-tempo .osc { padding: 8px 10px 2px; }
+html.compacto .p-tempo .marco-osc { aspect-ratio: auto; height: 74px; }
+html.compacto .tempo { padding: 4px 10px 0; }
+html.compacto .p-tempo .consola { margin: 6px 10px 8px; padding: 6px; gap: 6px; }
+html.compacto .transporte { width: 100%; }
+html.compacto .transporte .tb { flex: 1 1 0; width: auto; min-width: 0; height: 40px; }
+html.compacto .transporte .tb.ancho { flex: 1.6 1 0; }
+html.compacto #tAcelerar { display: inline; font-size: 11px; }
+/* la franja de Neli: una línea; al tocarla se abre completa */html.compacto .pie { display: contents; }
+html.compacto .pie > .dice { order: 3; flex: none; padding: 5px 6px 5px 10px; min-height: 0; gap: 8px; cursor: pointer; }
+html.compacto .pie > .dice .neli { width: 28px; height: 28px; }
+html.compacto .pie > .dice p { flex: 1; min-width: 0; height: auto; display: block; font-size: 12.5px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.compacto .pie > .dice.abierta p { white-space: normal; }
+html.compacto #masBtn { display: grid; flex: none; width: 40px; height: 34px; }
+/* el teclado, al fondo */html.compacto .p-teclado { order: 4; flex: none; padding: 8px 8px 8px 6px; }
+html.compacto .p-teclado .teclado { height: 104px; }
+html.compacto .oct { width: 38px; }
+/* el cajón */html.compacto .cajon-velo { display: block; position: fixed; inset: 0; z-index: 60; background: rgba(42,45,82,.28); opacity: 0; pointer-events: none; transition: opacity .2s; }
+html.compacto .cajon { display: flex; flex-direction: column; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; max-height: 78vh; overflow-y: auto; padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); background: var(--panel); border-top: var(--borde) solid var(--linea); border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px rgba(42,45,82,.18); transform: translateY(105%); transition: transform .24s cubic-bezier(.3,1.1,.5,1); visibility: hidden; }
+html.compacto body[data-piel="neli"] .cajon { background: #FBFAFF; }
+html.compacto body[data-piel="terminal"] .cajon { border-radius: 0; }
+html.compacto body.cajon-abierto .cajon { transform: none; visibility: visible; }
+html.compacto body.cajon-abierto .cajon-velo { opacity: 1; pointer-events: auto; }
+html.compacto .cajon-cab { display: flex; align-items: center; justify-content: space-between; font-family: var(--f-etiqueta); font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--tinta); }
+html.compacto .cajon .mixer { width: 100%; justify-content: space-around; border: 0; margin: 0; padding: 4px 0; }
+html.compacto .cajon .volumen { flex: none; min-width: 0; }
+html.compacto .cajon .ritmo { flex-wrap: wrap; }
+html.compacto .cajon .p-card { box-shadow: none; }
+html.compacto .cajon .ajustes .a-menu, html.compacto .cajon .e-menu { position: static; margin-top: 8px; }
+
+@media (max-height: 700px) {html.compacto .app { gap: 6px; }
+html.compacto .p-tempo .marco-osc { height: 54px; }
+html.compacto .p-tempo .consola { margin: 4px 10px 6px; }
+html.compacto .p-teclado .teclado { height: 92px; }
+html.compacto .p-onda .lienzo { min-height: 72px; }
+
+}
+@media (max-height: 780px) {html.compacto .p-onda > .barra { display: none; }
+html.compacto .p-onda .formas { padding-top: 8px; }
+html.compacto .p-tempo { position: relative; }
+html.compacto .p-tempo > .barra { position: absolute; z-index: 3; top: 12px; right: 16px; min-height: 0; padding: 0; background: none; border: 0; }
+html.compacto .p-tempo > .barra h2 { display: none; }
+html.compacto .p-tempo > .barra .estado { font-size: 10px; padding: 1px 8px; }
+html.compacto .p-tempo .osc { padding-top: 8px; }
+html.compacto .p-tempo .marco-osc { height: 58px; }
+html.compacto .tempo { padding-top: 2px; }
+html.compacto .escala { margin-top: -2px; }
+html.compacto .p-tempo .consola { margin: 4px 10px 8px; padding: 5px; }
+html.compacto .transporte .tb { height: 38px; }
+html.compacto .p-teclado { padding: 6px 8px 6px 6px; }
+html.compacto .p-teclado .teclado { height: 96px; }
+
+}
+html.compacto .app { display: flex; flex-direction: column; max-width: 520px; margin-inline: auto; }
+.diseno-sec { display: contents; }
+@media (max-width: 599px) and (orientation: portrait) and (pointer: coarse) { .diseno-sec { display: none; } }   /* en el celular no hay elección; en una ventana angosta del computador, sí */
 </style>
+<script>try{if(localStorage.getItem('meowdacity.diseno')==='compacto')document.documentElement.classList.add('compacto')}catch(e){}</script>
+
 </head>
 <body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
 
@@ -2751,6 +2851,8 @@ registerProcessor('grabador', Grabador);`;
 (function () {
   'use strict';
   const mq = matchMedia('(max-width: 599px) and (orientation: portrait)');
+  const raiz = document.documentElement;
+  const compacto = () => mq.matches || raiz.classList.contains('compacto');
   const $ = (s) => document.querySelector(s);
   const dice = $('.pie > .dice'); if (!dice) return;
   const btn = document.createElement('button');
@@ -2771,7 +2873,7 @@ registerProcessor('grabador', Grabador);`;
   const leen = datosIn ? [...datosIn.children].filter((e) => e.classList.contains('dt')).slice(0, 2) : [];
   const casa = piezas.concat(leen).map((el) => [el, el.parentNode, el.nextSibling]);
   function acomodar() {
-    if (mq.matches) { piezas.forEach((el) => cajon.append(el)); if (marco && leen.length) { leen.forEach((el) => sobre.append(el)); marco.append(sobre); } }
+    if (compacto()) { piezas.forEach((el) => cajon.append(el)); if (marco && leen.length) { leen.forEach((el) => sobre.append(el)); marco.append(sobre); } }
     else { cerrar(); sobre.remove(); for (const [el, padre, sig] of casa) padre.insertBefore(el, sig && sig.parentNode === padre ? sig : null); }
     window.dispatchEvent(new Event('resize'));
   }
@@ -2782,9 +2884,24 @@ registerProcessor('grabador', Grabador);`;
   cajon.querySelector('#cajonListo').addEventListener('click', cerrar);
   addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(); });
   // la franja de Neli: tocarla la abre o la cierra
-  dice.addEventListener('click', (e) => { if (mq.matches && !e.target.closest('#masBtn')) dice.classList.toggle('abierta'); });
+  dice.addEventListener('click', (e) => { if (compacto() && !e.target.closest('#masBtn')) dice.classList.toggle('abierta'); });
   mq.addEventListener ? mq.addEventListener('change', acomodar) : mq.addListener(acomodar);
+  // diseño (solo en el computador): amplio, el de siempre; compacto, el del celular. Se recuerda y la ventana de NeliOS toma el tamaño justo
+  const menu = document.getElementById('apaMenu');
+  const enVentana = /[?&]ventana\b/.test(location.search) && window.parent !== window;
+  function pedirTamano(c) { if (enVentana) try { parent.postMessage(c ? { nelios: 'ajustarTamano', w: 440, h: 860 } : { nelios: 'ajustarTamano', w: 1100, h: 700 }, '*'); } catch (e) {} }
+  if (menu) {
+    const sec = document.createElement('div'); sec.className = 'diseno-sec';
+    sec.innerHTML = '<div class="a-sec">diseño</div><button class="chip" id="disAmplio" type="button" aria-pressed="true">AMPLIO</button><button class="chip" id="disCompacto" type="button" aria-pressed="false">COMPACTO</button>';
+    menu.append(sec);
+    const bA = sec.querySelector('#disAmplio'), bC = sec.querySelector('#disCompacto');
+    const pintar = () => { const c = raiz.classList.contains('compacto'); bA.setAttribute('aria-pressed', String(!c)); bC.setAttribute('aria-pressed', String(c)); };
+    const poner = (c) => { raiz.classList.toggle('compacto', c); try { localStorage.setItem('meowdacity.diseno', c ? 'compacto' : 'amplio'); } catch (e) {} pintar(); acomodar(); pedirTamano(c); };
+    bA.addEventListener('click', () => poner(false)); bC.addEventListener('click', () => poner(true));
+    pintar();
+  }
   acomodar();
+  if (raiz.classList.contains('compacto') && !mq.matches) pedirTamano(true);
 })();
 </script>
 </body>

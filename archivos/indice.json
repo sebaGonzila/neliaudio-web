@@ -413,12 +413,12 @@
    "nombre": "meowdacity.zip",
    "carpeta": "descargas",
    "tipo": "zip",
-   "bytes": 321364,
-   "sinComprimir": 573545,
+   "bytes": 322625,
+   "sinComprimir": 583395,
    "contenido": [
     {
      "nombre": "meowdacity/meowdacity.html",
-     "bytes": 573163
+     "bytes": 583013
     },
     {
      "nombre": "meowdacity/leeme.txt",

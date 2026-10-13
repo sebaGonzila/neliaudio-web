@@ -1031,6 +1031,19 @@ window.addEventListener('message', (e) => {
     if (v.dataset.estirada) { const id = Object.keys(abiertas).find((k) => abiertas[k] === v); if (id) guardarPosicion(id, v.offsetLeft, v.offsetTop, v.offsetWidth, v.offsetHeight); }
     return;
   }
+  // una app puede pedir otro tamaño de ventana (Meowdacity al pasar a diseño compacto o amplio); en celular y agrandada, no
+  if (d.nelios === 'ajustarTamano') {
+    const v = Object.values(abiertas).find((x) => { const f = x.querySelector('iframe'); return f && f.contentWindow === e.source; });
+    if (!v || v.classList.contains('agrandada') || innerWidth < 720) return;
+    const W = escritorio.clientWidth, H = escritorio.clientHeight;
+    const w = Math.max(MIN_W, Math.min(W - 16, Math.round(+d.w) || v.offsetWidth));
+    const h = Math.max(MIN_H, Math.min(H - 16, Math.round(+d.h) || v.offsetHeight));
+    const l = Math.max(8, Math.min(v.offsetLeft, W - w - 8)), t = Math.max(8, Math.min(v.offsetTop, H - h - 8));
+    Object.assign(v.style, { width: w + 'px', height: h + 'px', left: l + 'px', top: t + 'px' });
+    const id = Object.keys(abiertas).find((k) => abiertas[k] === v); if (id) guardarPosicion(id, l, t, w, h);
+    window.dispatchEvent(new Event('resize'));
+    return;
+  }
   if (d.nelios === 'abrirModulo' || d.nelios === 'cerrarModulo') {
     const app = APPS.find((a) => a.id === d.app); if (!app || !app.modulo || !/^[a-z]+$/.test(d.modulo || '')) return;
     const id = app.id + '~' + d.modulo;
