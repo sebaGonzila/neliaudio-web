@@ -527,7 +527,7 @@ body.en-ventana { padding: 12px; }
   .panel { flex: none; }
   .barra { min-height: 34px; padding: 3px 10px; } .barra h2 { font-size: 11px; }
   /* la onda */
-  .p-onda { flex: 1 1 auto; display: flex; flex-direction: column; }   /* nunca más bajo que su contenido: en pantallas muy bajas, la página se desplaza un poco */
+  .p-onda { flex: 1 1 auto; display: flex; flex-direction: column; overflow: clip; }   /* clip (no hidden): así nunca queda más bajo que su contenido */   /* nunca más bajo que su contenido: en pantallas muy bajas, la página se desplaza un poco */
   .formas { flex-wrap: nowrap; overflow-x: auto; padding: 7px 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .formas::-webkit-scrollbar { display: none; }
   .formas button { flex: none; padding-top: 5px; padding-bottom: 5px; }
@@ -582,6 +582,24 @@ body.en-ventana { padding: 12px; }
 @media (max-width: 599px) and (orientation: portrait) and (max-height: 700px) {
   .app { gap: 6px; } .p-tempo .marco-osc { height: 54px; } .p-tempo .consola { margin: 4px 10px 6px; }
   .p-teclado .teclado { height: 92px; } .p-onda .lienzo { min-height: 72px; }
+}
+/* v47 · pantallas bajas (celular con la barra del navegador y NeliOS): fuera los títulos de los paneles;
+   el estado (DETENIDO, GOLPES, NOTA…) pasa a la esquina de «lo que suena» */
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 780px) {
+  .p-onda > .barra { display: none; }
+  .p-onda .formas { padding-top: 8px; }
+  .p-tempo { position: relative; }
+  .p-tempo > .barra { position: absolute; z-index: 3; top: 12px; right: 16px; min-height: 0; padding: 0; background: none; border: 0; }
+  .p-tempo > .barra h2 { display: none; }
+  .p-tempo > .barra .estado { font-size: 10px; padding: 1px 8px; }
+  .p-tempo .osc { padding-top: 8px; }
+  .p-tempo .marco-osc { height: 58px; }
+  .tempo { padding-top: 2px; }
+  .escala { margin-top: -2px; }
+  .p-tempo .consola { margin: 4px 10px 8px; padding: 5px; }
+  .transporte .tb { height: 38px; }
+  .p-teclado { padding: 6px 8px 6px 6px; }
+  .p-teclado .teclado { height: 96px; }
 }
 @media (prefers-reduced-motion: reduce) { .cajon, .cajon-velo { transition: none !important; } }
 </style>
