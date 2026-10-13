@@ -710,7 +710,15 @@ html.compacto .app { display: flex; flex-direction: column; max-width: 520px; ma
 .diseno-sec { display: contents; }
 @media (max-width: 599px) and (orientation: portrait) and (pointer: coarse) { .diseno-sec { display: none; } }   /* en el celular no hay elección; en una ventana angosta del computador, sí */
 </style>
-<script>try{if(localStorage.getItem('meowdacity.diseno')==='compacto')document.documentElement.classList.add('compacto')}catch(e){}</script>
+<script>
+/* v50 · solo dos formas: la amplia (si la ventana tiene 960 × 640 o más) o la compacta. Nada intermedio. Elegir «compacto» la fuerza también en ventana grande. */
+window.__mdAplicar = function () {
+  var ancha = matchMedia('(min-width: 960px) and (min-height: 640px)').matches, pref = null;
+  try { pref = localStorage.getItem('meowdacity.diseno'); } catch (e) {}
+  document.documentElement.classList.toggle('compacto', !ancha || pref === 'compacto');
+};
+window.__mdAplicar();
+</script>
 
 </head>
 <body data-piel="neli"><script>if(/[?&]ventana(&|$)/.test(location.search))document.body.classList.add("en-ventana");</script>
@@ -2886,6 +2894,10 @@ registerProcessor('grabador', Grabador);`;
   // la franja de Neli: tocarla la abre o la cierra
   dice.addEventListener('click', (e) => { if (compacto() && !e.target.closest('#masBtn')) dice.classList.toggle('abierta'); });
   mq.addEventListener ? mq.addEventListener('change', acomodar) : mq.addListener(acomodar);
+  const mqAncha = matchMedia('(min-width: 960px) and (min-height: 640px)');
+  const alCambiar = () => { if (window.__mdAplicar) window.__mdAplicar(); acomodar(); };
+  mqAncha.addEventListener ? mqAncha.addEventListener('change', alCambiar) : mqAncha.addListener(alCambiar);
+  const pref = () => { try { return localStorage.getItem('meowdacity.diseno') === 'compacto'; } catch (e) { return false; } };
   // diseño (solo en el computador): amplio, el de siempre; compacto, el del celular. Se recuerda y la ventana de NeliOS toma el tamaño justo
   const menu = document.getElementById('apaMenu');
   const enVentana = /[?&]ventana\b/.test(location.search) && window.parent !== window;
@@ -2895,13 +2907,13 @@ registerProcessor('grabador', Grabador);`;
     sec.innerHTML = '<div class="a-sec">diseño</div><button class="chip" id="disAmplio" type="button" aria-pressed="true">AMPLIO</button><button class="chip" id="disCompacto" type="button" aria-pressed="false">COMPACTO</button>';
     menu.append(sec);
     const bA = sec.querySelector('#disAmplio'), bC = sec.querySelector('#disCompacto');
-    const pintar = () => { const c = raiz.classList.contains('compacto'); bA.setAttribute('aria-pressed', String(!c)); bC.setAttribute('aria-pressed', String(c)); };
-    const poner = (c) => { raiz.classList.toggle('compacto', c); try { localStorage.setItem('meowdacity.diseno', c ? 'compacto' : 'amplio'); } catch (e) {} pintar(); acomodar(); pedirTamano(c); };
+    const pintar = () => { const c = pref(); bA.setAttribute('aria-pressed', String(!c)); bC.setAttribute('aria-pressed', String(c)); };
+    const poner = (c) => { try { localStorage.setItem('meowdacity.diseno', c ? 'compacto' : 'amplio'); } catch (e) {} pedirTamano(c); if (window.__mdAplicar) window.__mdAplicar(); else raiz.classList.toggle('compacto', c); pintar(); acomodar(); };
     bA.addEventListener('click', () => poner(false)); bC.addEventListener('click', () => poner(true));
     pintar();
   }
   acomodar();
-  if (raiz.classList.contains('compacto') && !mq.matches) pedirTamano(true);
+  if (pref() && !mq.matches) pedirTamano(true);
 })();
 </script>
 </body>
