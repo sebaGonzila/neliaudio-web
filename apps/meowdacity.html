@@ -706,7 +706,8 @@ html.compacto .p-teclado { padding: 6px 8px 6px 6px; }
 html.compacto .p-teclado .teclado { height: 96px; }
 
 }
-html.compacto .app { display: flex; flex-direction: column; max-width: 520px; margin-inline: auto; }
+html.compacto .app { display: flex; flex-direction: column; max-width: none; margin-inline: auto; }   /* v51: llena el ancho que haya (sin franjas vacías a los lados) */
+@media (min-width: 960px) { html.compacto .app { max-width: 560px; } }   /* compacto elegido en una ventana grande: no se estira de más */
 .diseno-sec { display: contents; }
 @media (max-width: 599px) and (orientation: portrait) and (pointer: coarse) { .diseno-sec { display: none; } }   /* en el celular no hay elección; en una ventana angosta del computador, sí */
 </style>
