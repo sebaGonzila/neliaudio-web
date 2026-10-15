@@ -938,6 +938,7 @@ const contenedor = document.getElementById('iconos');
 
 for (const app of APPS) {
   if (app.escondida) continue;           // los pedales sueltos no tienen ícono: se abren desde la Pedalera (o con su dirección)
+  if (app.id === 'ajustes') continue;     // Ajustes no tiene ícono en el escritorio: vive en el menú de inicio, abajo de las apps
   const boton = document.createElement('button');
   boton.className = 'icono';
   boton.type = 'button';
